@@ -1,0 +1,8 @@
+# IntelliJ files
+.idea
+
+# build files
+api/build
+
+# Gradle config files
+.gradle
