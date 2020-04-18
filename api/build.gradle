@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+}
+
+sourceCompatibility = 1.11
+targetCompatibility = 1.11
+
+test {
+    useJUnitPlatform()
+}
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    implementation('org.springframework.boot:spring-boot-starter-web:2.2.6.RELEASE')
+    implementation('mysql:mysql-connector-java:8.0.19')
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test:2.2.6.RELEASE')
+}
