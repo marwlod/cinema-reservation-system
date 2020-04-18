@@ -1,0 +1,18 @@
+version: '3'
+
+networks:
+  crs:
+
+services:
+  mysql-db:
+    container_name: mysql-db
+    image: mysql:8.0.19
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret-pass
+    volumes:
+      # creating database and adding some dummy data to test if the connection to database works fine
+      - ./api/src/test/resources/db:/docker-entrypoint-initdb.d
+    networks:
+      - crs
