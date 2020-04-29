@@ -3,6 +3,7 @@
 
 # build files
 api/build
+build
 
 # Gradle config files
 .gradle
