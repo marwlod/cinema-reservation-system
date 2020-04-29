@@ -38,7 +38,7 @@
 1. Don't commit to `master` branch please. Every change to the `master` branch should be proposed by creating a 
     [Pull Request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
     Before creating a Pull Request make sure the [build](docs/build.md) is passing.
-    We don't have any automatic build system yet so it needs to be done manually :(
+    We don't have any automatic build system yet so it needs to be done manually. :(
 
 
 ## Educational resources
