@@ -4,7 +4,7 @@
 
 1. [Configure](https://help.github.com/en/github/authenticating-to-github/adding-a-new-ssh-key-to-your-github-account) 
     GitHub SSH keys.
-1. Download [Java SE 11](https://jdk.java.net/java-se-ri/11)  
+1. Download [Java SE 11](https://jdk.java.net/java-se-ri/11).
 1. Download [IntelliJ IDEA](https://www.jetbrains.com/idea/download) 
     (Ultimate 2020.1 or newer would be best, AGH students have a [free student license](https://accounts.ki.agh.edu.pl/licenses/)).
 1. Inside IntelliJ: `File` -> `New` -> `Project from Version Control...` -> select Git as version control system and
