@@ -25,7 +25,7 @@
 
 ## Testing the setup:
 
-1. [Build](docs/build.md) the project.
+1. [Build](docs/build.md) the project. :)
 1. Go to [MainApplication.java](/api/src/main/java/io/github/kkw/api/MainApplication.java) and run it.
 
 
