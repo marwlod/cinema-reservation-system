@@ -5,7 +5,7 @@ CREATE TABLE client
     name VARCHAR(200),
     surname VARCHAR(200),
     is_admin BOOLEAN NOT NULL,
-    is_logged_in BOOLEAN NOT NULL
+    logged_until DATETIME NOT NULL
 );
 
 CREATE TABLE hall
@@ -40,7 +40,7 @@ CREATE TABLE movie
 CREATE TABLE hall_reservation
 (
     hall_reservation_id INT NOT NULL PRIMARY KEY,
-    is_valid BOOLEAN NOT NULL,
+    valid_until DATETIME NOT NULL,
     is_paid_advance BOOLEAN NOT NULL,
     is_paid_total BOOLEAN NOT NULL,
     reservation_date DATE NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE hall_reservation
 CREATE TABLE seat_reservation
 (
     seat_reservation_id INT NOT NULL PRIMARY KEY,
-    is_valid BOOLEAN NOT NULL,
+    valid_until DATETIME NOT NULL,
     is_paid BOOLEAN NOT NULL,
     movie_id INT NOT NULL,
     seat_id INT NOT NULL,
