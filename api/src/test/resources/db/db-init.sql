@@ -4,11 +4,4 @@ GRANT ALL PRIVILEGES ON crs.* to 'api'@'%';
 
 USE crs;
 
-CREATE TABLE ala
-(
-    ma int NOT NULL,
-    kota int NOT NULL,
-    PRIMARY KEY (ma)
-);
-
-INSERT INTO ala(ma, kota) VALUES (666, 777);
+SOURCE /docker-entrypoint-initdb.d/sql/create_tables.sql;
