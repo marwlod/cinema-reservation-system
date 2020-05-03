@@ -1,9 +1,9 @@
 CREATE TABLE client
 (
     client_id INT NOT NULL PRIMARY KEY,
-    password VARCHAR(200) NOT NULL,
-    name VARCHAR(200),
-    surname VARCHAR(200),
+    password VARCHAR(2048) NOT NULL,
+    name VARCHAR(2048),
+    surname VARCHAR(2048),
     is_admin BOOLEAN NOT NULL,
     logged_until DATETIME NOT NULL
 );
@@ -29,7 +29,7 @@ CREATE TABLE seat
 CREATE TABLE movie
 (
     movie_id INT NOT NULL PRIMARY KEY,
-    name VARCHAR(200) NOT NULL,
+    name VARCHAR(2048) NOT NULL,
     start_date DATETIME NOT NULL,
     end_date DATETIME NOT NULL,
     base_price DECIMAL(13, 4) NOT NULL,
