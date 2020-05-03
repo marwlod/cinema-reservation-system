@@ -40,25 +40,25 @@ CREATE TABLE movie
 CREATE TABLE hall_reservation
 (
     hall_reservation_id INT NOT NULL PRIMARY KEY,
+    is_valid BOOLEAN NOT NULL,
     is_paid_advance BOOLEAN NOT NULL,
     is_paid_total BOOLEAN NOT NULL,
     reservation_date DATE NOT NULL,
     hall_id INT NOT NULL,
     client_id INT NOT NULL,
     FOREIGN KEY (hall_id) REFERENCES hall(hall_id),
-    FOREIGN KEY (client_id) REFERENCES client(client_id),
-    UNIQUE KEY (reservation_date, hall_id)
+    FOREIGN KEY (client_id) REFERENCES client(client_id)
 );
 
 CREATE TABLE seat_reservation
 (
     seat_reservation_id INT NOT NULL PRIMARY KEY,
+    is_valid BOOLEAN NOT NULL,
     is_paid BOOLEAN NOT NULL,
     movie_id INT NOT NULL,
     seat_id INT NOT NULL,
     client_id INT NOT NULL,
     FOREIGN KEY (movie_id) REFERENCES movie(movie_id),
     FOREIGN KEY (seat_id) REFERENCES seat(seat_id),
-    FOREIGN KEY (client_id) REFERENCES client(client_id),
-    UNIQUE KEY(movie_id, seat_id)
+    FOREIGN KEY (client_id) REFERENCES client(client_id)
 );
