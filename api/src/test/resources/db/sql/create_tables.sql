@@ -1,6 +1,7 @@
 CREATE TABLE client
 (
-    client_id INT NOT NULL PRIMARY KEY,
+    client_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(255) NOT NULL,
     password VARCHAR(2048) NOT NULL,
     name VARCHAR(2048),
     surname VARCHAR(2048),
@@ -28,7 +29,7 @@ CREATE TABLE seat
 
 CREATE TABLE movie
 (
-    movie_id INT NOT NULL PRIMARY KEY,
+    movie_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(2048) NOT NULL,
     start_date DATETIME NOT NULL,
     end_date DATETIME NOT NULL,
@@ -39,7 +40,7 @@ CREATE TABLE movie
 
 CREATE TABLE hall_reservation
 (
-    hall_reservation_id INT NOT NULL PRIMARY KEY,
+    hall_reservation_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     valid_until DATETIME NOT NULL,
     is_paid_advance BOOLEAN NOT NULL,
     is_paid_total BOOLEAN NOT NULL,
@@ -52,7 +53,7 @@ CREATE TABLE hall_reservation
 
 CREATE TABLE seat_reservation
 (
-    seat_reservation_id INT NOT NULL PRIMARY KEY,
+    seat_reservation_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     valid_until DATETIME NOT NULL,
     is_paid BOOLEAN NOT NULL,
     movie_id INT NOT NULL,
