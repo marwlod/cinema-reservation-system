@@ -42,12 +42,12 @@ CREATE TABLE hall_reservation
     hall_reservation_id INT NOT NULL PRIMARY KEY,
     is_paid_advance BOOLEAN NOT NULL,
     is_paid_total BOOLEAN NOT NULL,
-    date DATE NOT NULL,
+    reservation_date DATE NOT NULL,
     hall_id INT NOT NULL,
     client_id INT NOT NULL,
     FOREIGN KEY (hall_id) REFERENCES hall(hall_id),
     FOREIGN KEY (client_id) REFERENCES client(client_id),
-    UNIQUE KEY (date, hall_id)
+    UNIQUE KEY (reservation_date, hall_id)
 );
 
 CREATE TABLE seat_reservation
