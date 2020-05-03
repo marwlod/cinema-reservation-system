@@ -13,7 +13,7 @@ CREATE TABLE hall
     hall_id INT NOT NULL PRIMARY KEY,
     advance_price DECIMAL(13, 4) NOT NULL, -- total digits 13, after decimal point 4
     total_price DECIMAL(13, 4) NOT NULL,
-    screen_size DECIMAL(5, 2) NOT NULL
+    screen_size DECIMAL(13, 4) NOT NULL
 );
 
 CREATE TABLE seat
