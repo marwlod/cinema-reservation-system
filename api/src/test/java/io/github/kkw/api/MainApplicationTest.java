@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class MainApplicationTest {
     private static final String PASSWORD = "somepassword";
+    private static final String INVALID_PASSWORD = "invalidpassword";
     private static final String INVALID_EMAIL = "domain.com";
     private static final Random RANDOM = new Random();
     private String validEmail;
@@ -43,7 +44,7 @@ class MainApplicationTest {
     void shouldRegisterClient_whenValidRequest() {
         // when
         final ResponseEntity<Void> response = restTemplate.exchange(
-                "/register?email={email}&password={email}", HttpMethod.POST,
+                "/register?email={email}&password={password}", HttpMethod.POST,
                 new HttpEntity<>(null, null), Void.class,
                 validEmail, PASSWORD);
 
@@ -83,5 +84,57 @@ class MainApplicationTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals("Client with this email already exists", response.getBody().getMessage());
+    }
+
+    @Test
+    void shouldLoginClient_whenValidRequest() {
+        // given
+        restTemplate.exchange(
+                "/register?email={email}&password={password}", HttpMethod.POST,
+                new HttpEntity<>(null, null), Void.class,
+                validEmail, PASSWORD);
+
+        // when
+        final ResponseEntity<Void> response = restTemplate.exchange(
+                "/login?email={email}&password={password}", HttpMethod.POST,
+                new HttpEntity<>(null, null), Void.class,
+                validEmail, PASSWORD);
+
+        // then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    void shouldReturnError_whenClientDoesntExist() {
+        // when
+        final ResponseEntity<RestError> response = restTemplate.exchange(
+                "/login?email={email}&password={password}", HttpMethod.POST,
+                new HttpEntity<>(null, null), RestError.class,
+                validEmail, PASSWORD);
+
+        // then
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("Client with this email not found", response.getBody().getMessage());
+    }
+
+    @Test
+    void shouldReturnError_whenWrongPassword() {
+        // given
+        restTemplate.exchange(
+                "/register?email={email}&password={password}", HttpMethod.POST,
+                new HttpEntity<>(null, null), Void.class,
+                validEmail, PASSWORD);
+
+        // when
+        final ResponseEntity<RestError> response = restTemplate.exchange(
+                "/login?email={email}&password={password}", HttpMethod.POST,
+                new HttpEntity<>(null, null), RestError.class,
+                validEmail, INVALID_PASSWORD);
+
+        // then
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("Wrong password", response.getBody().getMessage());
     }
 }

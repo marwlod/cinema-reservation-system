@@ -4,7 +4,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.math.BigInteger;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Repository
@@ -40,5 +42,25 @@ public class LoginRepository {
                 .setParameter(1, email)
                 .getResultList();
         return !existingIds.isEmpty();
+    }
+
+    @Transactional
+    public boolean emailMatchesPassword(String email, String password) {
+        BigInteger matches = (BigInteger) entityManager
+                .createNativeQuery("SELECT IF((SELECT COUNT(*) FROM client WHERE email = ? AND password = ?) > 0, TRUE, FALSE)")
+                .setParameter(1, email)
+                .setParameter(2, password)
+                .getSingleResult();
+        return matches.intValue() == 1;
+    }
+
+    @Transactional
+    public void loginClient(String email, String password) {
+        entityManager
+                .createNativeQuery("UPDATE client SET logged_until=? WHERE email=? AND password=?")
+                .setParameter(1, Instant.now().plus(20, ChronoUnit.MINUTES))
+                .setParameter(2, email)
+                .setParameter(3, password)
+                .executeUpdate();
     }
 }

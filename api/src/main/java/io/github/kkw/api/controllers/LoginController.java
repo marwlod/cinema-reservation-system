@@ -1,7 +1,9 @@
 package io.github.kkw.api.controllers;
 
 import io.github.kkw.api.exceptions.ClientExistsException;
+import io.github.kkw.api.exceptions.ClientNotFoundException;
 import io.github.kkw.api.exceptions.RestException;
+import io.github.kkw.api.exceptions.WrongPasswordException;
 import io.github.kkw.api.services.LoginService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -30,6 +32,18 @@ public class LoginController {
             loginService.registerClient(email, password, name, surname);
         } catch (ClientExistsException e) {
             throw new RestException(e.getMessage(), HttpStatus.BAD_REQUEST, e.getCause());
+        }
+    }
+
+    @PostMapping("/login")
+    public void loginClient(@Email @RequestParam("email") String email,
+                            @RequestParam("password") String password) throws RestException {
+        try {
+            loginService.loginClient(email, password);
+        } catch (ClientNotFoundException e) {
+            throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e.getCause());
+        } catch (WrongPasswordException e) {
+            throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e.getCause());
         }
     }
 }
