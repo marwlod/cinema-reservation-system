@@ -63,4 +63,13 @@ public class LoginRepository {
                 .setParameter(3, password)
                 .executeUpdate();
     }
+
+    @Transactional
+    public void logoutClient(String email) {
+        entityManager
+                .createNativeQuery("UPDATE client SET logged_until=? WHERE email=?")
+                .setParameter(1, Instant.now())
+                .setParameter(2, email)
+                .executeUpdate();
+    }
 }

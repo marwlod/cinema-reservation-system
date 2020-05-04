@@ -39,4 +39,11 @@ public class LoginService {
         }
         loginRepository.loginClient(email, password);
     }
+
+    public void logoutClient(String email) throws ClientNotFoundException {
+        if (!loginRepository.clientExists(email)) {
+            throw new ClientNotFoundException("Client with this email not found");
+        }
+        loginRepository.logoutClient(email);
+    }
 }

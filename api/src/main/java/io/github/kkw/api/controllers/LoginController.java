@@ -46,4 +46,13 @@ public class LoginController {
             throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e.getCause());
         }
     }
+
+    @PostMapping("/logout")
+    public void loginClient(@Email @RequestParam("email") String email) throws RestException {
+        try {
+            loginService.logoutClient(email);
+        } catch (ClientNotFoundException e) {
+            throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e.getCause());
+        }
+    }
 }
