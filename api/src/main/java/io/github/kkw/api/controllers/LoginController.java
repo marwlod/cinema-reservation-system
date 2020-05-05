@@ -32,20 +32,20 @@ public class LoginController {
         try {
             return loginService.registerClient(email, password, name, surname);
         } catch (ClientExistsException e) {
-            throw new RestException(e.getMessage(), HttpStatus.CONFLICT, e.getCause());
+            throw new RestException(e.getMessage(), HttpStatus.CONFLICT, e);
         }
     }
 
     @PostMapping("/login")
     public ClientId loginClient(@Email @RequestParam("email") String email,
-                              @RequestParam("password") String password) throws RestException {
+                                @RequestParam("password") String password) throws RestException {
         try {
             loginService.verifyEmailExists(email);
             return loginService.loginClient(email, password);
         } catch (ClientNotFoundException e) {
-            throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e.getCause());
+            throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e);
         } catch (WrongPasswordException e) {
-            throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e.getCause());
+            throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
         }
     }
 
@@ -55,7 +55,7 @@ public class LoginController {
             loginService.verifyEmailExists(email);
             loginService.logoutClient(email);
         } catch (ClientNotFoundException e) {
-            throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e.getCause());
+            throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e);
         }
     }
 }

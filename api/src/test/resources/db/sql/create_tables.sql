@@ -6,7 +6,7 @@ CREATE TABLE client
     name VARCHAR(2048),
     surname VARCHAR(2048),
     is_admin BOOLEAN NOT NULL,
-    logged_until DATETIME NOT NULL
+    logged_until DATETIME(6) NOT NULL -- microsecond precision
 );
 
 CREATE TABLE hall
@@ -31,8 +31,8 @@ CREATE TABLE movie
 (
     movie_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(2048) NOT NULL,
-    start_date DATETIME NOT NULL,
-    end_date DATETIME NOT NULL,
+    start_date DATETIME(6) NOT NULL,
+    end_date DATETIME(6) NOT NULL,
     base_price DECIMAL(13, 4) NOT NULL,
     hall_id INT NOT NULL,
     FOREIGN KEY (hall_id) REFERENCES hall(hall_id)
@@ -41,7 +41,7 @@ CREATE TABLE movie
 CREATE TABLE hall_reservation
 (
     hall_reservation_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    valid_until DATETIME NOT NULL,
+    valid_until DATETIME(6) NOT NULL,
     is_paid_advance BOOLEAN NOT NULL,
     is_paid_total BOOLEAN NOT NULL,
     reservation_date DATE NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE hall_reservation
 CREATE TABLE seat_reservation
 (
     seat_reservation_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    valid_until DATETIME NOT NULL,
+    valid_until DATETIME(6) NOT NULL,
     is_paid BOOLEAN NOT NULL,
     movie_id INT NOT NULL,
     seat_id INT NOT NULL,

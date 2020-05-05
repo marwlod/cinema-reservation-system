@@ -89,21 +89,23 @@ class MainApplicationTest {
     }
 
     @Test
-    void shouldLoginClient_whenValidRequest() {
+    void shouldLoginClient_whenClientRegistered() {
         // given
-        restTemplate.exchange(
+        final ResponseEntity<ClientId> registerResponse = restTemplate.exchange(
                 "/register?email={email}&password={password}", HttpMethod.POST,
-                new HttpEntity<>(null, null), Void.class,
+                new HttpEntity<>(null, null), ClientId.class,
                 validEmail, PASSWORD);
+        assertEquals(HttpStatus.OK, registerResponse.getStatusCode());
 
         // when
-        final ResponseEntity<Void> response = restTemplate.exchange(
+        final ResponseEntity<ClientId> loginResponse = restTemplate.exchange(
                 "/login?email={email}&password={password}", HttpMethod.POST,
-                new HttpEntity<>(null, null), Void.class,
+                new HttpEntity<>(null, null), ClientId.class,
                 validEmail, PASSWORD);
 
         // then
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.OK, loginResponse.getStatusCode());
+        assertNotNull(loginResponse.getBody());
     }
 
     @Test
@@ -141,7 +143,7 @@ class MainApplicationTest {
     }
 
     @Test
-    void shouldLogoutClient_whenValidRequest() {
+    void shouldLogoutClient_whenClientRegistered() {
         // given
         restTemplate.exchange(
                 "/register?email={email}&password={password}", HttpMethod.POST,

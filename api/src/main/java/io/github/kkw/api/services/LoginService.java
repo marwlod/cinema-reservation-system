@@ -3,6 +3,7 @@ package io.github.kkw.api.services;
 import io.github.kkw.api.db.LoginRepository;
 import io.github.kkw.api.exceptions.ClientExistsException;
 import io.github.kkw.api.exceptions.ClientNotFoundException;
+import io.github.kkw.api.exceptions.ClientNotLoggedInException;
 import io.github.kkw.api.exceptions.WrongPasswordException;
 import io.github.kkw.api.model.ClientId;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,12 @@ public class LoginService {
     public void verifyEmailExists(String email) throws ClientNotFoundException {
         if (!loginRepository.clientExists(email)) {
             throw new ClientNotFoundException("Client with this email not found");
+        }
+    }
+
+    public void verifyClientLoggedIn(ClientId clientId) throws ClientNotLoggedInException {
+        if (!loginRepository.isClientLoggedIn(clientId.getId())) {
+            throw new ClientNotLoggedInException("Client doesn't exist or not logged in");
         }
     }
 }
