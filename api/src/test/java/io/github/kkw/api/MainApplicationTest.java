@@ -1,6 +1,7 @@
 package io.github.kkw.api;
 
 import io.github.kkw.api.exceptions.RestError;
+import io.github.kkw.api.model.ClientId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,17 +44,18 @@ class MainApplicationTest {
     @Test
     void shouldRegisterClient_whenValidRequest() {
         // when
-        final ResponseEntity<Void> response = restTemplate.exchange(
+        final ResponseEntity<ClientId> response = restTemplate.exchange(
                 "/register?email={email}&password={password}", HttpMethod.POST,
-                new HttpEntity<>(null, null), Void.class,
+                new HttpEntity<>(null, null), ClientId.class,
                 validEmail, PASSWORD);
 
         // then
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
     }
 
     @Test
-    void shouldReturnError_whenInvalidEmail() {
+    void shouldNotRegister_whenInvalidEmail() {
         // when
         final ResponseEntity<RestError> response = restTemplate.exchange(
                 "/register?email={email}&password={password}", HttpMethod.POST,
@@ -67,7 +69,7 @@ class MainApplicationTest {
     }
 
     @Test
-    void shouldReturnError_whenClientAlreadyExists() {
+    void shouldNotRegister_whenClientAlreadyExists() {
         // given
         restTemplate.exchange(
                 "/register?email={email}&password={password}", HttpMethod.POST,
@@ -81,7 +83,7 @@ class MainApplicationTest {
                 validEmail, PASSWORD);
 
         // then
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals("Client with this email already exists", response.getBody().getMessage());
     }
@@ -105,7 +107,7 @@ class MainApplicationTest {
     }
 
     @Test
-    void shouldReturnError_whenClientDoesntExist() {
+    void shouldNotLogin_whenClientDoesntExist() {
         // when
         final ResponseEntity<RestError> response = restTemplate.exchange(
                 "/login?email={email}&password={password}", HttpMethod.POST,
@@ -119,7 +121,7 @@ class MainApplicationTest {
     }
 
     @Test
-    void shouldReturnError_whenWrongPassword() {
+    void shouldNotLogin_whenWrongPassword() {
         // given
         restTemplate.exchange(
                 "/register?email={email}&password={password}", HttpMethod.POST,
@@ -136,5 +138,37 @@ class MainApplicationTest {
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals("Wrong password", response.getBody().getMessage());
+    }
+
+    @Test
+    void shouldLogoutClient_whenValidRequest() {
+        // given
+        restTemplate.exchange(
+                "/register?email={email}&password={password}", HttpMethod.POST,
+                new HttpEntity<>(null, null), Void.class,
+                validEmail, PASSWORD);
+
+        // when
+        final ResponseEntity<Void> response = restTemplate.exchange(
+                "/logout?email={email}&password={password}", HttpMethod.POST,
+                new HttpEntity<>(null, null), Void.class,
+                validEmail, PASSWORD);
+
+        // then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    void shouldNotLogout_whenClientDoesntExist() {
+        // when
+        final ResponseEntity<RestError> response = restTemplate.exchange(
+                "/logout?email={email}&password={password}", HttpMethod.POST,
+                new HttpEntity<>(null, null), RestError.class,
+                validEmail, PASSWORD);
+
+        // then
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("Client with this email not found", response.getBody().getMessage());
     }
 }
