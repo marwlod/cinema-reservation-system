@@ -30,7 +30,7 @@ public class LoginRepository {
                 .setParameter(3, name)
                 .setParameter(4, surname)
                 .setParameter(5, 0) // not an admin
-                .setParameter(6, Instant.now()) // logged until now => not logged in :)
+                .setParameter(6, Instant.now().plus(20, ChronoUnit.MINUTES)) // logged in for 20mins
                 .executeUpdate();
     }
 
@@ -71,5 +71,12 @@ public class LoginRepository {
                 .setParameter(1, Instant.now())
                 .setParameter(2, email)
                 .executeUpdate();
+    }
+
+    public int getClientId(String email) {
+        return (int) entityManager
+                .createNativeQuery("SELECT client_id FROM client WHERE email=?")
+                .setParameter(1, email)
+                .getSingleResult();
     }
 }

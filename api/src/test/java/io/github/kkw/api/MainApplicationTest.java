@@ -1,6 +1,7 @@
 package io.github.kkw.api;
 
 import io.github.kkw.api.exceptions.RestError;
+import io.github.kkw.api.model.ClientId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,13 +44,14 @@ class MainApplicationTest {
     @Test
     void shouldRegisterClient_whenValidRequest() {
         // when
-        final ResponseEntity<Void> response = restTemplate.exchange(
+        final ResponseEntity<ClientId> response = restTemplate.exchange(
                 "/register?email={email}&password={password}", HttpMethod.POST,
-                new HttpEntity<>(null, null), Void.class,
+                new HttpEntity<>(null, null), ClientId.class,
                 validEmail, PASSWORD);
 
         // then
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
     }
 
     @Test
@@ -81,7 +83,7 @@ class MainApplicationTest {
                 validEmail, PASSWORD);
 
         // then
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals("Client with this email already exists", response.getBody().getMessage());
     }
