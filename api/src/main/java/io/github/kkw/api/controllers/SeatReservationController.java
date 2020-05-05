@@ -36,11 +36,11 @@ public class SeatReservationController {
             loginService.verifyClientLoggedIn(clientId);
             return seatReservationService.createSeatReservation(clientId, movieId, seatId);
         } catch (MovieNotFoundException | SeatNotFoundException e) {
-            throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e.getCause());
+            throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e);
         } catch (ClientNotLoggedInException e) {
-            throw new RestException(e.getMessage(), HttpStatus.BAD_REQUEST, e.getCause());
+            throw new RestException(e.getMessage(), HttpStatus.BAD_REQUEST, e);
         } catch (SeatReservedException e) {
-            throw new RestException(e.getMessage(), HttpStatus.CONFLICT, e.getCause());
+            throw new RestException(e.getMessage(), HttpStatus.CONFLICT, e);
         }
     }
 
@@ -51,9 +51,9 @@ public class SeatReservationController {
             loginService.verifyClientLoggedIn(clientId);
             seatReservationService.deleteSeatReservation(clientId, reservationId);
         } catch (ReservationNotFoundException e) {
-            throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e.getCause());
+            throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e);
         } catch (ClientNotLoggedInException e) {
-            throw new RestException(e.getMessage(), HttpStatus.BAD_REQUEST, e.getCause());
+            throw new RestException(e.getMessage(), HttpStatus.BAD_REQUEST, e);
         }
     }
 }
