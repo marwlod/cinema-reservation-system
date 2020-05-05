@@ -38,7 +38,7 @@ public class LoginController {
 
     @PostMapping("/login")
     public ClientId loginClient(@Email @RequestParam("email") String email,
-                              @RequestParam("password") String password) throws RestException {
+                                @RequestParam("password") String password) throws RestException {
         try {
             loginService.verifyEmailExists(email);
             return loginService.loginClient(email, password);

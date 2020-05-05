@@ -73,10 +73,21 @@ public class LoginRepository {
                 .executeUpdate();
     }
 
+    @Transactional
     public int getClientId(String email) {
         return (int) entityManager
                 .createNativeQuery("SELECT client_id FROM client WHERE email=?")
                 .setParameter(1, email)
                 .getSingleResult();
+    }
+
+    @Transactional
+    public boolean isClientLoggedIn(int clientId) {
+        BigInteger matches = (BigInteger) entityManager
+                .createNativeQuery("SELECT IF((SELECT COUNT(*) FROM client WHERE client_id = ? AND logged_until > ?) > 0, TRUE, FALSE)")
+                .setParameter(1, clientId)
+                .setParameter(2, Instant.now())
+                .getSingleResult();
+        return matches.intValue() == 1;
     }
 }
