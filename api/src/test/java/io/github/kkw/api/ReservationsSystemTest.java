@@ -32,12 +32,15 @@ public class ReservationsSystemTest {
     private static final int INVALID_SEAT_ID = 99_999_999;
     private static final ClientId VALID_CLIENT_ID = new ClientId(5000);
     private static final ReservationId INVALID_RESERVATION_ID = new ReservationId(99_999_999);
+    private static final int VALID_HALL_ID = 1;
+    private static final int INVALID_HALL_ID = 99_999_999;
     private static final MovieAddRequest MOVIE_ADD_REQUEST = new MovieAddRequest("Fast and Furious",
-            Instant.parse("2100-01-01T10:00:30.00Z"), Instant.parse("2100-01-01T11:30:30.00Z"), 25.00, 1);
+            Instant.parse("2100-01-01T10:00:30.00Z"), Instant.parse("2100-01-01T11:30:30.00Z"), 25.00, VALID_HALL_ID);
     private static final Instant NO_MOVIES_FROM = Instant.parse("2666-01-01T00:00:00Z");
     private static final Instant NO_MOVIES_UP_TO = Instant.parse("2666-01-02T00:00:00Z");
     private static final Instant MOVIES_FROM = Instant.parse("2030-01-01T00:00:00Z");
     private static final Instant MOVIES_UP_TO = Instant.parse("2030-01-02T00:00:00Z");
+    private static final String FREE_DATE = "2025-01-01";
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -53,10 +56,10 @@ public class ReservationsSystemTest {
         // then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        cleanUpReservation(response.getBody());
+        cleanUpSeatReservation(response.getBody());
     }
 
-    private void cleanUpReservation(final ReservationId reservationId) {
+    private void cleanUpSeatReservation(final ReservationId reservationId) {
         final ResponseEntity<Void> response = restTemplate.exchange(
                 "/reserveSeat/{reservationId}?clientId={clientId}", HttpMethod.DELETE,
                 new HttpEntity<>(null, null), Void.class,
@@ -145,11 +148,11 @@ public class ReservationsSystemTest {
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals("Chosen seat for this movie is already reserved", response.getBody().getMessage());
-        cleanUpReservation(reservationId);
+        cleanUpSeatReservation(reservationId);
     }
 
     @Test
-    void shouldDeleteReservation_whenReservedByThisClient() {
+    void shouldDeleteSeatReservation_whenReservedByThisClient() {
         // given
         final ReservationId reservationId = reserveSeat();
 
@@ -163,8 +166,18 @@ public class ReservationsSystemTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
+    private ReservationId reserveSeat() {
+        final ResponseEntity<ReservationId> reservationResponse = restTemplate.exchange(
+                "/reserveSeat/{movieId}/{seatId}?clientId={clientId}", HttpMethod.POST,
+                new HttpEntity<>(null, null), ReservationId.class,
+                VALID_MOVIE_ID, VALID_SEAT_ID, VALID_CLIENT_ID.getId());
+        assertEquals(HttpStatus.OK, reservationResponse.getStatusCode());
+        assertNotNull(reservationResponse.getBody());
+        return reservationResponse.getBody();
+    }
+
     @Test
-    void shouldNotDeleteReservation_whenReservationNotFound() {
+    void shouldNotDeleteSeatReservation_whenReservationNotFound() {
         // when
         final ResponseEntity<RestError> response = restTemplate.exchange(
                 "/reserveSeat/{reservationId}?clientId={clientId}", HttpMethod.DELETE,
@@ -217,11 +230,65 @@ public class ReservationsSystemTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
-    private ReservationId reserveSeat() {
-        final ResponseEntity<ReservationId> reservationResponse = restTemplate.exchange(
-                "/reserveSeat/{movieId}/{seatId}?clientId={clientId}", HttpMethod.POST,
+    @Test
+    void shouldReserveHall_whenHallFreeToReserve() {
+        // when
+        final ResponseEntity<ReservationId> response = restTemplate.exchange(
+                "/reserveHall/{hallId}/{date}?clientId={clientId}", HttpMethod.POST,
                 new HttpEntity<>(null, null), ReservationId.class,
-                VALID_MOVIE_ID, VALID_SEAT_ID, VALID_CLIENT_ID.getId());
+                VALID_HALL_ID, FREE_DATE, VALID_CLIENT_ID.getId());
+
+        // then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        cleanUpHallReservation(response.getBody());
+    }
+
+    private void cleanUpHallReservation(final ReservationId reservationId) {
+        final ResponseEntity<Void> response = restTemplate.exchange(
+                "/reserveHall/{reservationId}?clientId={clientId}", HttpMethod.DELETE,
+                new HttpEntity<>(null, null), Void.class,
+                reservationId.getId(), VALID_CLIENT_ID.getId());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    void shouldNotReserveHall_whenHallNotFound() {
+        // when
+        final ResponseEntity<RestError> response = restTemplate.exchange(
+                "/reserveHall/{hallId}/{date}?clientId={clientId}", HttpMethod.POST,
+                new HttpEntity<>(null, null), RestError.class,
+                INVALID_HALL_ID, FREE_DATE, VALID_CLIENT_ID.getId());
+
+        // then
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("Wrong movie hall number", response.getBody().getMessage());
+    }
+
+    @Test
+    void shouldNotReserveHall_whenAlreadyReserved() {
+        // given
+        final ReservationId reservationId = reserveHall();
+
+        // when
+        final ResponseEntity<RestError> response = restTemplate.exchange(
+                "/reserveHall/{hallId}/{date}?clientId={clientId}", HttpMethod.POST,
+                new HttpEntity<>(null, null), RestError.class,
+                VALID_HALL_ID, FREE_DATE, VALID_CLIENT_ID.getId());
+
+        // then
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("Hall with this ID is already reserved for chosen day", response.getBody().getMessage());
+        cleanUpHallReservation(reservationId);
+    }
+
+    private ReservationId reserveHall() {
+        final ResponseEntity<ReservationId> reservationResponse = restTemplate.exchange(
+                "/reserveHall/{hallId}/{date}?clientId={clientId}", HttpMethod.POST,
+                new HttpEntity<>(null, null), ReservationId.class,
+                VALID_HALL_ID, FREE_DATE, VALID_CLIENT_ID.getId());
         assertEquals(HttpStatus.OK, reservationResponse.getStatusCode());
         assertNotNull(reservationResponse.getBody());
         return reservationResponse.getBody();
