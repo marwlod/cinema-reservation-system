@@ -2,16 +2,22 @@ package io.github.kkw.api;
 
 import io.github.kkw.api.exceptions.RestError;
 import io.github.kkw.api.model.ClientId;
+import io.github.kkw.api.model.Movie;
+import io.github.kkw.api.model.MovieAddRequest;
 import io.github.kkw.api.model.ReservationId;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,6 +32,12 @@ public class ReservationsSystemTest {
     private static final int INVALID_SEAT_ID = 99_999_999;
     private static final ClientId VALID_CLIENT_ID = new ClientId(5000);
     private static final ReservationId INVALID_RESERVATION_ID = new ReservationId(99_999_999);
+    private static final MovieAddRequest MOVIE_ADD_REQUEST = new MovieAddRequest("Fast and Furious",
+            Instant.parse("2100-01-01T10:00:30.00Z"), Instant.parse("2100-01-01T11:30:30.00Z"), 25.00, 1);
+    private static final Instant NO_MOVIES_FROM = Instant.parse("2666-01-01T00:00:00Z");
+    private static final Instant NO_MOVIES_UP_TO = Instant.parse("2666-01-02T00:00:00Z");
+    private static final Instant MOVIES_FROM = Instant.parse("2030-01-01T00:00:00Z");
+    private static final Instant MOVIES_UP_TO = Instant.parse("2030-01-02T00:00:00Z");
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -64,7 +76,7 @@ public class ReservationsSystemTest {
                 VALID_MOVIE_ID, VALID_SEAT_ID, clientId.getId());
 
         // then
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals("Client doesn't exist or not logged in", response.getBody().getMessage());
     }
@@ -163,6 +175,46 @@ public class ReservationsSystemTest {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals("Reservation with this ID not found", response.getBody().getMessage());
+    }
+
+    @Test
+    void shouldReturnMovies_whenMoviesScheduled() {
+        // when
+        final ResponseEntity<List<Movie>> response = restTemplate.exchange(
+                "/showMovies?from={from}&to={to}", HttpMethod.GET,
+                new HttpEntity<>(null, null), new ParameterizedTypeReference<List<Movie>>(){},
+                MOVIES_FROM, MOVIES_UP_TO);
+
+        // then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+    }
+
+    @Test
+    void shouldNotReturnAnyMovie_whenNoMoviesAreScheduled() {
+        // when
+        final ResponseEntity<RestError> response = restTemplate.exchange(
+                "/showMovies?from={from}&to={to}", HttpMethod.GET,
+                new HttpEntity<>(null, null), RestError.class,
+                NO_MOVIES_FROM, NO_MOVIES_UP_TO);
+
+        // then
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("Cannot find any movies in this period", response.getBody().getMessage());
+    }
+
+    @Disabled("implement delete to test this properly")
+    @Test
+    void shouldAddMovie_whenValidData(){
+        // when
+        final ResponseEntity<Void> response = restTemplate.exchange(
+                "/addMovie?clientId={clientId}", HttpMethod.POST,
+                new HttpEntity<>(MOVIE_ADD_REQUEST, null), Void.class,
+                VALID_CLIENT_ID.getId());
+
+        // then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     private ReservationId reserveSeat() {

@@ -13,7 +13,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.time.Instant;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -173,31 +172,5 @@ class MainApplicationTest {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals("Client with this email not found", response.getBody().getMessage());
-    }
-
-    @Test
-    void shouldNotReturnAnyMovieInPeriod(){
-        //when
-        final ResponseEntity<RestError> response = restTemplate.exchange(
-                "/showMovies", HttpMethod.GET,
-                new HttpEntity<>(null, null), RestError.class);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals("annot find any movies in this period", response.getBody().getMessage());
-    }
-
-    @Test
-    void shouldAddMovie_whenValidData(){
-        // given
-        String name = "Fast and Furious";
-        Instant startDate= Instant.parse("2020-05-13T10:00:30.00Z");
-        Instant endDate= Instant.parse("2020-05-13T11:30:30.00Z");
-        double basePrice = 25.00;
-        int hallId = 1;
-
-        //when
-        final ResponseEntity<Void> response = restTemplate.exchange(
-                "/addMovie/{name}/{start_date}/{end_date}/{base_price}/{hall_id}", HttpMethod.POST,
-                new HttpEntity<>(null, null), Void.class,
-                name, startDate, endDate, basePrice, hallId);
     }
 }

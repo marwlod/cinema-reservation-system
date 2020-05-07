@@ -3,6 +3,7 @@ package io.github.kkw.api.controllers;
 import io.github.kkw.api.exceptions.*;
 import io.github.kkw.api.model.ClientId;
 import io.github.kkw.api.model.Movie;
+import io.github.kkw.api.model.MovieAddRequest;
 import io.github.kkw.api.model.ReservationId;
 import io.github.kkw.api.services.LoginService;
 import io.github.kkw.api.services.MovieService;
@@ -10,7 +11,9 @@ import io.github.kkw.api.services.SeatReservationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -36,7 +39,7 @@ public class SeatReservationController {
         } catch (MovieNotFoundException | SeatNotFoundException e) {
             throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e);
         } catch (ClientNotLoggedInException e) {
-            throw new RestException(e.getMessage(), HttpStatus.BAD_REQUEST, e);
+            throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
         } catch (SeatReservedException e) {
             throw new RestException(e.getMessage(), HttpStatus.CONFLICT, e);
         }
@@ -51,32 +54,34 @@ public class SeatReservationController {
         } catch (ReservationNotFoundException e) {
             throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e);
         } catch (ClientNotLoggedInException e) {
-            throw new RestException(e.getMessage(), HttpStatus.BAD_REQUEST, e);
+            throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
         }
     }
 
     @GetMapping("/showMovies")
     public @ResponseBody
-    List<Movie> showCurrentProgramme() throws RestException {
+    List<Movie> showProgramme(@RequestParam("from") Instant from,
+                              @RequestParam("to") Instant to) throws RestException {
         try{
-            return movieService.showProgramme();
+            return movieService.showProgramme(from, to);
         } catch (MoviesNotFoundException e) {
             throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND,e);
         }
     }
 
-    @PostMapping("/addMovie/{name}/{start_date}/{end_date}/{base_price}/{hall_id}")
-    public void addMovie(@PathVariable("name") String name,
-                         @PathVariable("start_date") Instant start_date,
-                         @PathVariable("end_date") Instant end_date,
-                         @PathVariable("base_price") double base_price,
-                         @PathVariable("hall_id") int hall_id) throws RestException {
+    @PostMapping("/addMovie")
+    public void addMovie(@RequestParam("clientId") final ClientId clientId,
+                         @Valid @RequestBody MovieAddRequest movieAddRequest) throws RestException {
         try{
-            movieService.addMovie(name,start_date,end_date,base_price,hall_id);
-        } catch (MovieDateException | MovieMissingValuesException | MovieHallIdException e){
-            throw new RestException(e.getMessage(), HttpStatus.BAD_REQUEST,e);
+            loginService.verifyClientLoggedIn(clientId);
+            movieService.addMovie(movieAddRequest.getName(), movieAddRequest.getStartDate(), movieAddRequest.getEndDate(),
+                    movieAddRequest.getBasePrice(), movieAddRequest.getHallId());
+        } catch (MovieDateException | MovieHallIdException e){
+            throw new RestException(e.getMessage(), HttpStatus.BAD_REQUEST, e);
         } catch (MovieConflictException e){
-            throw new RestException(e.getMessage(),HttpStatus.CONFLICT, e);
+            throw new RestException(e.getMessage(), HttpStatus.CONFLICT, e);
+        } catch (ClientNotLoggedInException e) {
+            throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
         }
     }
 }

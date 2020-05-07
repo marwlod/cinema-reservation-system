@@ -1,8 +1,8 @@
 package io.github.kkw.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.github.kkw.api.db.dto.MovieEntity;
 
-import java.sql.Timestamp;
 import java.time.Instant;
 
 public class Movie {
@@ -16,16 +16,25 @@ public class Movie {
     public Movie(
             @JsonProperty("movieId") int movieId,
             @JsonProperty("name") String name,
-            @JsonProperty("startDate") Timestamp startDate,
-            @JsonProperty("endDate") Timestamp endDate,
+            @JsonProperty("startDate") Instant startDate,
+            @JsonProperty("endDate") Instant endDate,
             @JsonProperty("basePrice") double basePrice,
             @JsonProperty("hallId") int hallId) {
         this.movieId=movieId;
         this.name=name;
-        this.startDate=startDate.toInstant();
-        this.endDate=endDate.toInstant();
+        this.startDate=startDate;
+        this.endDate=endDate;
         this.basePrice=basePrice;
         this.hallId=hallId;
+    }
+
+    public Movie(final MovieEntity movie) {
+        this(movie.getMovieId(),
+                movie.getName(),
+                movie.getStartDate().toInstant(),
+                movie.getEndDate().toInstant(),
+                movie.getBasePrice().doubleValue(),
+                movie.getHallId());
     }
 
     public int getMovieId() {
