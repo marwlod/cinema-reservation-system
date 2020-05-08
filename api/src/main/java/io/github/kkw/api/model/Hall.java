@@ -7,8 +7,8 @@ public class Hall {
 
     private int hallId;
     private double advancePrice;
-    private  double totalPrice;
-    private  double screenSize;
+    private double totalPrice;
+    private double screenSize;
 
     public Hall(
             @JsonProperty("hallId") int hallId,

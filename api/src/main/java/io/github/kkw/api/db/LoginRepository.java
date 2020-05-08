@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -93,9 +94,15 @@ public class LoginRepository {
 
     @Transactional
     public void extendLogin(int clientId) {
+        final Instant oldValidUntil = ((Timestamp) entityManager
+                .createNativeQuery("SELECT logged_until FROM client WHERE client_id = ?")
+                .setParameter(1, clientId)
+                .getSingleResult()).toInstant();
+        final Instant nowPlus20Mins = Instant.now().plus(20, ChronoUnit.MINUTES);
+        final Instant longerTime = oldValidUntil.compareTo(nowPlus20Mins) > 0 ? oldValidUntil : nowPlus20Mins;
         entityManager
                 .createNativeQuery("UPDATE client SET logged_until=? WHERE client_id=?")
-                .setParameter(1, Instant.now().plus(20, ChronoUnit.MINUTES))
+                .setParameter(1, longerTime)
                 .setParameter(2, clientId)
                 .executeUpdate();
     }

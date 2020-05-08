@@ -1,9 +1,12 @@
 package io.github.kkw.api.db.dto;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.math.BigDecimal;
 
+@Entity
 public class HallEntity {
-
+    @Id
     private int hallId;
     private BigDecimal advancePrice;
     private BigDecimal totalPrice;
