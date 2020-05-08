@@ -90,4 +90,13 @@ public class LoginRepository {
                 .getSingleResult();
         return matches.intValue() == 1;
     }
+
+    @Transactional
+    public void extendLogin(int clientId) {
+        entityManager
+                .createNativeQuery("UPDATE client SET logged_until=? WHERE client_id=?")
+                .setParameter(1, Instant.now().plus(20, ChronoUnit.MINUTES))
+                .setParameter(2, clientId)
+                .executeUpdate();
+    }
 }

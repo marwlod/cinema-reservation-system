@@ -55,5 +55,6 @@ public class LoginService {
         if (!loginRepository.isClientLoggedIn(clientId.getId())) {
             throw new ClientNotLoggedInException("Client doesn't exist or not logged in");
         }
+        loginRepository.extendLogin(clientId.getId());
     }
 }
