@@ -44,7 +44,7 @@ public class PaymentsController {
                                 BindingResult bindingResult,
                                 Model model) throws IOException {
         if (!bindingResult.hasErrors()) {
-            final URL url = new URL("http://localhost:8080/" + payment.getMethod() + "/" + payment.getReservationId() +
+            final URL url = new URL("http://localhost:8888/" + payment.getMethod() + "/" + payment.getReservationId() +
                     "?clientId=" + payment.getClientId() + "&password=" + PASSWORD);
             final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
