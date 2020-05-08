@@ -1,0 +1,43 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title text="Payment form">Payment form</title>
+</head>
+
+<body>
+    <form autocomplete="off" action="#" th:action="@{/pay}"
+          th:object="${payment}" method="post" role="form">
+        <h2 text="Payment form">Payment form</h2>
+        <input type="hidden" th:field="*{clientId}"/>
+        <input type="hidden" th:field="*{reservationId}"/>
+        <input type="hidden" th:field="*{method}"/>
+        <table>
+            <tr>
+                <td><input id="email" type="email" th:field="*{email}" placeholder="Email"/></td>
+                <td><label for="email" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></label></td>
+            </tr>
+
+            <tr>
+                <td><input id="creditCardNumber" type="number" th:field="*{creditCardNumber}" placeholder="Credit card number"/></td>
+                <td><label for="creditCardNumber" th:if="${#fields.hasErrors('creditCardNumber')}" th:errors="*{creditCardNumber}"></label></td>
+            </tr>
+
+            <tr>
+                <td><input id="expires" type="text" th:field="*{expires}" placeholder="Expires"/></td>
+                <td><label for="expires" th:if="${#fields.hasErrors('expires')}" th:errors="*{expires}"></label></td>
+            </tr>
+
+            <tr>
+                <td><input id="CVV" type="number" th:field="*{CVV}" placeholder="CVV"/></td>
+                <td><label for="CVV" th:if="${#fields.hasErrors('CVV')}" th:errors="*{CVV}"></label></td>
+            </tr>
+            <tr>
+                <td><input type="submit" value="Submit payment"/></td>
+            </tr>
+        </table>
+    </form>
+    <p th:if="${fail}" th:text="${fail}"></p>
+</body>
+</html>

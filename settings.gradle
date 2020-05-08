@@ -1,3 +1,5 @@
 rootProject.name = 'cinema-reservation-system'
 
 include 'api'
+include 'payments-mock'
+
