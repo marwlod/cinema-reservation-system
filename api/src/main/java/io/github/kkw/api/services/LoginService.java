@@ -52,9 +52,9 @@ public class LoginService {
     }
 
     public void verifyClientLoggedIn(ClientId clientId) throws ClientNotLoggedInException {
-        if (!loginRepository.isClientLoggedIn(clientId.getId())) {
+        if (!loginRepository.isClientLoggedIn(clientId.getClientId())) {
             throw new ClientNotLoggedInException("Client doesn't exist or not logged in");
         }
-        loginRepository.extendLogin(clientId.getId());
+        loginRepository.extendLogin(clientId.getClientId());
     }
 }

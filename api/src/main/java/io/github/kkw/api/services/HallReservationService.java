@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,15 +36,15 @@ public class HallReservationService {
         if (!movieRepository.isHallIdValid(hallId)) {
             throw new MovieHallIdException("Wrong movie hall number");
         }
-        hallReservationRepository.createHallReservation(clientId.getId(), hallId, date);
-        return new ReservationId(hallReservationRepository.getHallReservationId(clientId.getId(), hallId, date));
+        hallReservationRepository.createHallReservation(clientId.getClientId(), hallId, date);
+        return new ReservationId(hallReservationRepository.getHallReservationId(clientId.getClientId(), hallId, date));
     }
 
     public void deleteHallReservation(ClientId clientId, ReservationId reservationId) throws ReservationNotFoundException {
-        if (hallReservationRepository.reservationDoesntExist(clientId.getId(), reservationId.getId())) {
+        if (hallReservationRepository.reservationDoesntExist(clientId.getClientId(), reservationId.getClientId())) {
             throw new ReservationNotFoundException("Reservation with this ID not found");
         }
-        hallReservationRepository.deleteHallReservation(clientId.getId(), reservationId.getId());
+        hallReservationRepository.deleteHallReservation(clientId.getClientId(), reservationId.getClientId());
     }
 
     public List<Hall> showCinemaHalls() throws CinemaHallsNotFoundException {
