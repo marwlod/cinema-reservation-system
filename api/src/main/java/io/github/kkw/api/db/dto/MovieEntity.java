@@ -16,12 +16,6 @@ public class MovieEntity {
     private int hallId;
 
     public MovieEntity() {
-        this.movieId = 0;
-        this.name = null;
-        this.startDate = null;
-        this.endDate = null;
-        this.basePrice = null;
-        this.hallId = 0;
     }
 
     public int getMovieId() {

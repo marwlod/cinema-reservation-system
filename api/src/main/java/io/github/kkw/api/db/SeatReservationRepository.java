@@ -1,5 +1,8 @@
 package io.github.kkw.api.db;
 
+import io.github.kkw.api.db.dto.HallEntity;
+import io.github.kkw.api.db.dto.SeatEntity;
+import io.github.kkw.api.model.Seat;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -7,6 +10,10 @@ import javax.persistence.EntityManager;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Repository
 public class SeatReservationRepository {
@@ -106,5 +113,42 @@ public class SeatReservationRepository {
                 .setParameter(3, reservationId)
                 .setParameter(4, Instant.now())
                 .executeUpdate();
+    }
+
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public List<SeatEntity> getFreeSeats(int movieId) {
+        final List<SeatEntity> allSeatsForMovie = getAllSeats(movieId);
+
+        final List<SeatEntity> reservedSeatsForMovie = (List<SeatEntity>) entityManager
+                .createNativeQuery("SELECT seat.seat_id, movie.hall_id, row_no, seat_no, is_vip, base_price " +
+                        "FROM movie " +
+                        "INNER JOIN seat_reservation ON movie.movie_id = seat_reservation.movie_id " +
+                        "INNER JOIN seat ON seat.seat_id = seat_reservation.seat_id " +
+                        "WHERE movie.movie_id = ? AND valid_until > ?", SeatEntity.class)
+                .setParameter(1, movieId)
+                .setParameter(2, Instant.now())
+                .getResultList();
+        final Set<SeatEntity> reserved = new HashSet<>(reservedSeatsForMovie);
+        final List<SeatEntity> res = new ArrayList<>();
+        for (final SeatEntity seat : allSeatsForMovie) {
+            if (!reserved.contains(seat)) {
+                res.add(seat);
+            }
+        }
+        return res;
+    }
+
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public List<SeatEntity> getAllSeats(int movieId) {
+        return (List<SeatEntity>) entityManager
+                .createNativeQuery("SELECT seat.seat_id, hall.hall_id, row_no, seat_no, is_vip, base_price " +
+                        "FROM movie " +
+                        "INNER JOIN hall ON hall.hall_id = movie.hall_id " +
+                        "INNER JOIN seat ON hall.hall_id = seat.hall_id " +
+                        "WHERE movie_id = ?", SeatEntity.class)
+                .setParameter(1, movieId)
+                .getResultList();
     }
 }
