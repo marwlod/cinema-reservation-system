@@ -41,10 +41,10 @@ public class HallReservationService {
     }
 
     public void deleteHallReservation(ClientId clientId, ReservationId reservationId) throws ReservationNotFoundException {
-        if (hallReservationRepository.reservationDoesntExist(clientId.getClientId(), reservationId.getClientId())) {
+        if (hallReservationRepository.reservationDoesntExist(clientId.getClientId(), reservationId.getReservationId())) {
             throw new ReservationNotFoundException("Reservation with this ID not found");
         }
-        hallReservationRepository.deleteHallReservation(clientId.getClientId(), reservationId.getClientId());
+        hallReservationRepository.deleteHallReservation(clientId.getClientId(), reservationId.getReservationId());
     }
 
     public List<Hall> showCinemaHalls() throws CinemaHallsNotFoundException {

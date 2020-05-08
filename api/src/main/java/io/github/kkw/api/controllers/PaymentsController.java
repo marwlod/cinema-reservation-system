@@ -106,6 +106,6 @@ public class PaymentsController {
     }
 
     private URL buildURL(ClientId clientId, ReservationId reservationId, double paymentAmount, String type) throws MalformedURLException {
-        return new URL("http://localhost:9090/pay/" + reservationId.getClientId() + "?clientId=" + clientId.getClientId() + "&amount=" + paymentAmount + "&type=" + type);
+        return new URL("http://localhost:9090/pay/" + reservationId.getReservationId() + "?clientId=" + clientId.getClientId() + "&amount=" + paymentAmount + "&type=" + type);
     }
 }

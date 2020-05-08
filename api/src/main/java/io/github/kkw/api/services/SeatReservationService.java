@@ -40,10 +40,10 @@ public class SeatReservationService {
 
     public void deleteSeatReservation(ClientId clientId, ReservationId reservationId)
             throws ReservationNotFoundException {
-        if (seatReservationRepository.reservationDoesntExist(clientId.getClientId(), reservationId.getClientId())) {
+        if (seatReservationRepository.reservationDoesntExist(clientId.getClientId(), reservationId.getReservationId())) {
             throw new ReservationNotFoundException("Reservation with this ID not found");
         }
-        seatReservationRepository.deleteSeatReservation(clientId.getClientId(), reservationId.getClientId());
+        seatReservationRepository.deleteSeatReservation(clientId.getClientId(), reservationId.getReservationId());
     }
 
     public List<Seat> showFreeSeats(int movieId) throws MovieNotFoundException, NoFreeSeatsException {

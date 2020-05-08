@@ -164,7 +164,7 @@ public class ReservationsSystemTest {
             final ResponseEntity<Void> response = restTemplate.exchange(
                     "/reserveSeat/{reservationId}?clientId={clientId}", HttpMethod.DELETE,
                     new HttpEntity<>(null, null), Void.class,
-                    reservationId.getClientId(), VALID_CLIENT_ID.getClientId());
+                    reservationId.getReservationId(), VALID_CLIENT_ID.getClientId());
 
             // then
             assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -176,7 +176,7 @@ public class ReservationsSystemTest {
             final ResponseEntity<RestError> response = restTemplate.exchange(
                     "/reserveSeat/{reservationId}?clientId={clientId}", HttpMethod.DELETE,
                     new HttpEntity<>(null, null), RestError.class,
-                    INVALID_RESERVATION_ID.getClientId(), VALID_CLIENT_ID.getClientId());
+                    INVALID_RESERVATION_ID.getReservationId(), VALID_CLIENT_ID.getClientId());
 
             // then
             assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -289,7 +289,7 @@ public class ReservationsSystemTest {
             final ResponseEntity<URL> response = restTemplate.exchange(
                     "/payForSeat/{reservationId}?clientId={clientId}", HttpMethod.POST,
                     new HttpEntity<>(null, null), URL.class,
-                    reservationId.getClientId(), VALID_CLIENT_ID.getClientId());
+                    reservationId.getReservationId(), VALID_CLIENT_ID.getClientId());
 
             // then
             assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -304,7 +304,7 @@ public class ReservationsSystemTest {
             final ResponseEntity<RestError> response = restTemplate.exchange(
                     "/payForSeat/{reservationId}?clientId={clientId}", HttpMethod.POST,
                     new HttpEntity<>(null, null), RestError.class,
-                    INVALID_RESERVATION_ID.getClientId(), VALID_CLIENT_ID.getClientId());
+                    INVALID_RESERVATION_ID.getReservationId(), VALID_CLIENT_ID.getClientId());
 
             // then
             assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -322,7 +322,7 @@ public class ReservationsSystemTest {
             final ResponseEntity<RestError> response = restTemplate.exchange(
                     "/payForSeat/{reservationId}?clientId={clientId}", HttpMethod.POST,
                     new HttpEntity<>(null, null), RestError.class,
-                    reservationId.getClientId(), VALID_CLIENT_ID.getClientId());
+                    reservationId.getReservationId(), VALID_CLIENT_ID.getClientId());
 
             // then
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -340,7 +340,7 @@ public class ReservationsSystemTest {
             final ResponseEntity<Void> response = restTemplate.exchange(
                     "/finishPaymentSeat/{reservationId}?clientId={clientId}&password={password}", HttpMethod.POST,
                     new HttpEntity<>(null, null), Void.class,
-                    reservationId.getClientId(), VALID_CLIENT_ID.getClientId(), PAYMENTS_MOCK_PASSWORD);
+                    reservationId.getReservationId(), VALID_CLIENT_ID.getClientId(), PAYMENTS_MOCK_PASSWORD);
 
             // then
             assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -357,7 +357,7 @@ public class ReservationsSystemTest {
             final ResponseEntity<URL> response = restTemplate.exchange(
                     "/payAdvanceForHall/{reservationId}?clientId={clientId}", HttpMethod.POST,
                     new HttpEntity<>(null, null), URL.class,
-                    reservationId.getClientId(), VALID_CLIENT_ID.getClientId());
+                    reservationId.getReservationId(), VALID_CLIENT_ID.getClientId());
 
             // then
             assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -372,7 +372,7 @@ public class ReservationsSystemTest {
             final ResponseEntity<RestError> response = restTemplate.exchange(
                     "/payAdvanceForHall/{reservationId}?clientId={clientId}", HttpMethod.POST,
                     new HttpEntity<>(null, null), RestError.class,
-                    INVALID_RESERVATION_ID.getClientId(), VALID_CLIENT_ID.getClientId());
+                    INVALID_RESERVATION_ID.getReservationId(), VALID_CLIENT_ID.getClientId());
 
             // then
             assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -390,7 +390,7 @@ public class ReservationsSystemTest {
             final ResponseEntity<RestError> response = restTemplate.exchange(
                     "/payAdvanceForHall/{reservationId}?clientId={clientId}", HttpMethod.POST,
                     new HttpEntity<>(null, null), RestError.class,
-                    reservationId.getClientId(), VALID_CLIENT_ID.getClientId());
+                    reservationId.getReservationId(), VALID_CLIENT_ID.getClientId());
 
             // then
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -408,7 +408,7 @@ public class ReservationsSystemTest {
             final ResponseEntity<Void> response = restTemplate.exchange(
                     "/finishAdvancePaymentHall/{reservationId}?clientId={clientId}&password={password}", HttpMethod.POST,
                     new HttpEntity<>(null, null), Void.class,
-                    reservationId.getClientId(), VALID_CLIENT_ID.getClientId(), PAYMENTS_MOCK_PASSWORD);
+                    reservationId.getReservationId(), VALID_CLIENT_ID.getClientId(), PAYMENTS_MOCK_PASSWORD);
 
             // then
             assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -425,7 +425,7 @@ public class ReservationsSystemTest {
             final ResponseEntity<URL> response = restTemplate.exchange(
                     "/payForHall/{reservationId}?clientId={clientId}", HttpMethod.POST,
                     new HttpEntity<>(null, null), URL.class,
-                    reservationId.getClientId(), VALID_CLIENT_ID.getClientId());
+                    reservationId.getReservationId(), VALID_CLIENT_ID.getClientId());
 
             // then
             assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -445,7 +445,7 @@ public class ReservationsSystemTest {
             final ResponseEntity<URL> response = restTemplate.exchange(
                     "/payForHall/{reservationId}?clientId={clientId}", HttpMethod.POST,
                     new HttpEntity<>(null, null), URL.class,
-                    reservationId.getClientId(), VALID_CLIENT_ID.getClientId());
+                    reservationId.getReservationId(), VALID_CLIENT_ID.getClientId());
 
             // then
             assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -460,7 +460,7 @@ public class ReservationsSystemTest {
             final ResponseEntity<RestError> response = restTemplate.exchange(
                     "/payForHall/{reservationId}?clientId={clientId}", HttpMethod.POST,
                     new HttpEntity<>(null, null), RestError.class,
-                    INVALID_RESERVATION_ID.getClientId(), VALID_CLIENT_ID.getClientId());
+                    INVALID_RESERVATION_ID.getReservationId(), VALID_CLIENT_ID.getClientId());
 
             // then
             assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -478,7 +478,7 @@ public class ReservationsSystemTest {
             final ResponseEntity<RestError> response = restTemplate.exchange(
                     "/payForHall/{reservationId}?clientId={clientId}", HttpMethod.POST,
                     new HttpEntity<>(null, null), RestError.class,
-                    reservationId.getClientId(), VALID_CLIENT_ID.getClientId());
+                    reservationId.getReservationId(), VALID_CLIENT_ID.getClientId());
 
             // then
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -496,7 +496,7 @@ public class ReservationsSystemTest {
             final ResponseEntity<Void> response = restTemplate.exchange(
                     "/finishPaymentHall/{reservationId}?clientId={clientId}&password={password}", HttpMethod.POST,
                     new HttpEntity<>(null, null), Void.class,
-                    reservationId.getClientId(), VALID_CLIENT_ID.getClientId(), PAYMENTS_MOCK_PASSWORD);
+                    reservationId.getReservationId(), VALID_CLIENT_ID.getClientId(), PAYMENTS_MOCK_PASSWORD);
 
             // then
             assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -504,7 +504,7 @@ public class ReservationsSystemTest {
         }
 
         private String buildURL(ReservationId reservationId, double amount, String type) {
-            return "http://localhost:9090/pay/" + reservationId.getClientId() +
+            return "http://localhost:9090/pay/" + reservationId.getReservationId() +
                     "?clientId="+ VALID_CLIENT_ID.getClientId() +
                     "&amount=" + amount +
                     "&type=" + type;
@@ -514,7 +514,7 @@ public class ReservationsSystemTest {
             final ResponseEntity<Void> response = restTemplate.exchange(
                     "/finishPaymentSeat/{reservationId}?clientId={clientId}&password={password}", HttpMethod.POST,
                     new HttpEntity<>(null, null), Void.class,
-                    reservationId.getClientId(), VALID_CLIENT_ID.getClientId(), PAYMENTS_MOCK_PASSWORD);
+                    reservationId.getReservationId(), VALID_CLIENT_ID.getClientId(), PAYMENTS_MOCK_PASSWORD);
             assertEquals(HttpStatus.OK, response.getStatusCode());
         }
 
@@ -522,7 +522,7 @@ public class ReservationsSystemTest {
             final ResponseEntity<Void> response = restTemplate.exchange(
                     "/finishAdvancePaymentHall/{reservationId}?clientId={clientId}&password={password}", HttpMethod.POST,
                     new HttpEntity<>(null, null), Void.class,
-                    reservationId.getClientId(), VALID_CLIENT_ID.getClientId(), PAYMENTS_MOCK_PASSWORD);
+                    reservationId.getReservationId(), VALID_CLIENT_ID.getClientId(), PAYMENTS_MOCK_PASSWORD);
             assertEquals(HttpStatus.OK, response.getStatusCode());
         }
 
@@ -530,7 +530,7 @@ public class ReservationsSystemTest {
             final ResponseEntity<Void> response = restTemplate.exchange(
                     "/finishPaymentHall/{reservationId}?clientId={clientId}&password={password}", HttpMethod.POST,
                     new HttpEntity<>(null, null), Void.class,
-                    reservationId.getClientId(), VALID_CLIENT_ID.getClientId(), PAYMENTS_MOCK_PASSWORD);
+                    reservationId.getReservationId(), VALID_CLIENT_ID.getClientId(), PAYMENTS_MOCK_PASSWORD);
             assertEquals(HttpStatus.OK, response.getStatusCode());
         }
     }
@@ -741,7 +741,7 @@ public class ReservationsSystemTest {
         final ResponseEntity<Void> response = restTemplate.exchange(
                 "/reserveSeat/{reservationId}?clientId={clientId}", HttpMethod.DELETE,
                 new HttpEntity<>(null, null), Void.class,
-                reservationId.getClientId(), VALID_CLIENT_ID.getClientId());
+                reservationId.getReservationId(), VALID_CLIENT_ID.getClientId());
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
@@ -763,7 +763,7 @@ public class ReservationsSystemTest {
         final ResponseEntity<Void> response = restTemplate.exchange(
                 "/reserveHall/{reservationId}?clientId={clientId}", HttpMethod.DELETE,
                 new HttpEntity<>(null, null), Void.class,
-                reservationId.getClientId(), VALID_CLIENT_ID.getClientId());
+                reservationId.getReservationId(), VALID_CLIENT_ID.getClientId());
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 }
