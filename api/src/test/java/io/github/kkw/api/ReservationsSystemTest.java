@@ -6,6 +6,7 @@ import io.github.kkw.api.model.Hall;
 import io.github.kkw.api.model.Movie;
 import io.github.kkw.api.model.MovieAddRequest;
 import io.github.kkw.api.model.ReservationId;
+import io.github.kkw.api.model.Seat;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -586,6 +587,23 @@ public class ReservationsSystemTest {
             }
         }
 
+        @Test
+        void shouldReturnHalls_whenOnlySomeHallsAreReserved() {
+            // given
+            final ReservationId reservationId = reserveHall();
+
+            // when
+            final ResponseEntity<List<Hall>> response = restTemplate.exchange(
+                    "/showAvailableCinemaHalls?clientId={clientId}&date={date}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), new ParameterizedTypeReference<List<Hall>>() {},
+                    VALID_CLIENT_ID.getId(), FREE_DATE);
+
+            // then
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+            cleanUpHallReservation(reservationId);
+        }
+
         private List<Hall> getAllHalls() {
             final ResponseEntity<List<Hall>> response = restTemplate.exchange(
                     "/showCinemaHalls?clientId={clientId}", HttpMethod.GET,
@@ -597,11 +615,123 @@ public class ReservationsSystemTest {
         }
     }
 
+    @Nested
+    class ShowSeatsTest {
+        @Test
+        void shouldReturnAllSeats_whenMovieExists() {
+            // when
+            final ResponseEntity<List<Seat>> response = restTemplate.exchange(
+                    "/showAllSeats/{movieId}?clientId={clientId}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), new ParameterizedTypeReference<List<Seat>>(){},
+                    VALID_MOVIE_ID, VALID_CLIENT_ID.getId());
+
+            // then
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+        }
+
+        @Test
+        void shouldNotReturnAllSeats_whenMovieDoesntExist() {
+            // when
+            final ResponseEntity<RestError> response = restTemplate.exchange(
+                    "/showAllSeats/{movieId}?clientId={clientId}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), RestError.class,
+                    INVALID_MOVIE_ID, VALID_CLIENT_ID.getId());
+
+            // then
+            assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals("Movie with this ID not found", response.getBody().getMessage());
+        }
+
+        @Test
+        void shouldReturnFreeSeats_whenSeatsAreAvailable() {
+            // when
+            final ResponseEntity<List<Seat>> response = restTemplate.exchange(
+                    "/showFreeSeats/{movieId}?clientId={clientId}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), new ParameterizedTypeReference<List<Seat>>(){},
+                    VALID_MOVIE_ID, VALID_CLIENT_ID.getId());
+
+            // then
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+        }
+
+        @Test
+        void shouldReturnFreeSeats_whenSomeSeatsAreReserved() {
+            // given
+            final ReservationId reservationId = reserveSeat();
+
+            // when
+            final ResponseEntity<List<Seat>> response = restTemplate.exchange(
+                    "/showFreeSeats/{movieId}?clientId={clientId}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), new ParameterizedTypeReference<List<Seat>>(){},
+                    VALID_MOVIE_ID, VALID_CLIENT_ID.getId());
+
+            // then
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+            cleanUpSeatReservation(reservationId);
+        }
+
+        @Test
+        void shouldNotReturnFreeSeats_whenMovieDoesntExist() {
+            // when
+            final ResponseEntity<RestError> response = restTemplate.exchange(
+                    "/showFreeSeats/{movieId}?clientId={clientId}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), RestError.class,
+                    INVALID_MOVIE_ID, VALID_CLIENT_ID.getId());
+
+            // then
+            assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals("Movie with this ID not found", response.getBody().getMessage());
+        }
+
+        @Test
+        void shouldNotReturnFreeSeats_whenAllSeatsAreReserved() {
+            // given
+            final List<Seat> allSeats = getAllSeats();
+            final List<ReservationId> reservationIds = new ArrayList<>();
+            for (final Seat seat : allSeats) {
+                reservationIds.add(reserveSeat(seat.getSeatId()));
+            }
+
+            // when
+            final ResponseEntity<RestError> response = restTemplate.exchange(
+                    "/showFreeSeats/{movieId}?clientId={clientId}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), RestError.class,
+                    VALID_MOVIE_ID, VALID_CLIENT_ID.getId());
+
+            // then
+            assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals("No seats available to reserve for this movie", response.getBody().getMessage());
+            for (final ReservationId reservationId : reservationIds) {
+                cleanUpSeatReservation(reservationId);
+            }
+        }
+
+        private List<Seat> getAllSeats() {
+            final ResponseEntity<List<Seat>> response = restTemplate.exchange(
+                    "/showAllSeats/{movieId}?clientId={clientId}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), new ParameterizedTypeReference<List<Seat>>(){},
+                    VALID_MOVIE_ID, VALID_CLIENT_ID.getId());
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+            return response.getBody();
+        }
+    }
+
     private ReservationId reserveSeat() {
+        return reserveSeat(VALID_SEAT_ID);
+    }
+
+    private ReservationId reserveSeat(int seatId) {
         final ResponseEntity<ReservationId> reservationResponse = restTemplate.exchange(
                 "/reserveSeat/{movieId}/{seatId}?clientId={clientId}", HttpMethod.POST,
                 new HttpEntity<>(null, null), ReservationId.class,
-                VALID_MOVIE_ID, VALID_SEAT_ID, VALID_CLIENT_ID.getId());
+                VALID_MOVIE_ID, seatId, VALID_CLIENT_ID.getId());
         assertEquals(HttpStatus.OK, reservationResponse.getStatusCode());
         assertNotNull(reservationResponse.getBody());
         return reservationResponse.getBody();

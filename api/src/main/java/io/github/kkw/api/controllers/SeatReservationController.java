@@ -81,4 +81,30 @@ public class SeatReservationController {
             throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
         }
     }
+
+    @GetMapping("/showFreeSeats/{movieId}")
+    public List<Seat> showFreeSeats(@RequestParam("clientId") final ClientId clientId,
+                                    @PathVariable("movieId") final int movieId) throws RestException {
+        try {
+            loginService.verifyClientLoggedIn(clientId);
+            return seatReservationService.showFreeSeats(movieId);
+        } catch (NoFreeSeatsException | MovieNotFoundException e) {
+            throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e);
+        } catch (ClientNotLoggedInException e) {
+            throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
+        }
+    }
+
+    @GetMapping("/showAllSeats/{movieId}")
+    public List<Seat> showAllSeats(@RequestParam("clientId") final ClientId clientId,
+                                   @PathVariable("movieId") final int movieId) throws RestException {
+        try {
+            loginService.verifyClientLoggedIn(clientId);
+            return seatReservationService.showAllSeats(movieId);
+        } catch (MovieNotFoundException e) {
+            throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e);
+        } catch (ClientNotLoggedInException e) {
+            throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
+        }
+    }
 }

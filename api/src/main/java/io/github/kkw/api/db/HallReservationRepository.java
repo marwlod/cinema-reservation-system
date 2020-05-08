@@ -6,10 +6,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.math.BigInteger;
-import java.util.Date;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class HallReservationRepository {
@@ -87,8 +89,8 @@ public class HallReservationRepository {
     @SuppressWarnings("unchecked")
     public List<HallEntity> showCinemaHalls(){
         return (List<HallEntity>) entityManager
-                .createNativeQuery("SELECT hall_id, advance_price, total_price," +
-                        "screen_size FROM hall", HallEntity.class)
+                .createNativeQuery("SELECT hall_id, advance_price, total_price,screen_size " +
+                        "FROM hall", HallEntity.class)
                 .getResultList();
     }
 
@@ -96,14 +98,22 @@ public class HallReservationRepository {
     @Transactional
     @SuppressWarnings("unchecked")
     public List<HallEntity> showAvailableCinemaHalls(Instant date){
-        return (List<HallEntity>) entityManager
+        final List<HallEntity> allHalls = showCinemaHalls();
+        final List<HallEntity> hallsReserved = (List<HallEntity>) entityManager
                 .createNativeQuery("SELECT hall.hall_id, advance_price, total_price, screen_size " +
                         "FROM hall " +
                         "INNER JOIN hall_reservation ON hall.hall_id = hall_reservation.hall_id " +
-                        "WHERE NOT EXISTS ( SELECT * FROM hall_reservation " +
-                        "WHERE reservation_date = ? AND valid_until > ?)", HallEntity.class)
+                        "WHERE reservation_date = ? AND valid_until > ?", HallEntity.class)
                 .setParameter(1, date)
                 .setParameter(2, Instant.now())
                 .getResultList();
+        final Set<HallEntity> reserved = new HashSet<>(hallsReserved);
+        final List<HallEntity> res = new ArrayList<>();
+        for (final HallEntity hall : allHalls) {
+            if (!reserved.contains(hall)) {
+                res.add(hall);
+            }
+        }
+        return res;
     }
 }

@@ -13,10 +13,6 @@ public class HallEntity {
     private BigDecimal screenSize;
 
     public HallEntity(){
-        this.hallId = 0;
-        this.advancePrice = null;
-        this.totalPrice = null;
-        this.screenSize = null;
     }
 
     public int getHallId() {
