@@ -1,10 +1,7 @@
 package io.github.kkw.api;
 
 import io.github.kkw.api.exceptions.RestError;
-import io.github.kkw.api.model.ClientId;
-import io.github.kkw.api.model.Movie;
-import io.github.kkw.api.model.MovieAddRequest;
-import io.github.kkw.api.model.ReservationId;
+import io.github.kkw.api.model.*;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +35,7 @@ public class ReservationsSystemTest {
     private static final Instant NO_MOVIES_UP_TO = Instant.parse("2666-01-02T00:00:00Z");
     private static final Instant MOVIES_FROM = Instant.parse("2030-01-01T00:00:00Z");
     private static final Instant MOVIES_UP_TO = Instant.parse("2030-01-02T00:00:00Z");
+    private static final Instant NO_HALL_RESERVATIONS = Instant.parse("2666-01-02T00:00:00Z");
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -226,4 +224,29 @@ public class ReservationsSystemTest {
         assertNotNull(reservationResponse.getBody());
         return reservationResponse.getBody();
     }
+
+    @Test
+    void shouldReturnCinemaHalls_whenCinemaHallsExist() {
+        // when
+        final ResponseEntity<List<Hall>> response = restTemplate.exchange("/showCinemaHalls?clientId={clientId}", HttpMethod.GET,
+                new HttpEntity<>(null, null), new ParameterizedTypeReference<List<Hall>>() {},VALID_CLIENT_ID.getId());
+
+        // then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+    }
+
+    @Test
+    void shouldReturnCinemaHalls_whenCinemaHallsAreAvailable() {
+        // when
+        final ResponseEntity<List<Hall>> response = restTemplate.exchange(
+                "/showAvailableCinemaHalls?clientId={clientId}&date={date}", HttpMethod.GET,
+                new HttpEntity<>(null, null), new ParameterizedTypeReference<List<Hall>>(){},
+                VALID_CLIENT_ID.getId(), NO_HALL_RESERVATIONS);
+
+        // then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+    }
+
 }

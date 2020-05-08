@@ -1,10 +1,8 @@
 package io.github.kkw.api.controllers;
 
 import io.github.kkw.api.exceptions.*;
-import io.github.kkw.api.model.ClientId;
-import io.github.kkw.api.model.Movie;
-import io.github.kkw.api.model.MovieAddRequest;
-import io.github.kkw.api.model.ReservationId;
+import io.github.kkw.api.model.*;
+import io.github.kkw.api.services.HallService;
 import io.github.kkw.api.services.LoginService;
 import io.github.kkw.api.services.MovieService;
 import io.github.kkw.api.services.SeatReservationService;
@@ -13,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -21,12 +18,16 @@ public class SeatReservationController {
     private final LoginService loginService;
     private final SeatReservationService seatReservationService;
     private final MovieService movieService;
+    private final HallService hallService;
 
     public SeatReservationController(final LoginService loginService,
-                                     final SeatReservationService seatReservationService, MovieService movieService) {
+                                     final SeatReservationService seatReservationService,
+                                     final MovieService movieService,
+                                     final HallService hallService) {
         this.loginService = loginService;
         this.seatReservationService = seatReservationService;
         this.movieService = movieService;
+        this.hallService=hallService;
     }
 
     @PostMapping("/reserveSeat/{movieId}/{seatId}")
@@ -84,4 +85,30 @@ public class SeatReservationController {
             throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
         }
     }
+
+    @GetMapping("/showCinemaHalls")
+    List<Hall> showCinemaHalls(@RequestParam("clientId") final ClientId clientId) throws RestException {
+        try{
+            loginService.verifyClientLoggedIn(clientId);
+            return hallService.showCinemaHalls();
+        } catch (CinemaHallNotFoundException e) {
+            throw new RestException(e.getMessage(),HttpStatus.BAD_REQUEST,e);
+        } catch (ClientNotLoggedInException e){
+            throw new RestException(e.getMessage(),HttpStatus.FORBIDDEN,e);
+        }
+    }
+
+    @GetMapping("/showAvailableCinemaHalls")
+    List<Hall> showAvailableCinemaHalls(@RequestParam("clientId") final ClientId clientId,
+                                        @RequestParam("date") Instant date) throws ClientNotLoggedInException, RestException {
+        try {
+            loginService.verifyClientLoggedIn(clientId);
+            return hallService.showAvailableCinemaHalls(date);
+        } catch (AvailableCinemaHallsNotFoundException e){
+            throw new RestException(e.getMessage(),HttpStatus.NOT_FOUND,e);
+        } catch (ClientNotLoggedInException e) {
+            throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
+        }
+    }
+
 }
