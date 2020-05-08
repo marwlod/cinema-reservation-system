@@ -41,7 +41,6 @@ public class HallReservationController {
                                                @PathVariable("hallId") int hallId,
                                                @PathVariable("date") Instant date) throws RestException {
         try {
-            System.out.println(date);
             loginService.verifyClientLoggedIn(clientId);
             return hallReservationService.createHallReservation(clientId, hallId, date);
         } catch (MovieHallIdException e) {
