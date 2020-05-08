@@ -34,16 +34,16 @@ public class SeatReservationService {
         if (seatReservationRepository.isReserved(movieId, seatId)) {
             throw new SeatReservedException("Chosen seat for this movie is already reserved");
         }
-        seatReservationRepository.createSeatReservation(clientId.getId(), movieId, seatId);
-        return new ReservationId(seatReservationRepository.getSeatReservationId(clientId.getId(), movieId, seatId));
+        seatReservationRepository.createSeatReservation(clientId.getClientId(), movieId, seatId);
+        return new ReservationId(seatReservationRepository.getSeatReservationId(clientId.getClientId(), movieId, seatId));
     }
 
     public void deleteSeatReservation(ClientId clientId, ReservationId reservationId)
             throws ReservationNotFoundException {
-        if (seatReservationRepository.reservationDoesntExist(clientId.getId(), reservationId.getId())) {
+        if (seatReservationRepository.reservationDoesntExist(clientId.getClientId(), reservationId.getReservationId())) {
             throw new ReservationNotFoundException("Reservation with this ID not found");
         }
-        seatReservationRepository.deleteSeatReservation(clientId.getId(), reservationId.getId());
+        seatReservationRepository.deleteSeatReservation(clientId.getClientId(), reservationId.getReservationId());
     }
 
     public List<Seat> showFreeSeats(int movieId) throws MovieNotFoundException, NoFreeSeatsException {

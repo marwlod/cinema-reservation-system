@@ -3,17 +3,17 @@ package io.github.kkw.api.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ReservationId {
-    private final int id;
+    private final int reservationId;
 
-    public ReservationId(@JsonProperty("id") int id) {
-        this.id = id;
+    public ReservationId(@JsonProperty("reservationId") int reservationId) {
+        this.reservationId = reservationId;
     }
 
-    public ReservationId(String id) {
-        this.id = Integer.parseInt(id);
+    public ReservationId(String reservationId) {
+        this.reservationId = Integer.parseInt(reservationId);
     }
 
-    public int getId() {
-        return id;
+    public int getReservationId() {
+        return reservationId;
     }
 }
