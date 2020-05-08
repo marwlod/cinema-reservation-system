@@ -9,6 +9,7 @@ import java.math.BigInteger;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 @Repository
@@ -172,7 +173,9 @@ public class PaymentsRepository {
         entityManager
                 .createNativeQuery("UPDATE hall_reservation SET valid_until = ? " +
                         "WHERE client_id = ? AND hall_reservation_id = ?")
-                .setParameter(1, Instant.ofEpochMilli(reservationDate.getTime()).plus(1, ChronoUnit.DAYS))
+                .setParameter(1, Instant.ofEpochMilli(reservationDate.getTime())
+                        .plus(1, ChronoUnit.DAYS)
+                        .minus(1, ChronoUnit.SECONDS))
                 .setParameter(2, clientId)
                 .setParameter(3, reservationId)
                 .executeUpdate();

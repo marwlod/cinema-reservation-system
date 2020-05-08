@@ -1,10 +1,7 @@
 package io.github.kkw.api.controllers;
 
 import io.github.kkw.api.exceptions.*;
-import io.github.kkw.api.model.ClientId;
-import io.github.kkw.api.model.Movie;
-import io.github.kkw.api.model.MovieAddRequest;
-import io.github.kkw.api.model.ReservationId;
+import io.github.kkw.api.model.*;
 import io.github.kkw.api.services.LoginService;
 import io.github.kkw.api.services.MovieService;
 import io.github.kkw.api.services.SeatReservationService;
@@ -13,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -23,7 +19,8 @@ public class SeatReservationController {
     private final MovieService movieService;
 
     public SeatReservationController(final LoginService loginService,
-                                     final SeatReservationService seatReservationService, MovieService movieService) {
+                                     final SeatReservationService seatReservationService,
+                                     final MovieService movieService) {
         this.loginService = loginService;
         this.seatReservationService = seatReservationService;
         this.movieService = movieService;
