@@ -25,7 +25,7 @@ public class PaymentsController {
     public PaymentsController() {
         methods = new HashMap<>();
         methods.put("seat", "finishPaymentSeat");
-        methods.put("advanceHall", "finishAdvancePaymentSeat");
+        methods.put("advanceHall", "finishAdvancePaymentHall");
         methods.put("hall", "finishPaymentHall");
     }
 
