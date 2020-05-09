@@ -106,4 +106,13 @@ public class LoginRepository {
                 .setParameter(2, clientId)
                 .executeUpdate();
     }
+
+    @Transactional
+    public boolean isAdmin(int clientId) {
+        BigInteger matches = (BigInteger) entityManager
+                .createNativeQuery("SELECT IF((SELECT COUNT(*) FROM client WHERE client_id = ? AND is_admin = 1) > 0, TRUE, FALSE)")
+                .setParameter(1, clientId)
+                .getSingleResult();
+        return matches.intValue() == 1;
+    }
 }

@@ -4,6 +4,7 @@ import io.github.kkw.api.db.LoginRepository;
 import io.github.kkw.api.exceptions.ClientExistsException;
 import io.github.kkw.api.exceptions.ClientNotFoundException;
 import io.github.kkw.api.exceptions.ClientNotLoggedInException;
+import io.github.kkw.api.exceptions.NotAdminException;
 import io.github.kkw.api.exceptions.WrongPasswordException;
 import io.github.kkw.api.model.ClientId;
 import org.springframework.stereotype.Service;
@@ -56,5 +57,11 @@ public class LoginService {
             throw new ClientNotLoggedInException("Client doesn't exist or not logged in");
         }
         loginRepository.extendLogin(clientId.getClientId());
+    }
+
+    public void verifyAdmin(ClientId clientId) throws NotAdminException {
+        if (!loginRepository.isAdmin(clientId.getClientId())) {
+            throw new NotAdminException("Only admin can do this");
+        }
     }
 }

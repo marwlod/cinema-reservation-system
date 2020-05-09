@@ -89,12 +89,16 @@ public class HallReservationRepository {
     @SuppressWarnings("unchecked")
     public List<HallEntity> showCinemaHalls(){
         return (List<HallEntity>) entityManager
-                .createNativeQuery("SELECT hall_id, advance_price, total_price,screen_size " +
-                        "FROM hall", HallEntity.class)
+                .createNativeQuery("SELECT hall.hall_id, advance_price, total_price,screen_size, regular_seats, vip_seats " +
+                        "FROM hall " +
+                        "LEFT JOIN (SELECT hall_id, COUNT(*) as regular_seats from seat WHERE is_vip = 0 GROUP BY hall_id) " +
+                                "as reg ON reg.hall_id = hall.hall_id " +
+                        "LEFT JOIN (SELECT hall_id, COUNT(*) as vip_seats from seat WHERE is_vip = 1 GROUP BY hall_id) " +
+                                "as vip ON vip.hall_id = hall.hall_id",
+                        HallEntity.class)
                 .getResultList();
     }
 
-    //TODO add available seat counts
     @Transactional
     @SuppressWarnings("unchecked")
     public List<HallEntity> showAvailableCinemaHalls(Instant date){
