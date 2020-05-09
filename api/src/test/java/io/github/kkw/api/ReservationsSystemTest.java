@@ -46,6 +46,7 @@ public class ReservationsSystemTest {
     private static final Instant MOVIES_FROM = Instant.parse("2030-01-01T00:00:00Z");
     private static final Instant MOVIES_UP_TO = Instant.parse("2030-01-02T00:00:00Z");
     private static final Instant FREE_DATE = Instant.parse("2025-01-01T00:00:00Z");
+    private static final Instant PAST_DATE = Instant.parse("2015-01-01T00:00:00Z");
     private static final double SEAT_COST = 20;
     private static final double HALL_ADVANCE_COST = 50;
     private static final double HALL_COST = 500;
@@ -274,6 +275,20 @@ public class ReservationsSystemTest {
             assertNotNull(response.getBody());
             assertEquals("Hall with this ID is already reserved for chosen day", response.getBody().getMessage());
             cleanUpHallReservation(reservationId);
+        }
+
+        @Test
+        void shouldNotReserveHall_whenDateInThePast() {
+            // when
+            final ResponseEntity<RestError> response = restTemplate.exchange(
+                    "/reserveHall/{hallId}/{date}?clientId={clientId}", HttpMethod.POST,
+                    new HttpEntity<>(null, null), RestError.class,
+                    VALID_HALL_ID, PAST_DATE, VALID_CLIENT_ID.getClientId());
+
+            // then
+            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals("Date must be at least 14 days in the future", response.getBody().getMessage());
         }
     }
 
