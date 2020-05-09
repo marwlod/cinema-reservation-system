@@ -1,5 +1,7 @@
 package io.github.kkw.api.db;
 
+import io.github.kkw.api.db.dto.ProfileEntity;
+import io.github.kkw.api.model.Profile;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,11 +68,11 @@ public class LoginRepository {
     }
 
     @Transactional
-    public void logoutClient(String email) {
+    public void logoutClient(int clientId) {
         entityManager
-                .createNativeQuery("UPDATE client SET logged_until=? WHERE email=?")
+                .createNativeQuery("UPDATE client SET logged_until=? WHERE client_id=?")
                 .setParameter(1, Instant.now())
-                .setParameter(2, email)
+                .setParameter(2, clientId)
                 .executeUpdate();
     }
 
@@ -114,5 +116,15 @@ public class LoginRepository {
                 .setParameter(1, clientId)
                 .getSingleResult();
         return matches.intValue() == 1;
+    }
+
+    @Transactional
+    public ProfileEntity getProfile(int clientId) {
+        return (ProfileEntity) entityManager
+                .createNativeQuery("SELECT client_id, email, name, surname, is_admin FROM client " +
+                                "WHERE client_id = ?",
+                        ProfileEntity.class)
+                .setParameter(1, clientId)
+                .getSingleResult();
     }
 }
