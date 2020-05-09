@@ -2,6 +2,7 @@ package io.github.kkw.api;
 
 import io.github.kkw.api.exceptions.RestError;
 import io.github.kkw.api.model.ClientId;
+import io.github.kkw.api.model.Profile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class MainApplicationTest {
+    private static final ClientId VALID_CLIENT_ID = new ClientId(5000);
+    private static final ClientId INVALID_CLIENT_ID = new ClientId(99_999_999);
     private static final String PASSWORD = "somepassword";
     private static final String INVALID_PASSWORD = "invalidpassword";
     private static final String INVALID_EMAIL = "domain.com";
@@ -145,32 +148,68 @@ class MainApplicationTest {
     @Test
     void shouldLogoutClient_whenClientRegistered() {
         // given
-        restTemplate.exchange(
+        final ResponseEntity<ClientId> registerResponse = restTemplate.exchange(
                 "/register?email={email}&password={password}", HttpMethod.POST,
-                new HttpEntity<>(null, null), Void.class,
+                new HttpEntity<>(null, null), ClientId.class,
                 validEmail, PASSWORD);
+        assertEquals(HttpStatus.OK, registerResponse.getStatusCode());
+        assertNotNull(registerResponse.getBody());
 
         // when
-        final ResponseEntity<Void> response = restTemplate.exchange(
-                "/logout?email={email}&password={password}", HttpMethod.POST,
+        final ResponseEntity<Void> logoutResponse = restTemplate.exchange(
+                "/logout?clientId={clientId}", HttpMethod.POST,
                 new HttpEntity<>(null, null), Void.class,
-                validEmail, PASSWORD);
+                registerResponse.getBody().getClientId());
 
         // then
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.OK, logoutResponse.getStatusCode());
     }
 
     @Test
     void shouldNotLogout_whenClientDoesntExist() {
         // when
         final ResponseEntity<RestError> response = restTemplate.exchange(
-                "/logout?email={email}&password={password}", HttpMethod.POST,
+                "/logout?clientId={clientId}", HttpMethod.POST,
                 new HttpEntity<>(null, null), RestError.class,
-                validEmail, PASSWORD);
+                INVALID_CLIENT_ID.getClientId());
 
         // then
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals("Client with this email not found", response.getBody().getMessage());
+        assertEquals("Client doesn't exist or not logged in", response.getBody().getMessage());
+    }
+
+    @Test
+    void shouldShowProfile_whenClientLoggedIn() {
+        // when
+        final ResponseEntity<Profile> response = restTemplate.exchange(
+                "/showProfile?clientId={clientId}", HttpMethod.GET,
+                new HttpEntity<>(null, null), Profile.class,
+                VALID_CLIENT_ID.getClientId());
+
+        // then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+    }
+
+    @Test
+    void shouldShowProfile_whenClientDoesntHaveOptionalFieldsFilled() {
+        // given
+        final ResponseEntity<ClientId> registerResponse = restTemplate.exchange(
+                "/register?email={email}&password={password}", HttpMethod.POST,
+                new HttpEntity<>(null, null), ClientId.class,
+                validEmail, PASSWORD);
+        assertEquals(HttpStatus.OK, registerResponse.getStatusCode());
+        assertNotNull(registerResponse.getBody());
+
+        // when
+        final ResponseEntity<Profile> response = restTemplate.exchange(
+                "/showProfile?clientId={clientId}", HttpMethod.GET,
+                new HttpEntity<>(null, null), Profile.class,
+                registerResponse.getBody().getClientId());
+
+        // then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
     }
 }

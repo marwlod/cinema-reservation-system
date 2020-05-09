@@ -1,8 +1,6 @@
 package io.github.kkw.api.db;
 
-import io.github.kkw.api.db.dto.HallEntity;
 import io.github.kkw.api.db.dto.SeatEntity;
-import io.github.kkw.api.model.Seat;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -101,9 +101,9 @@ public class ReservationsSystemTest {
 
             // logout
             final ResponseEntity<Void> logoutResponse = restTemplate.exchange(
-                    "/logout?email={email}&password={password}", HttpMethod.POST,
+                    "/logout?clientId={clientId}", HttpMethod.POST,
                     new HttpEntity<>(null, null), Void.class,
-                    validEmail, password);
+                    registerResponse.getBody().getClientId());
             assertEquals(HttpStatus.OK, logoutResponse.getStatusCode());
 
             return registerResponse.getBody();
