@@ -1,14 +1,29 @@
 package io.github.kkw.api.controllers;
 
-import io.github.kkw.api.exceptions.*;
-import io.github.kkw.api.model.*;
+import io.github.kkw.api.exceptions.ClientNotLoggedInException;
+import io.github.kkw.api.exceptions.MovieNotFoundException;
+import io.github.kkw.api.exceptions.MoviesNotFoundException;
+import io.github.kkw.api.exceptions.NoFreeSeatsException;
+import io.github.kkw.api.exceptions.ReservationNotFoundException;
+import io.github.kkw.api.exceptions.RestException;
+import io.github.kkw.api.exceptions.SeatNotFoundException;
+import io.github.kkw.api.exceptions.SeatReservedException;
+import io.github.kkw.api.model.ClientId;
+import io.github.kkw.api.model.Movie;
+import io.github.kkw.api.model.ReservationId;
+import io.github.kkw.api.model.Seat;
 import io.github.kkw.api.services.LoginService;
 import io.github.kkw.api.services.MovieService;
 import io.github.kkw.api.services.SeatReservationService;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.time.Instant;
 import java.util.List;
 
@@ -63,23 +78,6 @@ public class SeatReservationController {
             return movieService.showProgramme(from, to);
         } catch (MoviesNotFoundException e) {
             throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND,e);
-        }
-    }
-
-    @PostMapping("/addMovie")
-    public void addMovie(@RequestParam("clientId") final ClientId clientId,
-                         @Valid @RequestBody MovieAddRequest movieAddRequest) throws RestException {
-        try{
-            loginService.verifyAdmin(clientId);
-            loginService.verifyClientLoggedIn(clientId);
-            movieService.addMovie(movieAddRequest.getName(), movieAddRequest.getStartDate(), movieAddRequest.getEndDate(),
-                    movieAddRequest.getBasePrice(), movieAddRequest.getHallId());
-        } catch (MovieDateException | HallNotFoundException e){
-            throw new RestException(e.getMessage(), HttpStatus.BAD_REQUEST, e);
-        } catch (MovieConflictException e){
-            throw new RestException(e.getMessage(), HttpStatus.CONFLICT, e);
-        } catch (ClientNotLoggedInException | NotAdminException e) {
-            throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
         }
     }
 
