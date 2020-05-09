@@ -22,8 +22,6 @@ public class MovieService {
     }
 
     public List<Movie> showProgramme(final Instant from, final Instant to) throws MoviesNotFoundException {
-        System.out.println(from);
-        System.out.println(to);
         List<MovieEntity> movieEntities = movieRepository.showProgramme(from, to);
         if(movieEntities.isEmpty()){
             throw new MoviesNotFoundException("Cannot find any movies in this period");
