@@ -29,7 +29,11 @@ public class HallReservationService {
         this.movieRepository = movieRepository;
     }
 
-    public ReservationId createHallReservation(ClientId clientId, int hallId, Instant date) throws HallReservedException, HallNotFoundException {
+    public ReservationId createHallReservation(ClientId clientId, int hallId, Instant date) throws HallReservedException, HallNotFoundException, DateTooSoonException {
+        long daysFromNowToDate = Instant.now().until(date, ChronoUnit.DAYS);
+        if (daysFromNowToDate < 14) {
+            throw new DateTooSoonException("Date must be at least 14 days in the future");
+        }
         if (hallReservationRepository.isReserved(hallId, date)) {
             throw new HallReservedException("Hall with this ID is already reserved for chosen day");
         }

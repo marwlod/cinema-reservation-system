@@ -49,6 +49,8 @@ public class HallReservationController {
             throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
         } catch (HallReservedException e) {
             throw new RestException(e.getMessage(), HttpStatus.CONFLICT, e);
+        } catch (DateTooSoonException e) {
+            throw new RestException(e.getMessage(), HttpStatus.BAD_REQUEST, e);
         }
     }
 
