@@ -70,14 +70,15 @@ public class SeatReservationController {
     public void addMovie(@RequestParam("clientId") final ClientId clientId,
                          @Valid @RequestBody MovieAddRequest movieAddRequest) throws RestException {
         try{
+            loginService.verifyAdmin(clientId);
             loginService.verifyClientLoggedIn(clientId);
             movieService.addMovie(movieAddRequest.getName(), movieAddRequest.getStartDate(), movieAddRequest.getEndDate(),
                     movieAddRequest.getBasePrice(), movieAddRequest.getHallId());
-        } catch (MovieDateException | MovieHallIdException e){
+        } catch (MovieDateException | HallNotFoundException e){
             throw new RestException(e.getMessage(), HttpStatus.BAD_REQUEST, e);
         } catch (MovieConflictException e){
             throw new RestException(e.getMessage(), HttpStatus.CONFLICT, e);
-        } catch (ClientNotLoggedInException e) {
+        } catch (ClientNotLoggedInException | NotAdminException e) {
             throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
         }
     }

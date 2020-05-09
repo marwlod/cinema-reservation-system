@@ -3,6 +3,7 @@ package io.github.kkw.api.db.dto;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 @Entity
 public class HallEntity {
@@ -11,6 +12,8 @@ public class HallEntity {
     private BigDecimal advancePrice;
     private BigDecimal totalPrice;
     private BigDecimal screenSize;
+    private BigInteger regularSeats;
+    private BigInteger vipSeats;
 
     public HallEntity(){
     }
@@ -31,6 +34,14 @@ public class HallEntity {
         return screenSize;
     }
 
+    public BigInteger getRegularSeats() {
+        return regularSeats;
+    }
+
+    public BigInteger getVipSeats() {
+        return vipSeats;
+    }
+
     public void setHallId(int hallId) {
         this.hallId = hallId;
     }
@@ -45,5 +56,13 @@ public class HallEntity {
 
     public void setScreenSize(BigDecimal screenSize) {
         this.screenSize = screenSize;
+    }
+
+    public void setRegularSeats(BigInteger regularSeats) {
+        this.regularSeats = regularSeats;
+    }
+
+    public void setVipSeats(BigInteger vipSeats) {
+        this.vipSeats = vipSeats;
     }
 }

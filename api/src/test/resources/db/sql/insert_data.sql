@@ -1,5 +1,7 @@
 INSERT INTO client (client_id, email, password, name, surname, is_admin, logged_until)
-    VALUES (5000, 'email@domain.com', 'secretpass', 'Bob', 'Dough', 0, STR_TO_DATE('31/12/2099 11:00:00 PM', '%e/%c/%Y %r'));
+    VALUES (5000, 'bob@crs.com', 'secretpass0', 'Bob', 'The Regular', 0, STR_TO_DATE('31/12/2099 11:00:00 PM', '%e/%c/%Y %r'));
+INSERT INTO client (client_id, email, password, name, surname, is_admin, logged_until)
+    VALUES (5005, 'admin@crs.com', 'secretpass5', 'Admin', 'The Great', 1, STR_TO_DATE('31/12/2099 11:00:00 PM', '%e/%c/%Y %r'));
 
 INSERT INTO hall (hall_id, advance_price, total_price, screen_size) VALUES (1, 50, 500, 200);
 INSERT INTO seat (seat_id, row_no, seat_no, is_vip, hall_id) VALUES (100, 1, 1, 0, 1);

@@ -5,7 +5,7 @@ import io.github.kkw.api.exceptions.CinemaHallsNotFoundException;
 import io.github.kkw.api.exceptions.ClientNotLoggedInException;
 import io.github.kkw.api.exceptions.DateTooSoonException;
 import io.github.kkw.api.exceptions.HallReservedException;
-import io.github.kkw.api.exceptions.MovieHallIdException;
+import io.github.kkw.api.exceptions.HallNotFoundException;
 import io.github.kkw.api.exceptions.ReservationNotFoundException;
 import io.github.kkw.api.exceptions.RestException;
 import io.github.kkw.api.model.ClientId;
@@ -43,7 +43,7 @@ public class HallReservationController {
         try {
             loginService.verifyClientLoggedIn(clientId);
             return hallReservationService.createHallReservation(clientId, hallId, date);
-        } catch (MovieHallIdException e) {
+        } catch (HallNotFoundException e) {
             throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e);
         } catch (ClientNotLoggedInException e) {
             throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
@@ -65,7 +65,7 @@ public class HallReservationController {
         }
     }
 
-    @GetMapping("/showCinemaHalls")
+    @GetMapping("/showAllCinemaHalls")
     List<Hall> showCinemaHalls(@RequestParam("clientId") final ClientId clientId) throws RestException {
         try{
             loginService.verifyClientLoggedIn(clientId);
@@ -79,7 +79,7 @@ public class HallReservationController {
 
     @GetMapping("/showAvailableCinemaHalls")
     List<Hall> showAvailableCinemaHalls(@RequestParam("clientId") final ClientId clientId,
-                                        @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Instant date) throws RestException {
+                                        @RequestParam("date") Instant date) throws RestException {
         try {
             loginService.verifyClientLoggedIn(clientId);
             return hallReservationService.showAvailableCinemaHalls(date);

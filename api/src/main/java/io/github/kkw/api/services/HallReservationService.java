@@ -7,7 +7,7 @@ import io.github.kkw.api.exceptions.AvailableCinemaHallsNotFoundException;
 import io.github.kkw.api.exceptions.CinemaHallsNotFoundException;
 import io.github.kkw.api.exceptions.DateTooSoonException;
 import io.github.kkw.api.exceptions.HallReservedException;
-import io.github.kkw.api.exceptions.MovieHallIdException;
+import io.github.kkw.api.exceptions.HallNotFoundException;
 import io.github.kkw.api.exceptions.ReservationNotFoundException;
 import io.github.kkw.api.model.ClientId;
 import io.github.kkw.api.model.Hall;
@@ -29,12 +29,12 @@ public class HallReservationService {
         this.movieRepository = movieRepository;
     }
 
-    public ReservationId createHallReservation(ClientId clientId, int hallId, Instant date) throws HallReservedException, MovieHallIdException {
+    public ReservationId createHallReservation(ClientId clientId, int hallId, Instant date) throws HallReservedException, HallNotFoundException {
         if (hallReservationRepository.isReserved(hallId, date)) {
             throw new HallReservedException("Hall with this ID is already reserved for chosen day");
         }
         if (!movieRepository.isHallIdValid(hallId)) {
-            throw new MovieHallIdException("Wrong movie hall number");
+            throw new HallNotFoundException("Hall with this ID not found");
         }
         hallReservationRepository.createHallReservation(clientId.getClientId(), hallId, date);
         return new ReservationId(hallReservationRepository.getHallReservationId(clientId.getClientId(), hallId, date));

@@ -255,7 +255,7 @@ public class ReservationsSystemTest {
             // then
             assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
             assertNotNull(response.getBody());
-            assertEquals("Wrong movie hall number", response.getBody().getMessage());
+            assertEquals("Hall with this ID not found", response.getBody().getMessage());
         }
 
         @Test
@@ -541,7 +541,7 @@ public class ReservationsSystemTest {
         void shouldReturnCinemaHalls_whenCinemaHallsExist() {
             // when
             final ResponseEntity<List<Hall>> response = restTemplate.exchange(
-                    "/showCinemaHalls?clientId={clientId}", HttpMethod.GET,
+                    "/showAllCinemaHalls?clientId={clientId}", HttpMethod.GET,
                     new HttpEntity<>(null, null), new ParameterizedTypeReference<List<Hall>>() {},
                     VALID_CLIENT_ID.getClientId());
 
@@ -606,7 +606,7 @@ public class ReservationsSystemTest {
 
         private List<Hall> getAllHalls() {
             final ResponseEntity<List<Hall>> response = restTemplate.exchange(
-                    "/showCinemaHalls?clientId={clientId}", HttpMethod.GET,
+                    "/showAllCinemaHalls?clientId={clientId}", HttpMethod.GET,
                     new HttpEntity<>(null, null), new ParameterizedTypeReference<List<Hall>>() {},
                     VALID_CLIENT_ID.getClientId());
             assertEquals(HttpStatus.OK, response.getStatusCode());
