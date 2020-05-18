@@ -38,14 +38,13 @@
 1. Don't commit to `master` branch please. Every change to the `master` branch should be proposed by creating a 
     [Pull Request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
     Before creating a Pull Request make sure the [build](docs/build.md) is passing.
-    We don't have any automatic build system yet so it needs to be done manually. :(
-1. [Google Hangouts](https://hangouts.google.com/call/vuP7H95RChWtG8Dk5nOuAEEI) for calls and sharing the screen.
+1. [Google Hangouts](https://hangouts.google.com/call/SLQY4yCWf-VfNz8sr9qtAAEI) for calls and sharing the screen.
 
 
 ## Educational resources
 
-1. [Git](https://www.freecodecamp.org/news/learn-the-basics-of-git-in-under-10-minutes-da548267cc91/)
-    Everything can be done in GUI (`VCS` -> `Git`) or with keyboard shortcuts inside IntelliJ. 
+1. [Git](https://www.freecodecamp.org/news/learn-the-basics-of-git-in-under-10-minutes-da548267cc91/) -
+    everything can be done in GUI (`VCS` -> `Git`) or with keyboard shortcuts inside IntelliJ. 
     Most important things to master related to version control:
     - creating a new branch
     - committing
