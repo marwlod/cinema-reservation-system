@@ -5,7 +5,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -119,5 +121,52 @@ public class HallReservationRepository {
             }
         }
         return res;
+    }
+
+
+    @Transactional
+    public int getHallReservations(Instant from, Instant to){
+        BigInteger hallReservations = (BigInteger) entityManager
+                .createNativeQuery("SELECT COUNT(*) from hall_reservation WHERE valid_until>=? AND valid_until<=?")
+                .setParameter(1, Timestamp.from(from))
+                .setParameter(2, Timestamp.from(to))
+                .getSingleResult();
+        return hallReservations.intValue();
+    }
+
+    @Transactional
+    public boolean ifClientReservedAnyHall(int clientId){
+        final BigInteger isReserved = (BigInteger) entityManager
+                .createNativeQuery("SELECT IF((" +
+                        "SELECT COUNT(*) FROM hall_reservation WHERE client_id = ?" +
+                        ") > 0, TRUE, FALSE)")
+                .setParameter(1, clientId)
+                .getSingleResult();
+        return isReserved.intValue() == 0;
+    }
+
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public double getMoneyEarnedFromHall(int hallId,Instant from, Instant to){
+        List<Integer> halls = (List<Integer>) entityManager
+                .createNativeQuery("SELECT hall_id FROM hall_reservation")
+                .getResultList();
+        double moneySum = 0.00;
+        List<BigDecimal> hallsPrices = (List<BigDecimal>) entityManager
+                .createNativeQuery("SELECT total_price FROM hall")
+                .getResultList();
+        if(halls.isEmpty() || hallsPrices.isEmpty()) return 0.00;
+        for(int i=0; i<halls.size(); i++){
+            moneySum+=hallsPrices.get(halls.get(i)-1).doubleValue();
+        }
+        return moneySum;
+    }
+
+    @Transactional
+    public int halls(){
+        BigInteger halls = (BigInteger) entityManager
+                .createNativeQuery("SELECT COUNT(*) FROM hall")
+                .getSingleResult();
+        return halls.intValue();
     }
 }

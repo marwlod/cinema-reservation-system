@@ -1,12 +1,7 @@
 package io.github.kkw.api;
 
 import io.github.kkw.api.exceptions.RestError;
-import io.github.kkw.api.model.ClientId;
-import io.github.kkw.api.model.Hall;
-import io.github.kkw.api.model.Movie;
-import io.github.kkw.api.model.MovieAddRequest;
-import io.github.kkw.api.model.ReservationId;
-import io.github.kkw.api.model.Seat;
+import io.github.kkw.api.model.*;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -36,6 +31,7 @@ public class ReservationsSystemTest {
     private static final int VALID_SEAT_ID = 101;
     private static final int INVALID_SEAT_ID = 99_999_999;
     private static final ClientId VALID_CLIENT_ID = new ClientId(5000);
+    private static final ClientId ADMIN_CLIENT_ID = new ClientId(5005);
     private static final ReservationId INVALID_RESERVATION_ID = new ReservationId(99_999_999);
     private static final int VALID_HALL_ID = 1;
     private static final int INVALID_HALL_ID = 99_999_999;
@@ -47,11 +43,15 @@ public class ReservationsSystemTest {
     private static final Instant MOVIES_UP_TO = Instant.parse("2030-01-02T00:00:00Z");
     private static final Instant FREE_DATE = Instant.parse("2025-01-01T00:00:00Z");
     private static final Instant PAST_DATE = Instant.parse("2015-01-01T00:00:00Z");
+    private static final Instant HALL_RESERVATION_DATE = Instant.parse("2020-05-15T23:59:59Z");
+    private static final Instant NO_HALL_RESERVATION_DATE = Instant.parse("2020-01-01T00:00:00Z");
     private static final double SEAT_COST = 20;
     private static final double HALL_ADVANCE_COST = 50;
     private static final double HALL_COST = 500;
     //TODO hardcoded password to connect with payments mock, ugly :(
     private static final String PAYMENTS_MOCK_PASSWORD = "supersecretTO2";
+    private static final String VALID_CODE = "A123";
+    private static final String INVALID_CODE = "INVALID_CODE_098";
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -59,12 +59,26 @@ public class ReservationsSystemTest {
     @Nested
     class SeatReservationTest {
         @Test
-        void shouldReserveSeat_whenSeatFreeToReserve() {
+        void shouldReserveSeat_whenSeatFreeToReserveValidCode() {
             // when
             final ResponseEntity<ReservationId> response = restTemplate.exchange(
-                    "/reserveSeat/{movieId}/{seatId}?clientId={clientId}", HttpMethod.POST,
+                    "/reserveSeat/{movieId}/{seatId}?clientId={clientId}&code={code}", HttpMethod.POST,
                     new HttpEntity<>(null, null), ReservationId.class,
-                    VALID_MOVIE_ID, VALID_SEAT_ID, VALID_CLIENT_ID.getClientId());
+                    VALID_MOVIE_ID, VALID_SEAT_ID, VALID_CLIENT_ID.getClientId(), VALID_CODE);
+
+            // then
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+            cleanUpSeatReservation(response.getBody());
+        }
+
+        @Test
+        void shouldReserveSeat_whenSeatFreeToReserveInvalidCode() {
+            // when
+            final ResponseEntity<ReservationId> response = restTemplate.exchange(
+                    "/reserveSeat/{movieId}/{seatId}?clientId={clientId}&code={code}", HttpMethod.POST,
+                    new HttpEntity<>(null, null), ReservationId.class,
+                    VALID_MOVIE_ID, VALID_SEAT_ID, VALID_CLIENT_ID.getClientId(), INVALID_CODE);
 
             // then
             assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -79,9 +93,9 @@ public class ReservationsSystemTest {
 
             // when
             final ResponseEntity<RestError> response = restTemplate.exchange(
-                    "/reserveSeat/{movieId}/{seatId}?clientId={clientId}", HttpMethod.POST,
+                    "/reserveSeat/{movieId}/{seatId}?clientId={clientId}&code={code}", HttpMethod.POST,
                     new HttpEntity<>(null, null), RestError.class,
-                    VALID_MOVIE_ID, VALID_SEAT_ID, clientId.getClientId());
+                    VALID_MOVIE_ID, VALID_SEAT_ID, clientId.getClientId(), VALID_CODE);
 
             // then
             assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
@@ -114,9 +128,9 @@ public class ReservationsSystemTest {
         void shouldNotReserveSeat_whenMovieNotFound() {
             // when
             final ResponseEntity<RestError> response = restTemplate.exchange(
-                    "/reserveSeat/{movieId}/{seatId}?clientId={clientId}", HttpMethod.POST,
+                    "/reserveSeat/{movieId}/{seatId}?clientId={clientId}&code={code}", HttpMethod.POST,
                     new HttpEntity<>(null, null), RestError.class,
-                    INVALID_MOVIE_ID, VALID_SEAT_ID, VALID_CLIENT_ID.getClientId());
+                    INVALID_MOVIE_ID, VALID_SEAT_ID, VALID_CLIENT_ID.getClientId(),VALID_CODE);
 
             // then
             assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -128,9 +142,9 @@ public class ReservationsSystemTest {
         void shouldNotReserveSeat_whenSeatNotFound() {
             // when
             final ResponseEntity<RestError> response = restTemplate.exchange(
-                    "/reserveSeat/{movieId}/{seatId}?clientId={clientId}", HttpMethod.POST,
+                    "/reserveSeat/{movieId}/{seatId}?clientId={clientId}&code={code}", HttpMethod.POST,
                     new HttpEntity<>(null, null), RestError.class,
-                    VALID_MOVIE_ID, INVALID_SEAT_ID, VALID_CLIENT_ID.getClientId());
+                    VALID_MOVIE_ID, INVALID_SEAT_ID, VALID_CLIENT_ID.getClientId(),VALID_CODE);
 
             // then
             assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -145,9 +159,9 @@ public class ReservationsSystemTest {
 
             // when
             final ResponseEntity<RestError> response = restTemplate.exchange(
-                    "/reserveSeat/{movieId}/{seatId}?clientId={clientId}", HttpMethod.POST,
+                    "/reserveSeat/{movieId}/{seatId}?clientId={clientId}&code={code}", HttpMethod.POST,
                     new HttpEntity<>(null, null), RestError.class,
-                    VALID_MOVIE_ID, VALID_SEAT_ID, VALID_CLIENT_ID.getClientId());
+                    VALID_MOVIE_ID, VALID_SEAT_ID, VALID_CLIENT_ID.getClientId(),VALID_CODE);
 
             // then
             assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
@@ -744,9 +758,9 @@ public class ReservationsSystemTest {
 
     private ReservationId reserveSeat(int seatId) {
         final ResponseEntity<ReservationId> reservationResponse = restTemplate.exchange(
-                "/reserveSeat/{movieId}/{seatId}?clientId={clientId}", HttpMethod.POST,
+                "/reserveSeat/{movieId}/{seatId}?clientId={clientId}&code={code}", HttpMethod.POST,
                 new HttpEntity<>(null, null), ReservationId.class,
-                VALID_MOVIE_ID, seatId, VALID_CLIENT_ID.getClientId());
+                VALID_MOVIE_ID, seatId, VALID_CLIENT_ID.getClientId(),VALID_CODE);
         assertEquals(HttpStatus.OK, reservationResponse.getStatusCode());
         assertNotNull(reservationResponse.getBody());
         return reservationResponse.getBody();
@@ -781,4 +795,75 @@ public class ReservationsSystemTest {
                 reservationId.getReservationId(), VALID_CLIENT_ID.getClientId());
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
+
+
+    @Nested
+    class StatisticsTest {
+        @Test
+        void shouldNotReturnStatistics_whenClientIsNotAdmin(){
+            //when
+            final ResponseEntity<Statistics> response = restTemplate.exchange(
+                    "/showStatistics?clientId={clientId}&from={from}&to={to}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), Statistics.class,
+                    VALID_CLIENT_ID.getClientId(),HALL_RESERVATION_DATE, HALL_RESERVATION_DATE);
+
+            // then
+            assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+            assertNotNull(response.getBody());
+        }
+
+        @Test
+        void shouldNotReturnStatistics_whenFutureDates(){
+            //when
+            final ResponseEntity<Statistics> response = restTemplate.exchange(
+                    "/showStatistics?clientId={clientId}&from={from}&to={to}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), Statistics.class,
+                    ADMIN_CLIENT_ID.getClientId(),NO_MOVIES_FROM, NO_MOVIES_UP_TO);
+
+            // then
+            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+            assertNotNull(response.getBody());
+        }
+
+        @Test
+        void shouldNotReturnStatistics_whenWrongPastDates(){
+            //when
+            final ResponseEntity<Statistics> response = restTemplate.exchange(
+                    "/showStatistics?clientId={clientId}&from={from}&to={to}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), Statistics.class,
+                    ADMIN_CLIENT_ID.getClientId(),HALL_RESERVATION_DATE, PAST_DATE);
+
+            // then
+            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+            assertNotNull(response.getBody());
+        }
+
+        @Test
+        void shouldReturnEmptyStatistics_whenNoReservationThisDate(){
+            //when
+            final ResponseEntity<Statistics> response = restTemplate.exchange(
+                    "/showStatistics?clientId={clientId}&from={from}&to={to}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), Statistics.class,
+                    ADMIN_CLIENT_ID.getClientId(),NO_HALL_RESERVATION_DATE, NO_HALL_RESERVATION_DATE);
+
+            // then
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+        }
+
+        @Test
+        void shouldReturnStatistics_whenThereAreReservationsThisDate(){
+            //when
+            final ResponseEntity<Statistics> response = restTemplate.exchange(
+                    "/showStatistics?clientId={clientId}&from={from}&to={to}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), Statistics.class,
+                    ADMIN_CLIENT_ID.getClientId(),PAST_DATE, HALL_RESERVATION_DATE);
+
+            // then
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+        }
+
+    }
+
 }

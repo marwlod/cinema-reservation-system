@@ -43,11 +43,12 @@ public class SeatReservationController {
 
     @PostMapping("/reserveSeat/{movieId}/{seatId}")
     public ReservationId createSeatReservation(@RequestParam("clientId") final ClientId clientId,
+                                               @RequestParam("code")  final String code,
                                                @PathVariable("movieId") int movieId,
                                                @PathVariable("seatId") int seatId) throws RestException {
         try {
             loginService.verifyClientLoggedIn(clientId);
-            return seatReservationService.createSeatReservation(clientId, movieId, seatId);
+            return seatReservationService.createSeatReservation(clientId, movieId, seatId, code);
         } catch (MovieNotFoundException | SeatNotFoundException e) {
             throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e);
         } catch (ClientNotLoggedInException e) {

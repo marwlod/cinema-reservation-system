@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -66,6 +68,17 @@ public class MovieRepository {
                 .setParameter(4, basePrice)
                 .setParameter(5, hallId)
                 .executeUpdate();
+    }
+
+    @Transactional
+    public int getMovies(Instant from, Instant to){
+        BigInteger movies = (BigInteger) entityManager
+                .createNativeQuery("SELECT COUNT(*) from movie " +
+                        "WHERE end_date>? AND end_date<?")
+                .setParameter(1, Timestamp.from(from))
+                .setParameter(2, Timestamp.from(to))
+                .getSingleResult();
+        return movies.intValue();
     }
 
 }
