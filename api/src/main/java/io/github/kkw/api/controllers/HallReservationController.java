@@ -13,7 +13,6 @@ import io.github.kkw.api.model.Hall;
 import io.github.kkw.api.model.ReservationId;
 import io.github.kkw.api.services.HallReservationService;
 import io.github.kkw.api.services.LoginService;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

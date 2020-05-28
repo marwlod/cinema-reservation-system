@@ -8,7 +8,6 @@ import io.github.kkw.api.db.dto.ProfileEntity;
 import io.github.kkw.api.exceptions.FromAfterToDateException;
 import io.github.kkw.api.exceptions.FutureDatesException;
 import io.github.kkw.api.model.ClientId;
-import io.github.kkw.api.model.Profile;
 import io.github.kkw.api.model.Statistics;
 import org.springframework.stereotype.Service;
 
@@ -46,15 +45,6 @@ public class StatisticsService {
         return clientsThatReserved;
     }
 
-    private double totalMoneyEarnedHalls(Instant from, Instant to){
-        double totalMoney = 0.00;
-
-        for(int i=0; i<hallReservationRepository.halls(); i++){
-            totalMoney+=hallReservationRepository.getMoneyEarnedFromHall(i, from, to);
-        }
-        return totalMoney;
-    }
-
     public Statistics showStatistics(ClientId clientId, final Instant from, final Instant to) throws FutureDatesException, FromAfterToDateException {
         if(from.compareTo(to)>0){
             throw new FromAfterToDateException("From date cannot be after To date");
@@ -65,7 +55,7 @@ public class StatisticsService {
         int seatReservations = seatReservationRepository.getSeatReservations(from,to);
         int hallReservations = hallReservationRepository.getHallReservations(from, to);
         int movies = movieRepository.getMovies(from, to);
-        double moneyEarned = totalMoneyEarnedHalls(from,to)+seatReservationRepository.getMoneyEarned(from, to);
+        double moneyEarned = hallReservationRepository.getMoneyEarnedFromHalls(from,to)+seatReservationRepository.getMoneyEarned(from, to);
         int newClientsRegistered = loginRepository.newClientsRegistered(from, to);
         int totalClientsAtTheMoment = loginRepository.getTotalClientsAtTheMoment();
         int clientsThatReserved = clientsThatReservedHallOrSeat();

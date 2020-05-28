@@ -2,7 +2,7 @@ package io.github.kkw.api.services;
 
 import io.github.kkw.api.db.SpecialOffersRepository;
 import io.github.kkw.api.exceptions.SpecialCodeAlreadyExistsException;
-import io.github.kkw.api.model.SpecialOffer;
+import io.github.kkw.api.model.SpecialOfferAddRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,7 +14,7 @@ public class SpecialOffersService {
         this.specialOffersRepository=specialOffersRepository;
     }
 
-    public void addSpecialOffer(SpecialOffer specialOffer) throws SpecialCodeAlreadyExistsException {
+    public void addSpecialOffer(SpecialOfferAddRequest specialOffer) throws SpecialCodeAlreadyExistsException {
         if(specialOffersRepository.ifSpecialOfferAlreadyExists(specialOffer.getCode())){
             throw new SpecialCodeAlreadyExistsException("Special offer code already exists");
         }

@@ -52,6 +52,9 @@ public class ReservationsSystemTest {
     private static final String PAYMENTS_MOCK_PASSWORD = "supersecretTO2";
     private static final String VALID_CODE = "A123";
     private static final String INVALID_CODE = "INVALID_CODE_098";
+    private static final String UNIQUE_CODE = "UNIQUECODE123";
+    private static final SpecialOfferAddRequest validSpecialOffer = new SpecialOfferAddRequest(UNIQUE_CODE, 25);
+    private static final SpecialOfferAddRequest existingCodeSpecialOffer = new SpecialOfferAddRequest(VALID_CODE, 50);
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -79,6 +82,20 @@ public class ReservationsSystemTest {
                     "/reserveSeat/{movieId}/{seatId}?clientId={clientId}&code={code}", HttpMethod.POST,
                     new HttpEntity<>(null, null), ReservationId.class,
                     VALID_MOVIE_ID, VALID_SEAT_ID, VALID_CLIENT_ID.getClientId(), INVALID_CODE);
+
+            // then
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+            cleanUpSeatReservation(response.getBody());
+        }
+
+        @Test
+        void shouldReserveSeat_whenSeatFreeToReserveWithoutCode() {
+            // when
+            final ResponseEntity<ReservationId> response = restTemplate.exchange(
+                    "/reserveSeat/{movieId}/{seatId}?clientId={clientId}&code={code}", HttpMethod.POST,
+                    new HttpEntity<>(null, null), ReservationId.class,
+                    VALID_MOVIE_ID, VALID_SEAT_ID, VALID_CLIENT_ID.getClientId(),null);
 
             // then
             assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -794,6 +811,38 @@ public class ReservationsSystemTest {
                 new HttpEntity<>(null, null), Void.class,
                 reservationId.getReservationId(), VALID_CLIENT_ID.getClientId());
         assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Nested
+    class SpecialOffers{
+
+        @Test
+        void shouldNotAddSpecialOfferIfClientIsNotAdmin(){
+            final ResponseEntity<Void> response = restTemplate.exchange(
+                    "/addSpecialOffer?clientId={clientId}", HttpMethod.POST,
+                    new HttpEntity<>(validSpecialOffer, null), Void.class,
+                    VALID_CLIENT_ID.getClientId());
+            assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        }
+
+        @Disabled("implement delete to test this properly")
+        @Test
+        void shouldAddSpecialOfferIfCodeIsUnique(){
+            final ResponseEntity<Void> response = restTemplate.exchange(
+                    "/addSpecialOffer?clientId={clientId}", HttpMethod.POST,
+                    new HttpEntity<>(validSpecialOffer, null), Void.class,
+                    ADMIN_CLIENT_ID.getClientId());
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+        }
+
+        @Test
+        void shouldNotAddSpecialOfferIfCodeIsNotUnique(){
+            final ResponseEntity<Void> response = restTemplate.exchange(
+                    "/addSpecialOffer?clientId={clientId}", HttpMethod.POST,
+                    new HttpEntity<>(existingCodeSpecialOffer, null), Void.class,
+                    ADMIN_CLIENT_ID.getClientId());
+            assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        }
     }
 
 

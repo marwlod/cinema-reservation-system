@@ -5,8 +5,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.sound.midi.Soundbank;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -147,19 +149,22 @@ public class HallReservationRepository {
 
     @Transactional
     @SuppressWarnings("unchecked")
-    public double getMoneyEarnedFromHall(int hallId,Instant from, Instant to){
+    public double getMoneyEarnedFromHalls(Instant from, Instant to){
         List<Integer> halls = (List<Integer>) entityManager
-                .createNativeQuery("SELECT hall_id FROM hall_reservation")
+                .createNativeQuery("SELECT hall_id FROM hall_reservation WHERE valid_until>=? AND valid_until<=?")
+                .setParameter(1,Timestamp.from(from))
+                .setParameter(2, Timestamp.from(to))
                 .getResultList();
-        double moneySum = 0.00;
         List<BigDecimal> hallsPrices = (List<BigDecimal>) entityManager
                 .createNativeQuery("SELECT total_price FROM hall")
                 .getResultList();
         if(halls.isEmpty() || hallsPrices.isEmpty()) return 0.00;
+        BigDecimal sumHallPayments = BigDecimal.ZERO;
         for(int i=0; i<halls.size(); i++){
-            moneySum+=hallsPrices.get(halls.get(i)-1).doubleValue();
+            sumHallPayments = sumHallPayments.add(hallsPrices.get(halls.get(i)-1));
         }
-        return moneySum;
+        System.out.println("getMoneyEarnedFromHalls: "+sumHallPayments.doubleValue());
+        return sumHallPayments.doubleValue();
     }
 
     @Transactional
