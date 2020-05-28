@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.Instant;
-import java.util.List;
 
 @RestController
 public class AdminController {
@@ -50,7 +49,7 @@ public class AdminController {
     @GetMapping("/showStatistics")
     public Statistics showStatistics(@RequestParam("clientId") final ClientId clientId,
                                      @RequestParam("from") final Instant from,
-                                     @RequestParam("to") final Instant to) throws NotAdminException, ClientNotLoggedInException, RestException {
+                                     @RequestParam("to") final Instant to) throws RestException {
         try{
             loginService.verifyAdmin(clientId);
             loginService.verifyClientLoggedIn(clientId);
@@ -62,9 +61,9 @@ public class AdminController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/addSpecialOffer")
     public void addSpecialOffer(@RequestParam("clientId") final ClientId clientId,
-                                @RequestParam("specialOffer") final SpecialOffer specialOffer) throws RestException {
+                                @Valid @RequestBody SpecialOfferAddRequest specialOffer) throws RestException {
         try {
             loginService.verifyAdmin(clientId);
             loginService.verifyClientLoggedIn(clientId);

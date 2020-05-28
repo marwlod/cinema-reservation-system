@@ -74,7 +74,7 @@ public class MovieRepository {
     public int getMovies(Instant from, Instant to){
         BigInteger movies = (BigInteger) entityManager
                 .createNativeQuery("SELECT COUNT(*) from movie " +
-                        "WHERE end_date>? AND end_date<?")
+                        "WHERE start_date>=? AND end_date<=?")
                 .setParameter(1, Timestamp.from(from))
                 .setParameter(2, Timestamp.from(to))
                 .getSingleResult();

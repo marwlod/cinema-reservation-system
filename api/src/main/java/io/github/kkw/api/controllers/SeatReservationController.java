@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class SeatReservationController {
@@ -43,7 +44,7 @@ public class SeatReservationController {
 
     @PostMapping("/reserveSeat/{movieId}/{seatId}")
     public ReservationId createSeatReservation(@RequestParam("clientId") final ClientId clientId,
-                                               @RequestParam("code")  final String code,
+                                               @RequestParam(value = "code", required = false) Optional<String> code,
                                                @PathVariable("movieId") int movieId,
                                                @PathVariable("seatId") int seatId) throws RestException {
         try {

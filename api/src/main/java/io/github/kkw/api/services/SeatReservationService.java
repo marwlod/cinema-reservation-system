@@ -13,6 +13,7 @@ import io.github.kkw.api.model.Seat;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,7 +24,7 @@ public class SeatReservationService {
         this.seatReservationRepository = seatReservationRepository;
     }
 
-    public ReservationId createSeatReservation(ClientId clientId, int movieId, int seatId, String code)
+    public ReservationId createSeatReservation(ClientId clientId, int movieId, int seatId, Optional<String> code)
             throws MovieNotFoundException, SeatNotFoundException, SeatReservedException {
         if (seatReservationRepository.movieDoesntExist(movieId)) {
             throw new MovieNotFoundException("Movie with this ID not found");
@@ -34,7 +35,7 @@ public class SeatReservationService {
         if (seatReservationRepository.isReserved(movieId, seatId)) {
             throw new SeatReservedException("Chosen seat for this movie is already reserved");
         }
-        seatReservationRepository.createSeatReservation(clientId.getClientId(), movieId, seatId,code);
+        seatReservationRepository.createSeatReservation(clientId.getClientId(), movieId, seatId, code.isEmpty() ? null : code.get());
         return new ReservationId(seatReservationRepository.getSeatReservationId(clientId.getClientId(), movieId, seatId));
     }
 

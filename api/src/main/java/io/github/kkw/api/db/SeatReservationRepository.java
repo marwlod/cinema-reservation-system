@@ -1,12 +1,9 @@
 package io.github.kkw.api.db;
 
-import io.github.kkw.api.db.dto.HallEntity;
 import io.github.kkw.api.db.dto.SeatEntity;
 import io.github.kkw.api.db.dto.SpecialOfferEntity;
-import io.github.kkw.api.model.SpecialOffer;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -62,10 +59,21 @@ public class SeatReservationRepository {
         return isReserved.intValue() == 1;
     }
 
+    private BigDecimal calculateTotalPrice(BigDecimal basePrice, int discountPercentage, boolean isVipRecord){
+        int isVip = 0;
+        if(isVipRecord) isVip=1;
+        BigDecimal discountPartOfBase = new BigDecimal(1-discountPercentage*0.01);
+        BigDecimal priceWithDiscount = basePrice.multiply(new BigDecimal(1-discountPercentage*0.01));
+        BigDecimal vipPrice = basePrice.multiply(new BigDecimal(0.5*isVip));
+        BigDecimal totalPrice = priceWithDiscount.add(vipPrice);
+        return totalPrice;
+    }
+
     @Transactional
     @SuppressWarnings("unchecked")
     public void createSeatReservation(int clientId, int movieId, int seatId, String code) {
-        final BigDecimal basePrice = (BigDecimal) entityManager
+         System.out.println("HERE WE ARE");
+         BigDecimal basePrice = (BigDecimal) entityManager
                 .createNativeQuery("SELECT base_price FROM movie WHERE movie_id=?")
                 .setParameter(1,movieId)
                 .getSingleResult();
@@ -80,9 +88,7 @@ public class SeatReservationRepository {
                 .createNativeQuery("SELECT is_vip FROM seat WHERE seat_id=?")
                 .setParameter(1,seatId)
                 .getSingleResult();
-        int isVip = 0;
-        if(isVipRecord) isVip=1;
-        final double totalPrice = (1-discountPercentage*0.01)*basePrice.doubleValue()+isVip*0.5*basePrice.doubleValue();
+        double totalPrice = calculateTotalPrice(basePrice,discountPercentage,isVipRecord).doubleValue();
         final Timestamp timeMovieEnds = (Timestamp) entityManager
                 .createNativeQuery("SELECT end_date FROM movie " +
                         "WHERE movie_id=?")
