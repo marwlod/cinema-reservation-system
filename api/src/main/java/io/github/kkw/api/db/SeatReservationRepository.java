@@ -1,10 +1,14 @@
 package io.github.kkw.api.db;
 
+import io.github.kkw.api.db.dto.HallEntity;
 import io.github.kkw.api.db.dto.SeatEntity;
+import io.github.kkw.api.db.dto.SpecialOfferEntity;
+import io.github.kkw.api.model.SpecialOffer;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -59,7 +63,26 @@ public class SeatReservationRepository {
     }
 
     @Transactional
-    public void createSeatReservation(int clientId, int movieId, int seatId) {
+    @SuppressWarnings("unchecked")
+    public void createSeatReservation(int clientId, int movieId, int seatId, String code) {
+        final BigDecimal basePrice = (BigDecimal) entityManager
+                .createNativeQuery("SELECT base_price FROM movie WHERE movie_id=?")
+                .setParameter(1,movieId)
+                .getSingleResult();
+        final List<SpecialOfferEntity> specialOfferRecord = (List<SpecialOfferEntity>) entityManager
+                .createNativeQuery("SELECT special_offer_id, code, percentage " +
+                        "FROM special_offers WHERE code=?", SpecialOfferEntity.class)
+                .setParameter(1,code)
+                .getResultList();
+        int discountPercentage = 0;
+        if(!specialOfferRecord.isEmpty()) discountPercentage = specialOfferRecord.get(0).getPercentage();
+        final Boolean isVipRecord = (Boolean) entityManager
+                .createNativeQuery("SELECT is_vip FROM seat WHERE seat_id=?")
+                .setParameter(1,seatId)
+                .getSingleResult();
+        int isVip = 0;
+        if(isVipRecord) isVip=1;
+        final double totalPrice = (1-discountPercentage*0.01)*basePrice.doubleValue()+isVip*0.5*basePrice.doubleValue();
         final Timestamp timeMovieEnds = (Timestamp) entityManager
                 .createNativeQuery("SELECT end_date FROM movie " +
                         "WHERE movie_id=?")
@@ -67,13 +90,14 @@ public class SeatReservationRepository {
                 .getSingleResult();
 
         entityManager
-                .createNativeQuery("INSERT INTO seat_reservation (valid_until, is_paid, movie_id, seat_id, client_id) " +
-                        "VALUES (?, ?, ?, ?, ?)")
+                .createNativeQuery("INSERT INTO seat_reservation (valid_until, is_paid, movie_id, seat_id, client_id, total_price) " +
+                        "VALUES (?, ?, ?, ?, ?, ?)")
                 .setParameter(1, timeMovieEnds)
                 .setParameter(2, 0) // not paid
                 .setParameter(3, movieId)
                 .setParameter(4, seatId)
                 .setParameter(5, clientId)
+                .setParameter(6,totalPrice)
                 .executeUpdate();
     }
 
@@ -149,4 +173,37 @@ public class SeatReservationRepository {
                 .setParameter(1, movieId)
                 .getResultList();
     }
+
+    @Transactional
+    public int getSeatReservations(Instant from, Instant to){
+        final BigInteger result = (BigInteger) entityManager
+                .createNativeQuery("SELECT COUNT(*) FROM seat_reservation WHERE valid_until>=? AND valid_until<=?")
+                .setParameter(1, Timestamp.from(from))
+                .setParameter(2, Timestamp.from(to))
+                .getSingleResult();
+        return result.intValue();
+    }
+
+    @Transactional
+    public boolean ifClientReservedAnySeat(int clientId){
+        final BigInteger isReserved = (BigInteger) entityManager
+                .createNativeQuery("SELECT IF((" +
+                        "SELECT COUNT(*) FROM seat_reservation WHERE client_id = ?" +
+                        ") > 0, TRUE, FALSE)")
+                .setParameter(1, clientId)
+                .getSingleResult();
+        return isReserved.intValue() == 0;
+    }
+
+    @Transactional
+    public double getMoneyEarned(Instant from, Instant to){
+        BigDecimal moneyEarned = (BigDecimal) entityManager
+                .createNativeQuery("SELECT SUM(total_price) FROM seat_reservation WHERE valid_until>=? AND valid_until<=?")
+                .setParameter(1, Timestamp.from(from))
+                .setParameter(2, Timestamp.from(to))
+                .getSingleResult();
+        if(moneyEarned==null) return 0.00;
+        return moneyEarned.doubleValue();
+    }
+
 }

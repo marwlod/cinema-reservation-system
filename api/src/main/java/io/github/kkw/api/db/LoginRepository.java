@@ -1,6 +1,7 @@
 package io.github.kkw.api.db;
 
 import io.github.kkw.api.db.dto.ProfileEntity;
+import io.github.kkw.api.db.dto.SeatEntity;
 import io.github.kkw.api.model.Profile;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,7 +11,10 @@ import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class LoginRepository {
@@ -26,14 +30,15 @@ public class LoginRepository {
                                final String name,
                                final String surname) {
         entityManager
-                .createNativeQuery("INSERT INTO client (email, password, name, surname, is_admin, logged_until) " +
-                        "VALUES (?,?,?,?,?,?)")
+                .createNativeQuery("INSERT INTO client (email, password, name, surname, is_admin, logged_until, register_date) " +
+                        "VALUES (?,?,?,?,?,?,?)")
                 .setParameter(1, email)
                 .setParameter(2, password)
                 .setParameter(3, name)
                 .setParameter(4, surname)
                 .setParameter(5, 0) // not an admin
                 .setParameter(6, Instant.now().plus(20, ChronoUnit.MINUTES)) // logged in for 20mins
+                .setParameter(7, Instant.now())
                 .executeUpdate();
     }
 
@@ -127,4 +132,31 @@ public class LoginRepository {
                 .setParameter(1, clientId)
                 .getSingleResult();
     }
+
+    @Transactional
+    public int getTotalClientsAtTheMoment(){
+        BigInteger totalClients  = (BigInteger) entityManager
+                .createNativeQuery("SELECT COUNT(*) from client")
+                .getSingleResult();
+        return totalClients.intValue();
+    }
+
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public List<ProfileEntity> getAllProfiles(){
+        return (List<ProfileEntity>) entityManager
+                .createNativeQuery("SELECT client_id, email, name, surname, is_admin from client", ProfileEntity.class)
+                .getResultList();
+    }
+
+    @Transactional
+    public int newClientsRegistered(Instant from, Instant to){
+        BigInteger newClients = (BigInteger) entityManager
+                .createNativeQuery("SELECT COUNT(*) from client WHERE register_date>=? AND register_date<=?")
+                .setParameter(1,Timestamp.from(from))
+                .setParameter(2,Timestamp.from(to))
+                .getSingleResult();
+        return newClients.intValue();
+    }
+
 }

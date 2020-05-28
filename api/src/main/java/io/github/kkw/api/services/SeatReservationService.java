@@ -23,7 +23,7 @@ public class SeatReservationService {
         this.seatReservationRepository = seatReservationRepository;
     }
 
-    public ReservationId createSeatReservation(ClientId clientId, int movieId, int seatId)
+    public ReservationId createSeatReservation(ClientId clientId, int movieId, int seatId, String code)
             throws MovieNotFoundException, SeatNotFoundException, SeatReservedException {
         if (seatReservationRepository.movieDoesntExist(movieId)) {
             throw new MovieNotFoundException("Movie with this ID not found");
@@ -34,7 +34,7 @@ public class SeatReservationService {
         if (seatReservationRepository.isReserved(movieId, seatId)) {
             throw new SeatReservedException("Chosen seat for this movie is already reserved");
         }
-        seatReservationRepository.createSeatReservation(clientId.getClientId(), movieId, seatId);
+        seatReservationRepository.createSeatReservation(clientId.getClientId(), movieId, seatId,code);
         return new ReservationId(seatReservationRepository.getSeatReservationId(clientId.getClientId(), movieId, seatId));
     }
 

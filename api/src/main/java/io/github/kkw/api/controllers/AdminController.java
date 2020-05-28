@@ -1,31 +1,33 @@
 package io.github.kkw.api.controllers;
 
-import io.github.kkw.api.exceptions.ClientNotLoggedInException;
-import io.github.kkw.api.exceptions.HallNotFoundException;
-import io.github.kkw.api.exceptions.MovieConflictException;
-import io.github.kkw.api.exceptions.MovieDateException;
-import io.github.kkw.api.exceptions.NotAdminException;
-import io.github.kkw.api.exceptions.RestException;
-import io.github.kkw.api.model.ClientId;
-import io.github.kkw.api.model.MovieAddRequest;
+import io.github.kkw.api.exceptions.*;
+import io.github.kkw.api.model.*;
 import io.github.kkw.api.services.LoginService;
 import io.github.kkw.api.services.MovieService;
+import io.github.kkw.api.services.SpecialOffersService;
+import io.github.kkw.api.services.StatisticsService;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.Instant;
+import java.util.List;
 
 @RestController
 public class AdminController {
     private final LoginService loginService;
     private final MovieService movieService;
+    private final StatisticsService statisticsService;
+    private final SpecialOffersService specialOffersService;
 
-    public AdminController(LoginService loginService, MovieService movieService) {
+    public AdminController(LoginService loginService,
+                           MovieService movieService,
+                           StatisticsService statisticsService,
+                           SpecialOffersService specialOffersService) {
         this.loginService = loginService;
         this.movieService = movieService;
+        this.statisticsService=statisticsService;
+        this.specialOffersService=specialOffersService;
     }
 
     @PostMapping("/addMovie")
@@ -41,6 +43,36 @@ public class AdminController {
         } catch (MovieConflictException e){
             throw new RestException(e.getMessage(), HttpStatus.CONFLICT, e);
         } catch (ClientNotLoggedInException | NotAdminException e) {
+            throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
+        }
+    }
+
+    @GetMapping("/showStatistics")
+    public Statistics showStatistics(@RequestParam("clientId") final ClientId clientId,
+                                     @RequestParam("from") final Instant from,
+                                     @RequestParam("to") final Instant to) throws NotAdminException, ClientNotLoggedInException, RestException {
+        try{
+            loginService.verifyAdmin(clientId);
+            loginService.verifyClientLoggedIn(clientId);
+            return statisticsService.showStatistics(clientId,from,to);
+        } catch (FutureDatesException | FromAfterToDateException e){
+            throw new RestException(e.getMessage(), HttpStatus.BAD_REQUEST, e);
+        } catch (ClientNotLoggedInException | NotAdminException e) {
+            throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
+        }
+    }
+
+    @PostMapping
+    public void addSpecialOffer(@RequestParam("clientId") final ClientId clientId,
+                                @RequestParam("specialOffer") final SpecialOffer specialOffer) throws RestException {
+        try {
+            loginService.verifyAdmin(clientId);
+            loginService.verifyClientLoggedIn(clientId);
+            specialOffersService.addSpecialOffer(specialOffer);
+        } catch (SpecialCodeAlreadyExistsException e){
+            throw new RestException(e.getMessage(),HttpStatus.CONFLICT, e);
+        }
+        catch (ClientNotLoggedInException | NotAdminException e) {
             throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
         }
     }

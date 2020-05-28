@@ -6,7 +6,8 @@ CREATE TABLE client
     name VARCHAR(2048),
     surname VARCHAR(2048),
     is_admin BOOLEAN NOT NULL,
-    logged_until DATETIME(6) NOT NULL -- microsecond precision
+    logged_until DATETIME(6) NOT NULL, -- microsecond precision
+    register_date DATETIME(6)
 );
 
 CREATE TABLE hall
@@ -59,7 +60,15 @@ CREATE TABLE seat_reservation
     movie_id INT NOT NULL,
     seat_id INT NOT NULL,
     client_id INT NOT NULL,
+    total_price DECIMAL(13, 4) NOT NULL,
     FOREIGN KEY (movie_id) REFERENCES movie(movie_id),
     FOREIGN KEY (seat_id) REFERENCES seat(seat_id),
     FOREIGN KEY (client_id) REFERENCES client(client_id)
+);
+
+CREATE TABLE special_offers
+(
+    special_offer_id INT NOT NULL PRIMARY KEY,
+    code VARCHAR(20) UNIQUE,
+    percentage INT
 );
