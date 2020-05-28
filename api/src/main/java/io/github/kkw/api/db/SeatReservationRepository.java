@@ -72,7 +72,6 @@ public class SeatReservationRepository {
     @Transactional
     @SuppressWarnings("unchecked")
     public void createSeatReservation(int clientId, int movieId, int seatId, String code) {
-         System.out.println("HERE WE ARE");
          BigDecimal basePrice = (BigDecimal) entityManager
                 .createNativeQuery("SELECT base_price FROM movie WHERE movie_id=?")
                 .setParameter(1,movieId)
