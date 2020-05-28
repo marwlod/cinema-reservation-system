@@ -68,7 +68,7 @@ CREATE TABLE seat_reservation
 
 CREATE TABLE special_offers
 (
-    special_offer_id INT NOT NULL PRIMARY KEY,
+    special_offer_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     code VARCHAR(20) UNIQUE,
     percentage INT
 );

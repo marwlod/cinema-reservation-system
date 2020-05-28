@@ -59,7 +59,6 @@ public class StatisticsService {
         int newClientsRegistered = loginRepository.newClientsRegistered(from, to);
         int totalClientsAtTheMoment = loginRepository.getTotalClientsAtTheMoment();
         int clientsThatReserved = clientsThatReservedHallOrSeat();
-        System.out.println(seatReservations+" "+hallReservations+" "+movies+" MONEY EARNED: "+moneyEarned+" "+newClientsRegistered+" "+totalClientsAtTheMoment+" "+clientsThatReserved);
         return new Statistics(seatReservations, hallReservations,movies,moneyEarned,
                 newClientsRegistered, totalClientsAtTheMoment,clientsThatReserved);
     }
