@@ -163,7 +163,6 @@ public class HallReservationRepository {
         for(int i=0; i<halls.size(); i++){
             sumHallPayments = sumHallPayments.add(hallsPrices.get(halls.get(i)-1));
         }
-        System.out.println("getMoneyEarnedFromHalls: "+sumHallPayments.doubleValue());
         return sumHallPayments.doubleValue();
     }
 

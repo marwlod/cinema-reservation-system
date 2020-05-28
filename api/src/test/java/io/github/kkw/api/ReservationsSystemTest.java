@@ -52,8 +52,6 @@ public class ReservationsSystemTest {
     private static final String PAYMENTS_MOCK_PASSWORD = "supersecretTO2";
     private static final String VALID_CODE = "A123";
     private static final String INVALID_CODE = "INVALID_CODE_098";
-    private static final String UNIQUE_CODE = "UNIQUECODE123";
-    private static final SpecialOfferAddRequest validSpecialOffer = new SpecialOfferAddRequest(UNIQUE_CODE, 25);
     private static final SpecialOfferAddRequest existingCodeSpecialOffer = new SpecialOfferAddRequest(VALID_CODE, 50);
 
     @Autowired
@@ -818,16 +816,27 @@ public class ReservationsSystemTest {
 
         @Test
         void shouldNotAddSpecialOfferIfClientIsNotAdmin(){
-            final ResponseEntity<Void> response = restTemplate.exchange(
+            //given
+            final String UNIQUE_CODE = new Random().nextLong() + "UniqueCode";
+            final SpecialOfferAddRequest validSpecialOffer = new SpecialOfferAddRequest(UNIQUE_CODE, 25);
+            //when
+            final ResponseEntity<RestError> response = restTemplate.exchange(
                     "/addSpecialOffer?clientId={clientId}", HttpMethod.POST,
-                    new HttpEntity<>(validSpecialOffer, null), Void.class,
+                    new HttpEntity<>(validSpecialOffer, null), RestError.class,
                     VALID_CLIENT_ID.getClientId());
             assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals("Only admin can do this", response.getBody().getMessage());
+
         }
 
         @Disabled("implement delete to test this properly")
         @Test
         void shouldAddSpecialOfferIfCodeIsUnique(){
+            //given
+            final String UNIQUE_CODE = new Random().nextLong() + "UniqueCode";
+            final SpecialOfferAddRequest validSpecialOffer = new SpecialOfferAddRequest(UNIQUE_CODE, 25);
+            //when
             final ResponseEntity<Void> response = restTemplate.exchange(
                     "/addSpecialOffer?clientId={clientId}", HttpMethod.POST,
                     new HttpEntity<>(validSpecialOffer, null), Void.class,
@@ -837,11 +846,13 @@ public class ReservationsSystemTest {
 
         @Test
         void shouldNotAddSpecialOfferIfCodeIsNotUnique(){
-            final ResponseEntity<Void> response = restTemplate.exchange(
+            final ResponseEntity<RestError> response = restTemplate.exchange(
                     "/addSpecialOffer?clientId={clientId}", HttpMethod.POST,
-                    new HttpEntity<>(existingCodeSpecialOffer, null), Void.class,
+                    new HttpEntity<>(existingCodeSpecialOffer, null), RestError.class,
                     ADMIN_CLIENT_ID.getClientId());
             assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals("Special offer code already exists", response.getBody().getMessage());
         }
     }
 
@@ -851,40 +862,43 @@ public class ReservationsSystemTest {
         @Test
         void shouldNotReturnStatistics_whenClientIsNotAdmin(){
             //when
-            final ResponseEntity<Statistics> response = restTemplate.exchange(
+            final ResponseEntity<RestError> response = restTemplate.exchange(
                     "/showStatistics?clientId={clientId}&from={from}&to={to}", HttpMethod.GET,
-                    new HttpEntity<>(null, null), Statistics.class,
+                    new HttpEntity<>(null, null), RestError.class,
                     VALID_CLIENT_ID.getClientId(),HALL_RESERVATION_DATE, HALL_RESERVATION_DATE);
 
             // then
             assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
             assertNotNull(response.getBody());
+            assertEquals("Only admin can do this", response.getBody().getMessage());
         }
 
         @Test
         void shouldNotReturnStatistics_whenFutureDates(){
             //when
-            final ResponseEntity<Statistics> response = restTemplate.exchange(
+            final ResponseEntity<RestError> response = restTemplate.exchange(
                     "/showStatistics?clientId={clientId}&from={from}&to={to}", HttpMethod.GET,
-                    new HttpEntity<>(null, null), Statistics.class,
+                    new HttpEntity<>(null, null), RestError.class,
                     ADMIN_CLIENT_ID.getClientId(),NO_MOVIES_FROM, NO_MOVIES_UP_TO);
 
             // then
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
             assertNotNull(response.getBody());
+            assertEquals("Dates from the future", response.getBody().getMessage());
         }
 
         @Test
         void shouldNotReturnStatistics_whenWrongPastDates(){
             //when
-            final ResponseEntity<Statistics> response = restTemplate.exchange(
+            final ResponseEntity<RestError> response = restTemplate.exchange(
                     "/showStatistics?clientId={clientId}&from={from}&to={to}", HttpMethod.GET,
-                    new HttpEntity<>(null, null), Statistics.class,
+                    new HttpEntity<>(null, null), RestError.class,
                     ADMIN_CLIENT_ID.getClientId(),HALL_RESERVATION_DATE, PAST_DATE);
 
             // then
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
             assertNotNull(response.getBody());
+            assertEquals("From date cannot be after To date", response.getBody().getMessage());
         }
 
         @Test
