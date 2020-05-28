@@ -12,7 +12,7 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=secret-pass
     volumes:
-      # creating database and adding some dummy data to test if the connection to database works fine
+      # creating database and adding test data
       - ./api/src/test/resources/db:/docker-entrypoint-initdb.d
     networks:
       - crs

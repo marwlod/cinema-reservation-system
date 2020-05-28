@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.avast.gradle.docker-compose' version '0.10.10'
 }
 
 sourceCompatibility = 1.11
@@ -8,6 +9,8 @@ targetCompatibility = 1.11
 test {
     useJUnitPlatform()
 }
+
+dockerCompose.isRequiredBy(test)
 
 repositories {
     jcenter()
