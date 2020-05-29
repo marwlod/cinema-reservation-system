@@ -19,9 +19,9 @@ public class SpecialOffer {
     }
 
     public SpecialOffer(final SpecialOfferEntity specialOfferEntity){
-        this.specialOfferId=specialOfferEntity.getSpecialOfferId();
-        this.code=specialOfferEntity.getCode();
-        this.percentage=specialOfferEntity.getPercentage();
+        this(specialOfferEntity.getSpecialOfferId(),
+                specialOfferEntity.getCode(),
+                specialOfferEntity.getPercentage());
     }
 
     public int getSpecialOfferId() {

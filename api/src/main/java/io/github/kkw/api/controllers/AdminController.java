@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.Instant;
+import java.util.List;
 
 @RestController
 public class AdminController {
@@ -70,9 +71,24 @@ public class AdminController {
             specialOffersService.addSpecialOffer(specialOffer);
         } catch (SpecialCodeAlreadyExistsException e){
             throw new RestException(e.getMessage(),HttpStatus.CONFLICT, e);
-        }
-        catch (ClientNotLoggedInException | NotAdminException e) {
+        } catch (ClientNotLoggedInException | NotAdminException e) {
             throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
         }
     }
+
+    @GetMapping("/showSpecialOffers")
+    public @ResponseBody
+    List<SpecialOffer> showSpecialOffers(@RequestParam("clientId") final ClientId clientId) throws RestException {
+        try{
+            loginService.verifyAdmin(clientId);
+            loginService.verifyClientLoggedIn(clientId);
+            return specialOffersService.showSpecialOffers();
+
+        }  catch (SpecialOffersNotFoundException e){
+            throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e);
+        } catch (ClientNotLoggedInException | NotAdminException e) {
+            throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
+        }
+    }
+
 }
