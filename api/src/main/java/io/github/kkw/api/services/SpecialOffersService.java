@@ -32,20 +32,9 @@ public class SpecialOffersService {
 
     public List<SpecialOffer> showSpecialOffers() throws SpecialOffersNotFoundException {
         List<SpecialOfferEntity> specialOfferEntities = specialOffersRepository.getSpecialOffers();
-
         if(specialOfferEntities.isEmpty()){
             throw new SpecialOffersNotFoundException("No special code exists");
         }
         return specialOfferEntities.stream().map(SpecialOffer::new).collect(Collectors.toList());
-        /*
-        List<SpecialOffer> specialOffers = new ArrayList<>();
-        for(int i=0; i<specialOfferEntities.size(); i++){
-            SpecialOfferEntity specialOfferEntity = specialOfferEntities.get(i);
-            SpecialOffer specialOfferElement = new SpecialOffer(specialOfferEntity);
-            specialOffers.add(specialOfferElement);
-        }
-        return specialOffers;
-
-         */
     }
 }
