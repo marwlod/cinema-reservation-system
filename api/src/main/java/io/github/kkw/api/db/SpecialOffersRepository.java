@@ -1,10 +1,12 @@
 package io.github.kkw.api.db;
 
+import io.github.kkw.api.db.dto.SpecialOfferEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.math.BigInteger;
+import java.util.List;
 
 @Repository
 public class SpecialOffersRepository {
@@ -32,4 +34,12 @@ public class SpecialOffersRepository {
                 .getSingleResult();
         return matches.intValue() == 1;
     }
+
+    @Transactional
+    public List<SpecialOfferEntity> getSpecialOffers() {
+        return (List<SpecialOfferEntity>) entityManager
+                .createNativeQuery("SELECT special_offer_id, code, percentage FROM special_offers")
+                .getResultList();
+    }
+
 }

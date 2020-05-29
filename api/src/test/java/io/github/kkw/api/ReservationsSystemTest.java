@@ -854,6 +854,16 @@ public class ReservationsSystemTest {
             assertNotNull(response.getBody());
             assertEquals("Special offer code already exists", response.getBody().getMessage());
         }
+
+        @Test
+        void shouldShowSpecialOffersIfExist(){
+            final ResponseEntity<List<SpecialOffer>> response = restTemplate.exchange(
+                    "/showSpecialOffers?clientId={clientId}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), new ParameterizedTypeReference<List<SpecialOffer>>(){},
+                    ADMIN_CLIENT_ID.getClientId());
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+        }
     }
 
 
