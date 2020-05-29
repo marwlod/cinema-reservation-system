@@ -211,4 +211,37 @@ public class SeatReservationRepository {
         return moneyEarned.doubleValue();
     }
 
+    @Transactional
+    public int getReservationsCount(String movieName){
+        final BigInteger movieShowsCounter = (BigInteger) entityManager
+                .createNativeQuery("SELECT COUNT(*) FROM seat_reservation " +
+                        "INNER JOIN movie ON seat_reservation.movie_id=movie.movie_id " +
+                        "WHERE movie.name=?")
+                .setParameter(1,movieName)
+                .getSingleResult();
+        return movieShowsCounter.intValue();
+    }
+
+    @Transactional
+    public double getMovieIncomeGenerated(String movieName){
+        final BigDecimal movieIncomeCounter = (BigDecimal) entityManager
+                .createNativeQuery("SELECT SUM(total_price) FROM seat_reservation " +
+                        "INNER JOIN movie ON seat_reservation.movie_id=movie.movie_id " +
+                        "WHERE movie.name=? AND movie.end_date=seat_reservation.valid_until")
+                .setParameter(1, movieName)
+                .getSingleResult();
+        return movieIncomeCounter.doubleValue();
+    }
+
+    @Transactional
+    public int getDeletedReservations(String movieName){
+        final BigInteger deletedReservations = (BigInteger) entityManager
+                .createNativeQuery("SELECT COUNT(valid_until) FROM seat_reservation " +
+                        "INNER JOIN movie ON seat_reservation.movie_id=movie.movie_id " +
+                        "WHERE movie.name=? AND movie.end_date<>seat_reservation.valid_until")
+                .setParameter(1,movieName)
+                .getSingleResult();
+        return deletedReservations.intValue();
+    }
+
 }

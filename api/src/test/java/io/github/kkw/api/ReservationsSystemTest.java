@@ -53,6 +53,9 @@ public class ReservationsSystemTest {
     private static final String VALID_CODE = "A123";
     private static final String INVALID_CODE = "INVALID_CODE_098";
     private static final SpecialOfferAddRequest existingCodeSpecialOffer = new SpecialOfferAddRequest(VALID_CODE, 50);
+    private static final String VALID_MOVIE_NAME_NO_RESERVATIONS = "Joker";
+    private static final String VALID_MOVIE_NAME = "American Pie 5: Naked Mile";
+    private static final String INVALID_MOVIE_NAME = "INVALID MOVIE NAME";
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -935,6 +938,57 @@ public class ReservationsSystemTest {
             // then
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertNotNull(response.getBody());
+        }
+
+        @Test
+        void shouldReturnStatisticForMovie_whenValidName(){
+            //when
+            final ResponseEntity<MovieStatistics> response = restTemplate.exchange(
+                    "/showStatistics/{movieName}?clientId={clientId}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), MovieStatistics.class,
+                    VALID_MOVIE_NAME, ADMIN_CLIENT_ID.getClientId());
+            //then
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+        }
+
+        @Test
+        void shouldNotReturnStatisticForMovie_whenValidNameButNotReservations(){
+            //when
+            final ResponseEntity<RestError> response = restTemplate.exchange(
+                    "/showStatistics/{movieName}?clientId={clientId}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), RestError.class,
+                    VALID_MOVIE_NAME_NO_RESERVATIONS, ADMIN_CLIENT_ID.getClientId());
+            //then
+            assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals("Cannot find any reservations for movie named: "+VALID_MOVIE_NAME_NO_RESERVATIONS, response.getBody().getMessage());
+        }
+
+        @Test
+        void shouldReturnStatisticForMovie_whenInvalidName(){
+            //when
+            final ResponseEntity<RestError> response = restTemplate.exchange(
+                    "/showStatistics/{movieName}?clientId={clientId}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), RestError.class,
+                    INVALID_MOVIE_NAME, ADMIN_CLIENT_ID.getClientId());
+            //then
+            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals("There is not any movie named: "+INVALID_MOVIE_NAME, response.getBody().getMessage());
+        }
+
+        @Test
+        void shouldReturnStatisticForMovie_whenNotAdmin(){
+            //when
+            final ResponseEntity<RestError> response = restTemplate.exchange(
+                    "/showStatistics/{movieName}?clientId={clientId}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), RestError.class,
+                    VALID_MOVIE_NAME, VALID_CLIENT_ID.getClientId());
+            //then
+            assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals("Only admin can do this", response.getBody().getMessage());
         }
 
     }
