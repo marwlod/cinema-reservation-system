@@ -62,6 +62,22 @@ public class AdminController {
         }
     }
 
+    @GetMapping("/showStatistics/{movieName}")
+    public MovieStatistics showStatisticsForMovie(@RequestParam("clientId") final ClientId clientId,
+                                                  @PathVariable("movieName") final String movieName) throws RestException {
+        try {
+            loginService.verifyAdmin(clientId);
+            loginService.verifyClientLoggedIn(clientId);
+            return statisticsService.showStatisticsForMovie(movieName);
+        } catch (MovieNotFoundException e) {
+            throw new RestException(e.getMessage(), HttpStatus.BAD_REQUEST, e);
+        } catch (MovieShowsNotFoundException e) {
+            throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e);
+        } catch (ClientNotLoggedInException | NotAdminException e) {
+            throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
+        }
+    }
+
     @PostMapping("/addSpecialOffer")
     public void addSpecialOffer(@RequestParam("clientId") final ClientId clientId,
                                 @Valid @RequestBody SpecialOfferAddRequest specialOffer) throws RestException {

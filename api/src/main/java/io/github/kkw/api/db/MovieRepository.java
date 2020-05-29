@@ -81,4 +81,40 @@ public class MovieRepository {
         return movies.intValue();
     }
 
+    @Transactional
+    public boolean isMovieExists(String name){
+        final BigInteger isMovieExists = (BigInteger) entityManager
+                .createNativeQuery("SELECT IF((SELECT COUNT(*) FROM movie WHERE name = ?) > 0, TRUE, FALSE)")
+                .setParameter(1,name)
+                .getSingleResult();
+        return isMovieExists.intValue() == 1;
+    }
+
+    @Transactional
+    public int getMovieShowsCount(String name){
+        final BigInteger movieShowsCounter = (BigInteger) entityManager
+                .createNativeQuery("SELECT COUNT(*) FROM movie WHERE name = ?")
+                .setParameter(1,name)
+                .getSingleResult();
+        return movieShowsCounter.intValue();
+    }
+
+    @Transactional
+    public Instant getMovieShowsFromDate(String name){
+        final Timestamp movieShowsFromStartDate = (Timestamp) entityManager
+                .createNativeQuery("SELECT MIN(start_date) FROM movie WHERE name = ?")
+                .setParameter(1,name)
+                .getSingleResult();
+        return movieShowsFromStartDate.toInstant();
+    }
+
+    @Transactional
+    public Instant getMovieShowsToDate(String name){
+        final Timestamp movieShowsToStartDate = (Timestamp) entityManager
+                .createNativeQuery("SELECT MAX(start_date) FROM movie WHERE name = ?")
+                .setParameter(1,name)
+                .getSingleResult();
+        return movieShowsToStartDate.toInstant();
+    }
+
 }

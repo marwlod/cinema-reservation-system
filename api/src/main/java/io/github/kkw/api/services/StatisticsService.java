@@ -7,7 +7,10 @@ import io.github.kkw.api.db.SeatReservationRepository;
 import io.github.kkw.api.db.dto.ProfileEntity;
 import io.github.kkw.api.exceptions.FromAfterToDateException;
 import io.github.kkw.api.exceptions.FutureDatesException;
+import io.github.kkw.api.exceptions.MovieNotFoundException;
+import io.github.kkw.api.exceptions.MovieShowsNotFoundException;
 import io.github.kkw.api.model.ClientId;
+import io.github.kkw.api.model.MovieStatistics;
 import io.github.kkw.api.model.Statistics;
 import org.springframework.stereotype.Service;
 
@@ -63,4 +66,19 @@ public class StatisticsService {
                 newClientsRegistered, totalClientsAtTheMoment,clientsThatReserved);
     }
 
+    public MovieStatistics showStatisticsForMovie(String movieName) throws MovieNotFoundException, MovieShowsNotFoundException {
+        int showTimeCount = movieRepository.getMovieShowsCount(movieName);
+        if(showTimeCount==0){
+            throw new MovieNotFoundException("There is not any movie named: "+movieName);
+        }
+        int reservations = seatReservationRepository.getReservationsCount(movieName);
+        if(reservations==0){
+            throw new MovieShowsNotFoundException("Cannot find any reservations for movie named: "+movieName);
+        }
+        Instant fromDate = movieRepository.getMovieShowsFromDate(movieName);
+        Instant toDate = movieRepository.getMovieShowsToDate(movieName);
+        double incomeGenerated = seatReservationRepository.getMovieIncomeGenerated(movieName);
+        int deletedReservations = seatReservationRepository.getDeletedReservations(movieName);
+        return new MovieStatistics(showTimeCount,reservations,fromDate,toDate,incomeGenerated,deletedReservations);
+    }
 }
