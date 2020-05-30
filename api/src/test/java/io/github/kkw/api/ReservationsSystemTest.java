@@ -19,6 +19,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -870,7 +871,6 @@ public class ReservationsSystemTest {
             assertNotNull(response.getBody());
         }
 
-        @Disabled("implement delete to test this properly")
         @Test
         void checkIfSpecialOfferHasBeenAdded(){
             //add special offer
@@ -880,21 +880,22 @@ public class ReservationsSystemTest {
                     "/addSpecialOffer?clientId={clientId}", HttpMethod.POST,
                     new HttpEntity<>(validSpecialOffer, null), Void.class,
                     ADMIN_CLIENT_ID.getClientId());
+            assertEquals(HttpStatus.OK, addSpecialOfferResponse.getStatusCode());
             //get list with special offers
             final ResponseEntity<List<SpecialOffer>> specialOfferListResponse = restTemplate.exchange(
                     "/showSpecialOffers?clientId={clientId}", HttpMethod.GET,
                     new HttpEntity<>(null, null), new ParameterizedTypeReference<List<SpecialOffer>>(){},
                     ADMIN_CLIENT_ID.getClientId());
+            assertEquals(HttpStatus.OK, specialOfferListResponse.getStatusCode());
+            assertNotNull(specialOfferListResponse.getBody());
             //check if list contains the added element
-            boolean isSpecialOfferCodeAdded = false;
-            for(int i=0; i<specialOfferListResponse.getBody().size(); i++){
-                String specialOfferCodeIterator = specialOfferListResponse.getBody().get(i).getCode();
-                if(specialOfferCodeIterator.equals(uniqueCode)){
-                    isSpecialOfferCodeAdded=true;
-                    break;
-                }
-            }
-            assertEquals(true, isSpecialOfferCodeAdded);
+            List<SpecialOffer> actualOffers = specialOfferListResponse
+                    .getBody()
+                    .stream()
+                    .filter(o -> o.getCode().equals(uniqueCode))
+                    .collect(Collectors.toList());
+            assertEquals(1, actualOffers.size());
+            assertEquals(uniqueCode, actualOffers.get(0).getCode());
         }
     }
 
