@@ -95,15 +95,16 @@ public class SeatReservationRepository {
                 .getSingleResult();
 
         entityManager
-                .createNativeQuery("INSERT INTO seat_reservation (valid_until, is_paid, movie_id, seat_id, client_id, total_price) " +
-                        "VALUES (?, ?, ?, ?, ?, ?)")
+                .createNativeQuery("INSERT INTO seat_reservation (valid_until, is_paid, movie_id, seat_id, client_id, total_price, is_deleted) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?)")
                 .setParameter(1, timeMovieEnds)
                 .setParameter(2, 0) // not paid
                 .setParameter(3, movieId)
                 .setParameter(4, seatId)
                 .setParameter(5, clientId)
                 .setParameter(6,totalPrice)
-                .executeUpdate();
+                .setParameter(7,0) //not deleted
+                .executeUpdate();/////////////!!!!!!!!!!!!!!!!!
     }
 
     @Transactional
@@ -134,11 +135,12 @@ public class SeatReservationRepository {
     @Transactional
     public void deleteSeatReservation(int clientId, int reservationId) {
         entityManager
-                .createNativeQuery("UPDATE seat_reservation SET valid_until = ? WHERE client_id = ? AND seat_reservation_id = ? AND valid_until > ?")
+                .createNativeQuery("UPDATE seat_reservation SET valid_until = ?, is_deleted = ? WHERE client_id = ? AND seat_reservation_id = ? AND valid_until > ?")
                 .setParameter(1, Instant.now())
-                .setParameter(2, clientId)
-                .setParameter(3, reservationId)
-                .setParameter(4, Instant.now())
+                .setParameter(2,1)
+                .setParameter(3, clientId)
+                .setParameter(4, reservationId)
+                .setParameter(5, Instant.now())
                 .executeUpdate();
     }
 
@@ -223,14 +225,14 @@ public class SeatReservationRepository {
     }
 
     @Transactional
-    public double getMovieIncomeGenerated(String movieName){
+    public BigDecimal getMovieIncomeGenerated(String movieName){
         final BigDecimal movieIncomeCounter = (BigDecimal) entityManager
                 .createNativeQuery("SELECT SUM(total_price) FROM seat_reservation " +
                         "INNER JOIN movie ON seat_reservation.movie_id=movie.movie_id " +
                         "WHERE movie.name=? AND movie.end_date=seat_reservation.valid_until")
                 .setParameter(1, movieName)
                 .getSingleResult();
-        return movieIncomeCounter.doubleValue();
+        return movieIncomeCounter;
     }
 
     @Transactional
@@ -238,8 +240,9 @@ public class SeatReservationRepository {
         final BigInteger deletedReservations = (BigInteger) entityManager
                 .createNativeQuery("SELECT COUNT(valid_until) FROM seat_reservation " +
                         "INNER JOIN movie ON seat_reservation.movie_id=movie.movie_id " +
-                        "WHERE movie.name=? AND movie.end_date<>seat_reservation.valid_until")
+                        "WHERE movie.name=? AND seat_reservation.is_deleted=?")
                 .setParameter(1,movieName)
+                .setParameter(2,1)
                 .getSingleResult();
         return deletedReservations.intValue();
     }

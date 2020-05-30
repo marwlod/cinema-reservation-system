@@ -37,13 +37,15 @@ public class ReservationsSystemTest {
     private static final int INVALID_HALL_ID = 99_999_999;
     private static final MovieAddRequest MOVIE_ADD_REQUEST = new MovieAddRequest("Fast and Furious",
             Instant.parse("2100-01-01T10:00:30.00Z"), Instant.parse("2100-01-01T11:30:30.00Z"), 25.00, VALID_HALL_ID);
-    private static final Instant NO_MOVIES_FROM = Instant.parse("2666-01-01T00:00:00Z");
-    private static final Instant NO_MOVIES_UP_TO = Instant.parse("2666-01-02T00:00:00Z");
+    private static final Instant FUTURE_DATE_EARLIER = Instant.parse("2666-01-01T00:00:00Z");
+    private static final Instant FUTURE_DATE_LATER = Instant.parse("2666-01-02T00:00:00Z");
     private static final Instant MOVIES_FROM = Instant.parse("2030-01-01T00:00:00Z");
     private static final Instant MOVIES_UP_TO = Instant.parse("2030-01-02T00:00:00Z");
     private static final Instant FREE_DATE = Instant.parse("2025-01-01T00:00:00Z");
     private static final Instant PAST_DATE = Instant.parse("2015-01-01T00:00:00Z");
     private static final Instant HALL_RESERVATION_DATE = Instant.parse("2020-05-15T23:59:59Z");
+    private static final Instant PAST_DATE_EARLIER = Instant.parse("2015-01-01T00:00:00Z");
+    private static final Instant PAST_DATE_LATER = Instant.parse("2020-05-15T23:59:59Z");
     private static final Instant NO_HALL_RESERVATION_DATE = Instant.parse("2020-01-01T00:00:00Z");
     private static final double SEAT_COST = 20;
     private static final double HALL_ADVANCE_COST = 50;
@@ -239,7 +241,7 @@ public class ReservationsSystemTest {
             final ResponseEntity<RestError> response = restTemplate.exchange(
                     "/showMovies?from={from}&to={to}", HttpMethod.GET,
                     new HttpEntity<>(null, null), RestError.class,
-                    NO_MOVIES_FROM, NO_MOVIES_UP_TO);
+                    FUTURE_DATE_EARLIER, FUTURE_DATE_LATER);
 
             // then
             assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -820,8 +822,8 @@ public class ReservationsSystemTest {
         @Test
         void shouldNotAddSpecialOfferIfClientIsNotAdmin(){
             //given
-            final String UNIQUE_CODE = new Random().nextLong() + "UniqueCode";
-            final SpecialOfferAddRequest validSpecialOffer = new SpecialOfferAddRequest(UNIQUE_CODE, 25);
+            final String uniqueCode = new Random().nextLong() + "UniqueCode";
+            final SpecialOfferAddRequest validSpecialOffer = new SpecialOfferAddRequest(uniqueCode, 25);
             //when
             final ResponseEntity<RestError> response = restTemplate.exchange(
                     "/addSpecialOffer?clientId={clientId}", HttpMethod.POST,
@@ -837,8 +839,8 @@ public class ReservationsSystemTest {
         @Test
         void shouldAddSpecialOfferIfCodeIsUnique(){
             //given
-            final String UNIQUE_CODE = new Random().nextLong() + "UniqueCode";
-            final SpecialOfferAddRequest validSpecialOffer = new SpecialOfferAddRequest(UNIQUE_CODE, 25);
+            final String uniqueCode = new Random().nextLong() + "UniqueCode";
+            final SpecialOfferAddRequest validSpecialOffer = new SpecialOfferAddRequest(uniqueCode, 25);
             //when
             final ResponseEntity<Void> response = restTemplate.exchange(
                     "/addSpecialOffer?clientId={clientId}", HttpMethod.POST,
@@ -867,6 +869,33 @@ public class ReservationsSystemTest {
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertNotNull(response.getBody());
         }
+
+        @Disabled("implement delete to test this properly")
+        @Test
+        void checkIfSpecialOfferHasBeenAdded(){
+            //add special offer
+            final String uniqueCode = new Random().nextLong() + "UniqueCode";
+            final SpecialOfferAddRequest validSpecialOffer = new SpecialOfferAddRequest(uniqueCode, 25);
+            final ResponseEntity<Void> addSpecialOfferResponse = restTemplate.exchange(
+                    "/addSpecialOffer?clientId={clientId}", HttpMethod.POST,
+                    new HttpEntity<>(validSpecialOffer, null), Void.class,
+                    ADMIN_CLIENT_ID.getClientId());
+            //get list with special offers
+            final ResponseEntity<List<SpecialOffer>> specialOfferListResponse = restTemplate.exchange(
+                    "/showSpecialOffers?clientId={clientId}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), new ParameterizedTypeReference<List<SpecialOffer>>(){},
+                    ADMIN_CLIENT_ID.getClientId());
+            //check if list contains the added element
+            boolean isSpecialOfferCodeAdded = false;
+            for(int i=0; i<specialOfferListResponse.getBody().size(); i++){
+                String specialOfferCodeIterator = specialOfferListResponse.getBody().get(i).getCode();
+                if(specialOfferCodeIterator.equals(uniqueCode)){
+                    isSpecialOfferCodeAdded=true;
+                    break;
+                }
+            }
+            assertEquals(true, isSpecialOfferCodeAdded);
+        }
     }
 
 
@@ -892,7 +921,7 @@ public class ReservationsSystemTest {
             final ResponseEntity<RestError> response = restTemplate.exchange(
                     "/showStatistics?clientId={clientId}&from={from}&to={to}", HttpMethod.GET,
                     new HttpEntity<>(null, null), RestError.class,
-                    ADMIN_CLIENT_ID.getClientId(),NO_MOVIES_FROM, NO_MOVIES_UP_TO);
+                    ADMIN_CLIENT_ID.getClientId(),FUTURE_DATE_EARLIER, FUTURE_DATE_LATER);
 
             // then
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -906,7 +935,7 @@ public class ReservationsSystemTest {
             final ResponseEntity<RestError> response = restTemplate.exchange(
                     "/showStatistics?clientId={clientId}&from={from}&to={to}", HttpMethod.GET,
                     new HttpEntity<>(null, null), RestError.class,
-                    ADMIN_CLIENT_ID.getClientId(),HALL_RESERVATION_DATE, PAST_DATE);
+                    ADMIN_CLIENT_ID.getClientId(),PAST_DATE_LATER, PAST_DATE_EARLIER);
 
             // then
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());

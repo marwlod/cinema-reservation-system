@@ -33,5 +33,5 @@ INSERT INTO special_offers (special_offer_id, code,percentage) VALUES (1, 'A123'
 
 INSERT INTO hall_reservation (valid_until, is_paid_advance, is_paid_total, reservation_date, hall_id, client_id)
     VALUES (STR_TO_DATE('15/05/2020 11:59:59 PM', '%e/%c/%Y %r'), 1, 1, STR_TO_DATE('15/05/2020', '%e/%c/%Y %r'), 1, 5000);
-INSERT INTO seat_reservation (valid_until, is_paid, movie_id, seat_id, client_id, total_price)
-    VALUES (STR_TO_DATE('15/05/2020 10:00:00 PM', '%e/%c/%Y %r'), 1, 3, 200, 5000, 31.50);
+INSERT INTO seat_reservation (valid_until, is_paid, movie_id, seat_id, client_id, total_price, is_deleted)
+    VALUES (STR_TO_DATE('15/05/2020 10:00:00 PM', '%e/%c/%Y %r'), 1, 3, 200, 5000, 31.50, 0);

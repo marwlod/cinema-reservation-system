@@ -100,7 +100,7 @@ public class MovieRepository {
     }
 
     @Transactional
-    public Instant getMovieShowsFromDate(String name){
+    public Instant getFirstShowingDateOfMovie(String name){
         final Timestamp movieShowsFromStartDate = (Timestamp) entityManager
                 .createNativeQuery("SELECT MIN(start_date) FROM movie WHERE name = ?")
                 .setParameter(1,name)
@@ -109,7 +109,7 @@ public class MovieRepository {
     }
 
     @Transactional
-    public Instant getMovieShowsToDate(String name){
+    public Instant getLastShowingDateOfMovie(String name){
         final Timestamp movieShowsToStartDate = (Timestamp) entityManager
                 .createNativeQuery("SELECT MAX(start_date) FROM movie WHERE name = ?")
                 .setParameter(1,name)
