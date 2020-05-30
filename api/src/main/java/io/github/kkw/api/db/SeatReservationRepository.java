@@ -104,7 +104,7 @@ public class SeatReservationRepository {
                 .setParameter(5, clientId)
                 .setParameter(6,totalPrice)
                 .setParameter(7,0) //not deleted
-                .executeUpdate();/////////////!!!!!!!!!!!!!!!!!
+                .executeUpdate();
     }
 
     @Transactional
@@ -135,12 +135,11 @@ public class SeatReservationRepository {
     @Transactional
     public void deleteSeatReservation(int clientId, int reservationId) {
         entityManager
-                .createNativeQuery("UPDATE seat_reservation SET valid_until = ?, is_deleted = ? WHERE client_id = ? AND seat_reservation_id = ? AND valid_until > ?")
+                .createNativeQuery("UPDATE seat_reservation SET valid_until = ?, is_deleted = 1 WHERE client_id = ? AND seat_reservation_id = ? AND valid_until > ?")
                 .setParameter(1, Instant.now())
-                .setParameter(2,1)
-                .setParameter(3, clientId)
-                .setParameter(4, reservationId)
-                .setParameter(5, Instant.now())
+                .setParameter(2, clientId)
+                .setParameter(3, reservationId)
+                .setParameter(4, Instant.now())
                 .executeUpdate();
     }
 
@@ -240,9 +239,8 @@ public class SeatReservationRepository {
         final BigInteger deletedReservations = (BigInteger) entityManager
                 .createNativeQuery("SELECT COUNT(valid_until) FROM seat_reservation " +
                         "INNER JOIN movie ON seat_reservation.movie_id=movie.movie_id " +
-                        "WHERE movie.name=? AND seat_reservation.is_deleted=?")
+                        "WHERE movie.name=? AND seat_reservation.is_deleted=1")
                 .setParameter(1,movieName)
-                .setParameter(2,1)
                 .getSingleResult();
         return deletedReservations.intValue();
     }
