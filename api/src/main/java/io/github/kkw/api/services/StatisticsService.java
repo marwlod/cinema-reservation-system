@@ -62,23 +62,24 @@ public class StatisticsService {
         int newClientsRegistered = loginRepository.newClientsRegistered(from, to);
         int totalClientsAtTheMoment = loginRepository.getTotalClientsAtTheMoment();
         int clientsThatReserved = clientsThatReservedHallOrSeat();
+        System.out.println(seatReservations+" "+hallReservations+" "+movies+" "+moneyEarned+" "+newClientsRegistered+" "+totalClientsAtTheMoment+" "+clientsThatReserved);
         return new Statistics(seatReservations, hallReservations,movies,moneyEarned,
                 newClientsRegistered, totalClientsAtTheMoment,clientsThatReserved);
     }
 
     public MovieStatistics showStatisticsForMovie(String movieName) throws MovieNotFoundException, MovieShowsNotFoundException {
-        int showTimeCount = movieRepository.getMovieShowsCount(movieName);
-        if(showTimeCount==0){
+        int showCount = movieRepository.getMovieShowsCount(movieName);
+        if(showCount==0){
             throw new MovieNotFoundException("There is not any movie named: "+movieName);
         }
-        int reservations = seatReservationRepository.getReservationsCount(movieName);
-        if(reservations==0){
+        int totalReservations = seatReservationRepository.getReservationsCount(movieName);
+        if(totalReservations==0){
             throw new MovieShowsNotFoundException("Cannot find any reservations for movie named: "+movieName);
         }
-        Instant fromDate = movieRepository.getMovieShowsFromDate(movieName);
-        Instant toDate = movieRepository.getMovieShowsToDate(movieName);
-        double incomeGenerated = seatReservationRepository.getMovieIncomeGenerated(movieName);
+        Instant fromDate = movieRepository.getFirstShowingDateOfMovie(movieName);
+        Instant toDate = movieRepository.getLastShowingDateOfMovie(movieName);
+        double incomeGenerated = seatReservationRepository.getMovieIncomeGenerated(movieName).doubleValue();
         int deletedReservations = seatReservationRepository.getDeletedReservations(movieName);
-        return new MovieStatistics(showTimeCount,reservations,fromDate,toDate,incomeGenerated,deletedReservations);
+        return new MovieStatistics(showCount,totalReservations,fromDate,toDate,incomeGenerated,deletedReservations);
     }
 }

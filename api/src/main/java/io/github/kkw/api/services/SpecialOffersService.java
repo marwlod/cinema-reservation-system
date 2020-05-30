@@ -4,13 +4,9 @@ import io.github.kkw.api.db.SpecialOffersRepository;
 import io.github.kkw.api.db.dto.SpecialOfferEntity;
 import io.github.kkw.api.exceptions.SpecialCodeAlreadyExistsException;
 import io.github.kkw.api.exceptions.SpecialOffersNotFoundException;
-import io.github.kkw.api.model.Movie;
 import io.github.kkw.api.model.SpecialOffer;
 import io.github.kkw.api.model.SpecialOfferAddRequest;
 import org.springframework.stereotype.Service;
-
-import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

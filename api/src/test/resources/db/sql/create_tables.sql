@@ -61,6 +61,7 @@ CREATE TABLE seat_reservation
     seat_id INT NOT NULL,
     client_id INT NOT NULL,
     total_price DECIMAL(13, 4) NOT NULL,
+    is_deleted BOOLEAN NOT NULL,
     FOREIGN KEY (movie_id) REFERENCES movie(movie_id),
     FOREIGN KEY (seat_id) REFERENCES seat(seat_id),
     FOREIGN KEY (client_id) REFERENCES client(client_id)
@@ -69,6 +70,6 @@ CREATE TABLE seat_reservation
 CREATE TABLE special_offers
 (
     special_offer_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    code VARCHAR(20) UNIQUE,
+    code VARCHAR(32) UNIQUE,
     percentage INT
 );

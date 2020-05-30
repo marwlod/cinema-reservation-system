@@ -6,34 +6,34 @@ import java.time.Instant;
 
 public class MovieStatistics {
 
-    private final int showTimeCount;
-    private final int reservations;
+    private final int showCount;
+    private final int totalReservations;
     private final Instant fromDate;
     private final Instant toDate;
     private final double incomeGenerated;
     private final int deletedReservations;
 
     public MovieStatistics(
-            @JsonProperty("showTimeCount") final int showTimeCount,
-            @JsonProperty("reservations") final int reservations,
+            @JsonProperty("showCount") final int showCount,
+            @JsonProperty("totalReservations") final int totalReservations,
             @JsonProperty("fromDate") final Instant fromDate,
             @JsonProperty("toDate") final Instant toDate,
             @JsonProperty("incomeGenerated") final double incomeGenerated,
             @JsonProperty("deletedReservations") final int deletedReservations){
-        this.showTimeCount=showTimeCount;
-        this.reservations=reservations;
+        this.showCount=showCount;
+        this.totalReservations=totalReservations;
         this.fromDate=fromDate;
         this.toDate=toDate;
         this.incomeGenerated=incomeGenerated;
         this.deletedReservations=deletedReservations;
     }
 
-    public int getShowTimeCount() {
-        return showTimeCount;
+    public int getShowCount() {
+        return showCount;
     }
 
-    public int getReservations() {
-        return reservations;
+    public int getTotalReservationsReservations() {
+        return totalReservations;
     }
 
     public Instant getFromDate() {
