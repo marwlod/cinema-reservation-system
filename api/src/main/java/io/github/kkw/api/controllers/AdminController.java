@@ -62,7 +62,7 @@ public class AdminController {
         }
     }
 
-    @GetMapping("/showStatistics/{movieName}")
+    @GetMapping("/showStatistics/movie/{movieName}")
     public MovieStatistics showStatisticsForMovie(@RequestParam("clientId") final ClientId clientId,
                                                   @PathVariable("movieName") final String movieName) throws RestException {
         try {
@@ -72,6 +72,22 @@ public class AdminController {
         } catch (MovieNotFoundException e) {
             throw new RestException(e.getMessage(), HttpStatus.BAD_REQUEST, e);
         } catch (MovieShowsNotFoundException e) {
+            throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e);
+        } catch (ClientNotLoggedInException | NotAdminException e) {
+            throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
+        }
+    }
+
+    @GetMapping("/showStatistics/hall/{hallId}")
+    public HallStatistics showStatisticsForHall(@RequestParam("clientId") final ClientId clientId,
+                                                  @PathVariable("hallId") final int hallId) throws RestException {
+        try {
+            loginService.verifyAdmin(clientId);
+            loginService.verifyClientLoggedIn(clientId);
+            return statisticsService.showStatisticsForHall(hallId);
+        } catch (HallNotFoundException e) {
+            throw new RestException(e.getMessage(), HttpStatus.BAD_REQUEST, e);
+        } catch (HallNoReservationsException e) {
             throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e);
         } catch (ClientNotLoggedInException | NotAdminException e) {
             throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
