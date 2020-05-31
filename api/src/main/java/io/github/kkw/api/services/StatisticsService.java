@@ -5,11 +5,9 @@ import io.github.kkw.api.db.LoginRepository;
 import io.github.kkw.api.db.MovieRepository;
 import io.github.kkw.api.db.SeatReservationRepository;
 import io.github.kkw.api.db.dto.ProfileEntity;
-import io.github.kkw.api.exceptions.FromAfterToDateException;
-import io.github.kkw.api.exceptions.FutureDatesException;
-import io.github.kkw.api.exceptions.MovieNotFoundException;
-import io.github.kkw.api.exceptions.MovieShowsNotFoundException;
+import io.github.kkw.api.exceptions.*;
 import io.github.kkw.api.model.ClientId;
+import io.github.kkw.api.model.HallStatistics;
 import io.github.kkw.api.model.MovieStatistics;
 import io.github.kkw.api.model.Statistics;
 import org.springframework.stereotype.Service;
@@ -80,5 +78,18 @@ public class StatisticsService {
         double incomeGenerated = seatReservationRepository.getMovieIncomeGenerated(movieName).doubleValue();
         int deletedReservations = seatReservationRepository.getDeletedReservations(movieName);
         return new MovieStatistics(showCount,totalReservations,fromDate,toDate,incomeGenerated,deletedReservations);
+    }
+
+    public HallStatistics showStatisticsForHall(int hallId) throws HallNotFoundException, HallNoReservationsException {
+        if(!hallReservationRepository.isHallExists(hallId)){
+            throw new HallNotFoundException("Hall "+ hallId +" doesn't exist");
+        }
+        int totalReservations = hallReservationRepository.getHallReservationsCounter(hallId).intValue();
+        if(totalReservations==0){
+            throw new HallNoReservationsException("Cannot find any reservations for hall of ID: "+hallId);
+        }
+        double totalIncome = hallReservationRepository.getIncomeGeneratedFromHall(hallId).doubleValue();
+        int deletedReservations = hallReservationRepository.getDeletedReservations(hallId).intValue();
+        return new HallStatistics(totalReservations, totalIncome, deletedReservations);
     }
 }

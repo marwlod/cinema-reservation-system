@@ -974,7 +974,7 @@ public class ReservationsSystemTest {
         void shouldReturnStatisticForMovie_whenValidName(){
             //when
             final ResponseEntity<MovieStatistics> response = restTemplate.exchange(
-                    "/showStatistics/{movieName}?clientId={clientId}", HttpMethod.GET,
+                    "/showStatistics/movie/{movieName}?clientId={clientId}", HttpMethod.GET,
                     new HttpEntity<>(null, null), MovieStatistics.class,
                     VALID_MOVIE_NAME, ADMIN_CLIENT_ID.getClientId());
             //then
@@ -986,7 +986,7 @@ public class ReservationsSystemTest {
         void shouldNotReturnStatisticForMovie_whenValidNameButNotReservations(){
             //when
             final ResponseEntity<RestError> response = restTemplate.exchange(
-                    "/showStatistics/{movieName}?clientId={clientId}", HttpMethod.GET,
+                    "/showStatistics/movie/{movieName}?clientId={clientId}", HttpMethod.GET,
                     new HttpEntity<>(null, null), RestError.class,
                     VALID_MOVIE_NAME_NO_RESERVATIONS, ADMIN_CLIENT_ID.getClientId());
             //then
@@ -996,10 +996,10 @@ public class ReservationsSystemTest {
         }
 
         @Test
-        void shouldReturnStatisticForMovie_whenInvalidName(){
+        void shouldNotReturnStatisticForMovie_whenInvalidName(){
             //when
             final ResponseEntity<RestError> response = restTemplate.exchange(
-                    "/showStatistics/{movieName}?clientId={clientId}", HttpMethod.GET,
+                    "/showStatistics/movie/{movieName}?clientId={clientId}", HttpMethod.GET,
                     new HttpEntity<>(null, null), RestError.class,
                     INVALID_MOVIE_NAME, ADMIN_CLIENT_ID.getClientId());
             //then
@@ -1009,12 +1009,50 @@ public class ReservationsSystemTest {
         }
 
         @Test
-        void shouldReturnStatisticForMovie_whenNotAdmin(){
+        void shouldNotReturnStatisticForMovie_whenNotAdmin(){
             //when
             final ResponseEntity<RestError> response = restTemplate.exchange(
-                    "/showStatistics/{movieName}?clientId={clientId}", HttpMethod.GET,
+                    "/showStatistics/movie/{movieName}?clientId={clientId}", HttpMethod.GET,
                     new HttpEntity<>(null, null), RestError.class,
                     VALID_MOVIE_NAME, VALID_CLIENT_ID.getClientId());
+            //then
+            assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals("Only admin can do this", response.getBody().getMessage());
+        }
+
+        @Test
+        void shouldReturnStatisticForHall_whenAdmin(){
+            //when
+            final ResponseEntity<HallStatistics> response = restTemplate.exchange(
+                    "/showStatistics/hall/{hallId}?clientId={clientId}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), HallStatistics.class,
+                    VALID_HALL_ID, ADMIN_CLIENT_ID.getClientId());
+            //then
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+        }
+
+        @Test
+        void shouldNotReturnStatisticForHall_whenHallDoesntExist(){
+            //when
+            final ResponseEntity<RestError> response = restTemplate.exchange(
+                    "/showStatistics/hall/{hallId}?clientId={clientId}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), RestError.class,
+                    INVALID_HALL_ID, ADMIN_CLIENT_ID.getClientId());
+            //then
+            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals("Hall "+ INVALID_HALL_ID +" doesn't exist", response.getBody().getMessage());
+        }
+
+        @Test
+        void shouldNotReturnStatisticForHall_whenNotAdmin(){
+            //when
+            final ResponseEntity<RestError> response = restTemplate.exchange(
+                    "/showStatistics/hall/{hallId}?clientId={clientId}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), RestError.class,
+                    VALID_HALL_ID, VALID_CLIENT_ID.getClientId());
             //then
             assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
             assertNotNull(response.getBody());

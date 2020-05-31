@@ -48,6 +48,7 @@ CREATE TABLE hall_reservation
     reservation_date DATE NOT NULL,
     hall_id INT NOT NULL,
     client_id INT NOT NULL,
+    is_deleted BOOLEAN NOT NULL,
     FOREIGN KEY (hall_id) REFERENCES hall(hall_id),
     FOREIGN KEY (client_id) REFERENCES client(client_id)
 );

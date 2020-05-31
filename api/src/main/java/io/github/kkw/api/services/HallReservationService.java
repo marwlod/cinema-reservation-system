@@ -37,7 +37,7 @@ public class HallReservationService {
         if (hallReservationRepository.isReserved(hallId, date)) {
             throw new HallReservedException("Hall with this ID is already reserved for chosen day");
         }
-        if (!movieRepository.isHallIdValid(hallId)) {
+        if (!hallReservationRepository.isHallExists(hallId)) {
             throw new HallNotFoundException("Hall with this ID not found");
         }
         hallReservationRepository.createHallReservation(clientId.getClientId(), hallId, date);
