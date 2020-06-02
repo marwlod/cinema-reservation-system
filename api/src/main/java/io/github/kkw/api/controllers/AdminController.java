@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import java.time.Instant;
 import java.util.List;
 
@@ -94,6 +95,20 @@ public class AdminController {
         }
     }
 
+    @GetMapping("/showStatistics/client/{checkedClientEmail}")
+    public ClientStatistics showStatisticsForHall(@RequestParam("clientId") final ClientId clientId,
+                                                @Email @PathVariable("checkedClientEmail") final String checkedClientEmail) throws RestException {
+        try {
+            loginService.verifyAdmin(clientId);
+            loginService.verifyClientLoggedIn(clientId);
+            return statisticsService.showStatisticsForClient(checkedClientEmail);
+        } catch (ClientNotFoundException e){
+            throw new RestException(e.getMessage(), HttpStatus.BAD_REQUEST, e);
+        } catch (ClientNotLoggedInException | NotAdminException e) {
+            throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
+        }
+    }
+
     @PostMapping("/addSpecialOffer")
     public void addSpecialOffer(@RequestParam("clientId") final ClientId clientId,
                                 @Valid @RequestBody SpecialOfferAddRequest specialOffer) throws RestException {
@@ -117,6 +132,20 @@ public class AdminController {
             return specialOffersService.showSpecialOffers();
 
         }  catch (SpecialOffersNotFoundException e){
+            throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e);
+        } catch (ClientNotLoggedInException | NotAdminException e) {
+            throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
+        }
+    }
+
+    @DeleteMapping("/deleteSpecialOffer/{code}")
+    public void deleteSpecialOffer(@RequestParam("clientId") final ClientId clientId,
+                                   @PathVariable("code") final String code) throws RestException {
+        try {
+            loginService.verifyAdmin(clientId);
+            loginService.verifyClientLoggedIn(clientId);
+            specialOffersService.deleteSpecialOffer(code);
+        } catch (SpecialOfferCodeNotFound e){
             throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e);
         } catch (ClientNotLoggedInException | NotAdminException e) {
             throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);

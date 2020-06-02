@@ -33,6 +33,8 @@ public class ReservationsSystemTest {
     private static final int INVALID_SEAT_ID = 99_999_999;
     private static final ClientId VALID_CLIENT_ID = new ClientId(5000);
     private static final ClientId ADMIN_CLIENT_ID = new ClientId(5005);
+    private static final String VALID_CLIENT_EMAIL = "bob@crs.com"; //client id: 5000
+    private static final String INVALID_CLIENT_EMAIL = "invalid_email@crs.com";
     private static final ReservationId INVALID_RESERVATION_ID = new ReservationId(99_999_999);
     private static final int VALID_HALL_ID = 1;
     private static final int INVALID_HALL_ID = 99_999_999;
@@ -836,7 +838,6 @@ public class ReservationsSystemTest {
 
         }
 
-        @Disabled("implement delete to test this properly")
         @Test
         void shouldAddSpecialOfferIfCodeIsUnique(){
             //given
@@ -848,6 +849,12 @@ public class ReservationsSystemTest {
                     new HttpEntity<>(validSpecialOffer, null), Void.class,
                     ADMIN_CLIENT_ID.getClientId());
             assertEquals(HttpStatus.OK, response.getStatusCode());
+            final ResponseEntity<List<SpecialOffer>> specialOfferListResponse = restTemplate.exchange(
+                    "/showSpecialOffers?clientId={clientId}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), new ParameterizedTypeReference<List<SpecialOffer>>(){},
+                    ADMIN_CLIENT_ID.getClientId());
+            assertEquals(HttpStatus.OK, specialOfferListResponse.getStatusCode());
+            assertNotNull(specialOfferListResponse.getBody());
         }
 
         @Test
@@ -880,8 +887,7 @@ public class ReservationsSystemTest {
                     "/addSpecialOffer?clientId={clientId}", HttpMethod.POST,
                     new HttpEntity<>(validSpecialOffer, null), Void.class,
                     ADMIN_CLIENT_ID.getClientId());
-            assertEquals(HttpStatus.OK, addSpecialOfferResponse.getStatusCode());
-            //get list with special offers
+            assertEquals(HttpStatus.OK, addSpecialOfferResponse.getStatusCode());            //get list with special offers
             final ResponseEntity<List<SpecialOffer>> specialOfferListResponse = restTemplate.exchange(
                     "/showSpecialOffers?clientId={clientId}", HttpMethod.GET,
                     new HttpEntity<>(null, null), new ParameterizedTypeReference<List<SpecialOffer>>(){},
@@ -896,6 +902,47 @@ public class ReservationsSystemTest {
                     .collect(Collectors.toList());
             assertEquals(1, actualOffers.size());
             assertEquals(uniqueCode, actualOffers.get(0).getCode());
+        }
+
+        @Test
+        void shouldDeleteSpecialOfferIfExists(){
+            //add special offer
+            final String uniqueCode = new Random().nextLong() + "UniqueCode";
+            final SpecialOfferAddRequest validSpecialOffer = new SpecialOfferAddRequest(uniqueCode, 25);
+            final ResponseEntity<Void> addSpecialOfferResponse = restTemplate.exchange(
+                    "/addSpecialOffer?clientId={clientId}", HttpMethod.POST,
+                    new HttpEntity<>(validSpecialOffer, null), Void.class,
+                    ADMIN_CLIENT_ID.getClientId());
+            assertEquals(HttpStatus.OK, addSpecialOfferResponse.getStatusCode());
+            //delete special offer
+            final ResponseEntity<Void> deleteSpecialOfferResponse = restTemplate.exchange(
+                    "/deleteSpecialOffer/{code}?clientId={clientId}", HttpMethod.DELETE,new HttpEntity<>(null, null), Void.class,
+                    validSpecialOffer.getCode(), ADMIN_CLIENT_ID.getClientId());
+            assertEquals(HttpStatus.OK, deleteSpecialOfferResponse.getStatusCode());
+        }
+
+        @Test
+        void shouldNotDeleteSpecialOfferIfNotAdmin(){
+            //when
+            final ResponseEntity<RestError> deleteSpecialOfferResponse = restTemplate.exchange(
+                    "/deleteSpecialOffer/{code}?clientId={clientId}", HttpMethod.DELETE,new HttpEntity<>(null, null), RestError.class,
+                    VALID_CODE, VALID_CLIENT_ID.getClientId());
+            //then
+            assertEquals(HttpStatus.FORBIDDEN, deleteSpecialOfferResponse.getStatusCode());
+            assertNotNull(deleteSpecialOfferResponse.getBody());
+            assertEquals("Only admin can do this", deleteSpecialOfferResponse.getBody().getMessage());
+        }
+
+        @Test
+        void shouldNotDeleteSpecialOfferIfCodeDoesntExist(){
+            //when
+            final ResponseEntity<RestError> deleteSpecialOfferResponse = restTemplate.exchange(
+                    "/deleteSpecialOffer/{code}?clientId={clientId}", HttpMethod.DELETE,new HttpEntity<>(null, null), RestError.class,
+                    INVALID_CODE, ADMIN_CLIENT_ID.getClientId());
+            //then
+            assertEquals(HttpStatus.NOT_FOUND, deleteSpecialOfferResponse.getStatusCode());
+            assertNotNull(deleteSpecialOfferResponse.getBody());
+            assertEquals("Cannot find special offer of code: " + INVALID_CODE, deleteSpecialOfferResponse.getBody().getMessage());
         }
     }
 
@@ -1057,6 +1104,44 @@ public class ReservationsSystemTest {
             assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
             assertNotNull(response.getBody());
             assertEquals("Only admin can do this", response.getBody().getMessage());
+        }
+
+        @Test
+        void shouldReturnStatisticsForClient_whenValidEmailAndAdmin(){
+            //when
+            final ResponseEntity<ClientStatistics> response = restTemplate.exchange(
+                    "/showStatistics/client/{checkedClientEmail}?clientId={clientId}", HttpMethod.GET,
+                    new HttpEntity<>(null,null), ClientStatistics.class,
+                    VALID_CLIENT_EMAIL, ADMIN_CLIENT_ID.getClientId());
+            //then
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+        }
+
+        @Test
+        void shouldNotReturnStatisticsForClient_whenNotAdmin(){
+            //when
+            final ResponseEntity<RestError> response = restTemplate.exchange(
+                    "/showStatistics/client/{checkedClientEmail}?clientId={clientId}", HttpMethod.GET,
+                    new HttpEntity<>(null,null), RestError.class,
+                    VALID_CLIENT_EMAIL, VALID_CLIENT_ID.getClientId());
+            //then
+            assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals("Only admin can do this", response.getBody().getMessage());
+        }
+
+        @Test
+        void shouldNotReturnStatisticsForClient_whenInvalidClientEmail(){
+            //when
+            final ResponseEntity<RestError> response = restTemplate.exchange(
+                    "/showStatistics/client/{checkedClientEmail}?clientId={clientId}", HttpMethod.GET,
+                    new HttpEntity<>(null,null), RestError.class,
+                    INVALID_CLIENT_EMAIL, ADMIN_CLIENT_ID.getClientId());
+            //then
+            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals("Cannot find Client with email: "+INVALID_CLIENT_EMAIL, response.getBody().getMessage());
         }
 
     }

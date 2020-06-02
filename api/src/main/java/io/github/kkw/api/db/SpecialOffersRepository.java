@@ -44,4 +44,11 @@ public class SpecialOffersRepository {
                 .getResultList();
     }
 
+    @Transactional
+    public void deleteSpecialOffer(String code) {
+        entityManager
+                .createNativeQuery("DELETE FROM special_offers WHERE code = ?")
+                .setParameter(1, code)
+                .executeUpdate();
+    }
 }

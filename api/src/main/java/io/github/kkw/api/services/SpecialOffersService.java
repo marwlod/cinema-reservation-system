@@ -3,6 +3,7 @@ package io.github.kkw.api.services;
 import io.github.kkw.api.db.SpecialOffersRepository;
 import io.github.kkw.api.db.dto.SpecialOfferEntity;
 import io.github.kkw.api.exceptions.SpecialCodeAlreadyExistsException;
+import io.github.kkw.api.exceptions.SpecialOfferCodeNotFound;
 import io.github.kkw.api.exceptions.SpecialOffersNotFoundException;
 import io.github.kkw.api.model.SpecialOffer;
 import io.github.kkw.api.model.SpecialOfferAddRequest;
@@ -32,5 +33,12 @@ public class SpecialOffersService {
             throw new SpecialOffersNotFoundException("No special code exists");
         }
         return specialOfferEntities.stream().map(SpecialOffer::new).collect(Collectors.toList());
+    }
+
+    public void deleteSpecialOffer(String code) throws SpecialOfferCodeNotFound {
+        if(!specialOffersRepository.ifSpecialOfferAlreadyExists(code)){
+            throw new SpecialOfferCodeNotFound("Cannot find special offer of code: " + code);
+        }
+        specialOffersRepository.deleteSpecialOffer(code);
     }
 }
