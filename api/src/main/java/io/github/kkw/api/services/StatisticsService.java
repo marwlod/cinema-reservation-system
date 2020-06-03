@@ -5,15 +5,23 @@ import io.github.kkw.api.db.LoginRepository;
 import io.github.kkw.api.db.MovieRepository;
 import io.github.kkw.api.db.SeatReservationRepository;
 import io.github.kkw.api.db.dto.ProfileEntity;
-import io.github.kkw.api.exceptions.*;
-import io.github.kkw.api.model.*;
+import io.github.kkw.api.exceptions.ClientNotFoundException;
+import io.github.kkw.api.exceptions.FutureDatesException;
+import io.github.kkw.api.exceptions.MovieNotFoundException;
+import io.github.kkw.api.exceptions.MovieShowsNotFoundException;
+import io.github.kkw.api.exceptions.FromAfterToDateException;
+import io.github.kkw.api.exceptions.HallNotFoundException;
+import io.github.kkw.api.exceptions.HallNoReservationsException;
+import io.github.kkw.api.model.ClientStatistics;
+import io.github.kkw.api.model.HallStatistics;
+import io.github.kkw.api.model.MovieStatistics;
+import io.github.kkw.api.model.Statistics;
+import io.github.kkw.api.model.ClientId;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class StatisticsService {

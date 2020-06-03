@@ -95,13 +95,13 @@ public class AdminController {
         }
     }
 
-    @GetMapping("/showStatistics/client/{checkedClientEmail}")
+    @GetMapping("/showStatistics/client/{clientEmail}")
     public ClientStatistics showStatisticsForHall(@RequestParam("clientId") final ClientId clientId,
-                                                @Email @PathVariable("checkedClientEmail") final String checkedClientEmail) throws RestException {
+                                                @Email @PathVariable("clientEmail") final String clientEmail) throws RestException {
         try {
             loginService.verifyAdmin(clientId);
             loginService.verifyClientLoggedIn(clientId);
-            return statisticsService.showStatisticsForClient(checkedClientEmail);
+            return statisticsService.showStatisticsForClient(clientEmail);
         } catch (ClientNotFoundException e){
             throw new RestException(e.getMessage(), HttpStatus.BAD_REQUEST, e);
         } catch (ClientNotLoggedInException | NotAdminException e) {
