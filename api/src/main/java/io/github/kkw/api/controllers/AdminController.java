@@ -14,7 +14,7 @@ import java.time.Instant;
 import java.util.List;
 
 @RestController
-public class AdminController {
+public class AdminController implements CrossOriginMarker {
     private final LoginService loginService;
     private final MovieService movieService;
     private final StatisticsService statisticsService;

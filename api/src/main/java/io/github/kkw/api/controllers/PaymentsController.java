@@ -18,7 +18,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 @RestController
-public class PaymentsController {
+public class PaymentsController implements CrossOriginMarker {
     private final LoginService loginService;
     private final PaymentsService paymentsService;
 
