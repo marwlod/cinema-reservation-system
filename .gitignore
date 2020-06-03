@@ -7,3 +7,6 @@ build
 
 # Gradle config files
 .gradle
+
+# frontend dependencies
+front/node_modules

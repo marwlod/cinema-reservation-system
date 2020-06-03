@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-public class SeatReservationController {
+public class SeatReservationController implements CrossOriginMarker {
     private final LoginService loginService;
     private final SeatReservationService seatReservationService;
     private final MovieService movieService;

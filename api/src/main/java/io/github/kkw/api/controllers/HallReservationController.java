@@ -25,7 +25,7 @@ import java.time.Instant;
 import java.util.List;
 
 @RestController
-public class HallReservationController {
+public class HallReservationController implements CrossOriginMarker {
     private final LoginService loginService;
     private final HallReservationService hallReservationService;
 
