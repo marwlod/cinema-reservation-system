@@ -27,7 +27,7 @@ INSERT INTO movie (movie_id, name, start_date, end_date, base_price, hall_id)
 INSERT INTO movie (movie_id, name, start_date, end_date, base_price, hall_id)
     VALUES (2, 'Joker', STR_TO_DATE('01/01/2030 8:00:00 PM', '%e/%c/%Y %r'), STR_TO_DATE('01/01/2030 10:00:00 PM', '%e/%c/%Y %r'), 30, 2);
 INSERT INTO movie (movie_id, name, start_date, end_date, base_price, hall_id)
-    VALUES (3, 'American Pie 5: Naked Mile', STR_TO_DATE('20/06/2020 8:00:00 PM', '%e/%c/%Y %r'), STR_TO_DATE('20/06/2020 10:00:00 PM', '%e/%c/%Y %r'), 35, 2);
+    VALUES (3, 'American Pie 5: Naked Mile', STR_TO_DATE('15/05/2020 8:00:00 PM', '%e/%c/%Y %r'), STR_TO_DATE('15/05/2020 10:00:00 PM', '%e/%c/%Y %r'), 35, 2);
 INSERT INTO movie (movie_id, name, start_date, end_date, base_price, hall_id)
     VALUES (4, 'Back to the future III', STR_TO_DATE('20/06/2020 8:00:00 PM', '%e/%c/%Y %r'), STR_TO_DATE('20/06/2020 10:00:00 PM', '%e/%c/%Y %r'), 25, 1);
 INSERT INTO movie (movie_id, name, start_date, end_date, base_price, hall_id)
