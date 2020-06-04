@@ -30,11 +30,13 @@ public class ReservationsSystemTest {
     private static final int VALID_MOVIE_ID = 1;
     private static final int INVALID_MOVIE_ID = 99_999_999;
     private static final int VALID_SEAT_ID = 101;
+    private static final int ANOTHER_VALID_SEAT_ID = 102;
     private static final int INVALID_SEAT_ID = 99_999_999;
     private static final ClientId VALID_CLIENT_ID = new ClientId(5000);
     private static final ClientId ADMIN_CLIENT_ID = new ClientId(5005);
     private static final ReservationId INVALID_RESERVATION_ID = new ReservationId(99_999_999);
     private static final int VALID_HALL_ID = 1;
+    private static final int ANOTHER_VALID_HALL_ID = 2;
     private static final int INVALID_HALL_ID = 99_999_999;
     private static final MovieAddRequest MOVIE_ADD_REQUEST = new MovieAddRequest("Fast and Furious",
             Instant.parse("2100-01-01T10:00:30.00Z"), Instant.parse("2100-01-01T11:30:30.00Z"), 25.00, VALID_HALL_ID);
@@ -1059,6 +1061,85 @@ public class ReservationsSystemTest {
             assertEquals("Only admin can do this", response.getBody().getMessage());
         }
 
+    }
+
+    @Nested
+    class ShowReservationsTest {
+        @Test
+        void shouldReturnOneSeatReservation_whenClientMadeOneReservation() {
+            // given
+            final ReservationId reservationId = reserveSeat(VALID_SEAT_ID);
+
+            // when
+            final ResponseEntity<List<SeatReservation>> response = restTemplate.exchange(
+                    "/showReservations/seat/?clientId={clientId}&from={from}&to={to}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), new ParameterizedTypeReference<List<SeatReservation>>(){},
+                    VALID_CLIENT_ID.getClientId(), Instant.now(), FUTURE_DATE_LATER);
+
+            // then
+            cleanUpSeatReservation(reservationId);
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals(1, response.getBody().size());
+        }
+
+        @Test
+        void shouldReturnTwoSeatReservations_whenClientMadeTwoReservations() {
+            // given
+            final ReservationId firstReservationId = reserveSeat(VALID_SEAT_ID);
+            final ReservationId secondReservationId = reserveSeat(ANOTHER_VALID_SEAT_ID);
+
+            // when
+            final ResponseEntity<List<SeatReservation>> response = restTemplate.exchange(
+                    "/showReservations/seat/?clientId={clientId}&from={from}&to={to}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), new ParameterizedTypeReference<List<SeatReservation>>(){},
+                    VALID_CLIENT_ID.getClientId(), Instant.now(), FUTURE_DATE_LATER);
+
+            // then
+            cleanUpSeatReservation(firstReservationId);
+            cleanUpSeatReservation(secondReservationId);
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals(2, response.getBody().size());
+        }
+
+        @Test
+        void shouldReturnOneHallReservation_whenClientMadeOneReservation() {
+            // given
+            final ReservationId reservationId = reserveHall(VALID_HALL_ID);
+
+            // when
+            final ResponseEntity<List<HallReservation>> response = restTemplate.exchange(
+                    "/showReservations/hall/?clientId={clientId}&from={from}&to={to}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), new ParameterizedTypeReference<List<HallReservation>>(){},
+                    VALID_CLIENT_ID.getClientId(), Instant.now(), FUTURE_DATE_LATER);
+
+            // then
+            cleanUpHallReservation(reservationId);
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals(1, response.getBody().size());
+        }
+
+        @Test
+        void shouldReturnTwoHallReservations_whenClientMadeTwoReservations() {
+            // given
+            final ReservationId firstReservationId = reserveHall(VALID_HALL_ID);
+            final ReservationId secondReservationId = reserveHall(ANOTHER_VALID_HALL_ID);
+
+            // when
+            final ResponseEntity<List<HallReservation>> response = restTemplate.exchange(
+                    "/showReservations/hall/?clientId={clientId}&from={from}&to={to}", HttpMethod.GET,
+                    new HttpEntity<>(null, null), new ParameterizedTypeReference<List<HallReservation>>(){},
+                    VALID_CLIENT_ID.getClientId(), Instant.now(), FUTURE_DATE_LATER);
+
+            // then
+            cleanUpHallReservation(firstReservationId);
+            cleanUpHallReservation(secondReservationId);
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals(2, response.getBody().size());
+        }
     }
 
 }

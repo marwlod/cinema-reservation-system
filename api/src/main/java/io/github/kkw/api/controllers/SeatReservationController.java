@@ -12,6 +12,7 @@ import io.github.kkw.api.model.ClientId;
 import io.github.kkw.api.model.Movie;
 import io.github.kkw.api.model.ReservationId;
 import io.github.kkw.api.model.Seat;
+import io.github.kkw.api.model.SeatReservation;
 import io.github.kkw.api.services.LoginService;
 import io.github.kkw.api.services.MovieService;
 import io.github.kkw.api.services.SeatReservationService;
@@ -104,6 +105,18 @@ public class SeatReservationController implements CrossOriginMarker {
             return seatReservationService.showAllSeats(movieId);
         } catch (MovieNotFoundException e) {
             throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e);
+        } catch (ClientNotLoggedInException e) {
+            throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
+        }
+    }
+
+    @GetMapping("/showReservations/seat")
+    public List<SeatReservation> showReservations(@RequestParam("clientId") final ClientId clientId,
+                                                  @RequestParam("from") final Instant from,
+                                                  @RequestParam("to") final Instant to) throws RestException {
+        try {
+            loginService.verifyClientLoggedIn(clientId);
+            return seatReservationService.showReservations(clientId, from, to);
         } catch (ClientNotLoggedInException e) {
             throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
         }
