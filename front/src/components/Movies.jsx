@@ -7,6 +7,7 @@ import TableBody from "@material-ui/core/TableBody";
 import {buildUrl, callCrsApi, moviesSubUrl} from "./ApiUtils";
 import TableHead from "@material-ui/core/TableHead";
 import Paper from "@material-ui/core/Paper";
+import MovieDetails from "./MovieDetails";
 
 export default function Movies(props) {
     const from = "2000-01-01"
@@ -36,9 +37,10 @@ export default function Movies(props) {
     return (
         <div className={props.className}>
             <TableContainer component={Paper}>
-                <Table aria-label="simple table">
+                <Table aria-label="collapsible table">
                     <TableHead>
                         <TableRow>
+                            <TableCell />
                             <TableCell>Name</TableCell>
                             <TableCell align="right">Start date</TableCell>
                             <TableCell align="right">End date</TableCell>
@@ -48,15 +50,7 @@ export default function Movies(props) {
                     </TableHead>
                     <TableBody>
                         {movies.map((movie) => (
-                            <TableRow key={movie.movieId}>
-                                <TableCell component="th" scope="row">
-                                    {movie.name}
-                                </TableCell>
-                                <TableCell align="right">{movie.startDate}</TableCell>
-                                <TableCell align="right">{movie.endDate}</TableCell>
-                                <TableCell align="right">{movie.basePrice}</TableCell>
-                                <TableCell align="right">{movie.hallId}</TableCell>
-                            </TableRow>
+                            <MovieDetails key={movie.movieId} movie={movie} />
                         ))}
                     </TableBody>
                 </Table>
