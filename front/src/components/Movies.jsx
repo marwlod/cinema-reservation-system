@@ -4,14 +4,14 @@ import Table from "@material-ui/core/Table";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
-import {buildUrl, callCrsApi, moviesSubUrl} from "./ApiUtils";
+import {buildUrl, callCrsApi, moviesSubUrl, toApiDate} from "./ApiUtils";
 import TableHead from "@material-ui/core/TableHead";
 import Paper from "@material-ui/core/Paper";
 import MovieDetails from "./MovieDetails";
 
 export default function Movies(props) {
-    const from = "2000-01-01"
-    const to = "2050-01-01"
+    const from = toApiDate(new Date())
+    const to = toApiDate(new Date(Date.now() + 30*24*60*60*1000)) // add 30 days
     const [movies, setMovies] = useState([{
         movieId: "",
         name: "",
