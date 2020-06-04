@@ -47,13 +47,3 @@ export function toApiDate(fullDate) {
         (month < 10 ? "0" + month : month) + "-" +
         (date < 10 ? "0" + date : date)
 }
-
-export function toApiDate(fullDate) {
-    console.log(fullDate)
-    const date = fullDate.getDate()
-    const month = fullDate.getMonth() + 1 // months numbered from 0 to 11
-    const year = fullDate.getFullYear()
-    return year + "-" +
-        (month < 10 ? "0" + month : month) + "-" +
-        (date < 10 ? "0" + date : date)
-}
