@@ -41,16 +41,7 @@ function a11yProps(index) {
     };
 }
 
-const useStyles = makeStyles({
-    root: {
-        minWidth: 650,
-        backgroundColor: "#a4a3b0",
-        textAlign: "center"
-    },
-});
-
 export default function MenuTabs(props) {
-    const classes = useStyles()
     // used for generating tabs
     const [value, setValue] = useState(0);
     const handleChange = (event, newValue) => {
@@ -58,7 +49,7 @@ export default function MenuTabs(props) {
     };
 
     return (
-        <div className={classes.root}>
+        <div className="menuTabs">
             <AppBar position="static" color="default">
                 <Tabs
                     value={value}

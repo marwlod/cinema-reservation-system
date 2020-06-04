@@ -7,9 +7,10 @@ function Header(props) {
         <header>
             <h1>
                 <TheatersIcon /> AGH Cinema
-                <span className="logoutButton">{props.showLogoutButton &&
-                    <CustomButton style={{ float: "right" }} onClick={props.onLogout} type="button" text="Logout"/>}
-                </span>
+                {
+                    props.showLogoutButton &&
+                    <CustomButton className="logoutButton" style={{ float: "right" }} onClick={props.onLogout} type="button" text="Logout"/>
+                }
             </h1>
         </header>
   );

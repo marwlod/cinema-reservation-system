@@ -40,6 +40,11 @@ body {
   font-family: "McLaren", monospace;
 }
 
+.menuTabs {
+  background-color: #a4a3b0;
+  text-align: center;
+}
+
 form {
   padding: 20px 0;
   position: relative;
