@@ -32,7 +32,7 @@ public class MovieStatistics {
         return showCount;
     }
 
-    public int getTotalReservationsReservations() {
+    public int getTotalReservations() {
         return totalReservations;
     }
 

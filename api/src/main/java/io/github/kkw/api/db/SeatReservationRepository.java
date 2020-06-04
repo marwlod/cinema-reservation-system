@@ -183,7 +183,8 @@ public class SeatReservationRepository {
     @Transactional
     public int getSeatReservations(Instant from, Instant to){
         final BigInteger result = (BigInteger) entityManager
-                .createNativeQuery("SELECT COUNT(*) FROM seat_reservation WHERE valid_until>=? AND valid_until<=?")
+                .createNativeQuery("SELECT COUNT(*) FROM seat_reservation " +
+                        "WHERE valid_until>=? AND valid_until<=?")
                 .setParameter(1, Timestamp.from(from))
                 .setParameter(2, Timestamp.from(to))
                 .getSingleResult();
@@ -191,20 +192,20 @@ public class SeatReservationRepository {
     }
 
     @Transactional
-    public boolean ifClientReservedAnySeat(int clientId){
+    public boolean isClientReservedAnySeat(int clientId){
         final BigInteger isReserved = (BigInteger) entityManager
                 .createNativeQuery("SELECT IF((" +
                         "SELECT COUNT(*) FROM seat_reservation WHERE client_id = ?" +
                         ") > 0, TRUE, FALSE)")
                 .setParameter(1, clientId)
                 .getSingleResult();
-        return isReserved.intValue() == 0;
+        return isReserved.intValue() == 1;
     }
 
     @Transactional
     public double getMoneyEarned(Instant from, Instant to){
         BigDecimal moneyEarned = (BigDecimal) entityManager
-                .createNativeQuery("SELECT SUM(total_price) FROM seat_reservation WHERE valid_until>=? AND valid_until<=?")
+                .createNativeQuery("SELECT SUM(total_price) FROM seat_reservation WHERE valid_until>=? AND valid_until<=? AND seat_reservation.is_deleted=0")
                 .setParameter(1, Timestamp.from(from))
                 .setParameter(2, Timestamp.from(to))
                 .getSingleResult();
@@ -213,36 +214,90 @@ public class SeatReservationRepository {
     }
 
     @Transactional
-    public int getReservationsCount(String movieName){
+    public int getMovieSeatReservationsCount(String movieName){
         final BigInteger movieShowsCounter = (BigInteger) entityManager
                 .createNativeQuery("SELECT COUNT(*) FROM seat_reservation " +
                         "INNER JOIN movie ON seat_reservation.movie_id=movie.movie_id " +
-                        "WHERE movie.name=?")
+                        "WHERE movie.name=? AND seat_reservation.valid_until<=?")
                 .setParameter(1,movieName)
+                .setParameter(2, Timestamp.from(Instant.now()))
                 .getSingleResult();
         return movieShowsCounter.intValue();
     }
 
     @Transactional
     public BigDecimal getMovieIncomeGenerated(String movieName){
-        final BigDecimal movieIncomeCounter = (BigDecimal) entityManager
+        BigDecimal movieIncomeCounter = (BigDecimal) entityManager
                 .createNativeQuery("SELECT SUM(total_price) FROM seat_reservation " +
                         "INNER JOIN movie ON seat_reservation.movie_id=movie.movie_id " +
-                        "WHERE movie.name=? AND movie.end_date=seat_reservation.valid_until")
+                        "WHERE movie.name=? AND movie.end_date=seat_reservation.valid_until AND movie.end_date<=?")
                 .setParameter(1, movieName)
+                .setParameter(2, Timestamp.from(Instant.now()))
                 .getSingleResult();
+        if(movieIncomeCounter==null) return new BigDecimal(0.00);
         return movieIncomeCounter;
     }
 
     @Transactional
-    public int getDeletedReservations(String movieName){
+    public int getDeletedSeatReservationsCounter(String movieName){
         final BigInteger deletedReservations = (BigInteger) entityManager
                 .createNativeQuery("SELECT COUNT(valid_until) FROM seat_reservation " +
                         "INNER JOIN movie ON seat_reservation.movie_id=movie.movie_id " +
-                        "WHERE movie.name=? AND seat_reservation.is_deleted=1")
+                        "WHERE movie.name=? AND seat_reservation.is_deleted=1 AND seat_reservation.valid_until<=?")
                 .setParameter(1,movieName)
+                .setParameter(2, Timestamp.from(Instant.now()))
                 .getSingleResult();
         return deletedReservations.intValue();
+    }
+
+    @Transactional
+    public BigInteger getTotalClientReservationsCount(int clientId){
+        return  (BigInteger) entityManager
+                .createNativeQuery("SELECT COUNT(*) FROM seat_reservation WHERE client_id = ? AND seat_reservation.valid_until<=?")
+                .setParameter(1, clientId)
+                .setParameter(2, Timestamp.from(Instant.now()))
+                .getSingleResult();
+    }
+
+    @Transactional
+    public BigDecimal getIncomeGeneratedFromClient(int clientId){
+        final BigDecimal incomeCounter = (BigDecimal) entityManager
+                .createNativeQuery("SELECT SUM(total_price) FROM seat_reservation " +
+                        "INNER JOIN movie ON seat_reservation.movie_id=movie.movie_id " +
+                        "WHERE seat_reservation.client_id=? AND movie.end_date=seat_reservation.valid_until AND seat_reservation.valid_until<=?")
+                .setParameter(1, clientId)
+                .setParameter(2, Timestamp.from(Instant.now()))
+                .getSingleResult();
+        return incomeCounter;
+    }
+
+    @Transactional
+    public BigInteger getDeletedClientSeatReservationsCounter(int clientId){
+        final BigInteger deletedReservations = (BigInteger) entityManager
+                .createNativeQuery("SELECT COUNT(valid_until) FROM seat_reservation " +
+                        "WHERE client_id=? AND seat_reservation.is_deleted=1 AND seat_reservation.valid_until<=?")
+                .setParameter(1,clientId)
+                .setParameter(2, Timestamp.from(Instant.now()))
+                .getSingleResult();
+        return deletedReservations;
+    }
+
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public BigDecimal getClientReservationsBasePrice(int clientId){
+        List<BigDecimal> clientReservationsMovieBasePrices = (List<BigDecimal>) entityManager
+                .createNativeQuery("SELECT base_price FROM movie " +
+                        "INNER JOIN seat_reservation ON movie.movie_id=seat_reservation.movie_id " +
+                        "WHERE seat_reservation.client_id = ? AND seat_reservation.is_deleted=0 AND seat_reservation.valid_until<=?")
+                .setParameter(1, clientId)
+                .setParameter(2, Timestamp.from(Instant.now()))
+                .getResultList();
+        if(clientReservationsMovieBasePrices.isEmpty()) return new BigDecimal(0.00);
+        BigDecimal sumBasePrices = BigDecimal.ZERO;
+        for(int i=0; i<clientReservationsMovieBasePrices.size(); i++){
+            sumBasePrices = sumBasePrices.add(clientReservationsMovieBasePrices.get(i));
+        }
+        return sumBasePrices;
     }
 
 }

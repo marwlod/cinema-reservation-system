@@ -5,10 +5,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.sound.midi.Soundbank;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.MathContext;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -70,7 +68,8 @@ public class HallReservationRepository {
     public boolean reservationDoesntExist(int clientId, int reservationId) {
         final BigInteger isReserved = (BigInteger) entityManager
                 .createNativeQuery("SELECT IF((" +
-                        "SELECT COUNT(*) FROM hall_reservation WHERE client_id = ? AND hall_reservation_id = ? AND valid_until > ?" +
+                        "SELECT COUNT(*) FROM hall_reservation " +
+                        "WHERE client_id = ? AND hall_reservation_id = ? AND valid_until > ?" +
                         ") > 0, TRUE, FALSE)")
                 .setParameter(1, clientId)
                 .setParameter(2, reservationId)
@@ -126,11 +125,19 @@ public class HallReservationRepository {
         return res;
     }
 
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public List<BigDecimal> getAllHallsPrices(){
+        return (List<BigDecimal>) entityManager
+                .createNativeQuery("SELECT total_price FROM hall")
+                .getResultList();
+    }
 
     @Transactional
     public int getHallReservations(Instant from, Instant to){
         BigInteger hallReservations = (BigInteger) entityManager
-                .createNativeQuery("SELECT COUNT(*) from hall_reservation WHERE valid_until>=? AND valid_until<=?")
+                .createNativeQuery("SELECT COUNT(*) from hall_reservation " +
+                        "WHERE valid_until>=? AND valid_until<=?")
                 .setParameter(1, Timestamp.from(from))
                 .setParameter(2, Timestamp.from(to))
                 .getSingleResult();
@@ -138,31 +145,43 @@ public class HallReservationRepository {
     }
 
     @Transactional
-    public boolean ifClientReservedAnyHall(int clientId){
+    public boolean isClientReservedAnyHall(int clientId){
         final BigInteger isReserved = (BigInteger) entityManager
                 .createNativeQuery("SELECT IF((" +
-                        "SELECT COUNT(*) FROM hall_reservation WHERE client_id = ?" +
-                        ") > 0, TRUE, FALSE)")
+                        "SELECT COUNT(*) FROM hall_reservation " +
+                        "WHERE client_id = ?) > 0, TRUE, FALSE)")
                 .setParameter(1, clientId)
                 .getSingleResult();
-        return isReserved.intValue() == 0;
+        return isReserved.intValue() == 1;
     }
 
     @Transactional
     @SuppressWarnings("unchecked")
     public double getMoneyEarnedFromHalls(Instant from, Instant to){
-        List<Integer> halls = (List<Integer>) entityManager
-                .createNativeQuery("SELECT hall_id FROM hall_reservation WHERE valid_until>=? AND valid_until<=?")
+        BigDecimal sumHallPayments = BigDecimal.ZERO;
+        List<Integer> totallyPaidReservationsHallIds = (List<Integer>) entityManager
+                .createNativeQuery("SELECT hall_id FROM hall_reservation " +
+                        "WHERE is_paid_total = 1 AND is_deleted = 0 AND valid_until>=? AND valid_until<=?")
                 .setParameter(1,Timestamp.from(from))
                 .setParameter(2, Timestamp.from(to))
                 .getResultList();
-        List<BigDecimal> hallsPrices = (List<BigDecimal>) entityManager
-                .createNativeQuery("SELECT total_price FROM hall")
+        List<Integer> advancePaidOrDeletedReservationsHallIds = (List<Integer>) entityManager
+                .createNativeQuery("SELECT hall_reservation.hall_id FROM hall_reservation " +
+                        "INNER JOIN hall ON hall_reservation.hall_id = hall.hall_id " +
+                        "WHERE ((is_paid_advance = 1 AND is_paid_total = 0) OR (is_paid_total = 1 AND is_deleted = 1)) AND valid_until>=? AND valid_until<=?")
+                .setParameter(1,Timestamp.from(from))
+                .setParameter(2, Timestamp.from(to))
                 .getResultList();
-        if(halls.isEmpty() || hallsPrices.isEmpty()) return 0.00;
-        BigDecimal sumHallPayments = BigDecimal.ZERO;
-        for(int i=0; i<halls.size(); i++){
-            sumHallPayments = sumHallPayments.add(hallsPrices.get(halls.get(i)-1));
+        List<BigDecimal> hallsPrices = getAllHallsPrices();
+        if(!totallyPaidReservationsHallIds.isEmpty() && !hallsPrices.isEmpty()) {
+            for(int i=0; i<totallyPaidReservationsHallIds.size(); i++){
+                sumHallPayments = sumHallPayments.add(hallsPrices.get(totallyPaidReservationsHallIds.get(i)-1));
+            }
+        }
+        if(!advancePaidOrDeletedReservationsHallIds.isEmpty() && !hallsPrices.isEmpty()) {
+            for(int i=0; i<advancePaidOrDeletedReservationsHallIds.size(); i++){
+                sumHallPayments = sumHallPayments.add(hallsPrices.get(advancePaidOrDeletedReservationsHallIds.get(i)-1).multiply(new BigDecimal(0.2)));
+            }
         }
         return sumHallPayments.doubleValue();
     }
@@ -178,7 +197,8 @@ public class HallReservationRepository {
     @Transactional
     public boolean isHallExists(int hallId){
         BigInteger hall = (BigInteger) entityManager
-                .createNativeQuery("SELECT IF((SELECT COUNT(*) FROM hall WHERE hall_id = ?) > 0, TRUE, FALSE)")
+                .createNativeQuery("SELECT IF((SELECT COUNT(*) FROM hall " +
+                        "WHERE hall_id = ?) > 0, TRUE, FALSE)")
                 .setParameter(1, hallId)
                 .getSingleResult();
         return hall.intValue() == 1;
@@ -187,8 +207,10 @@ public class HallReservationRepository {
     @Transactional
     public BigInteger getHallReservationsCounter(int hallId){
         BigInteger reservations = (BigInteger) entityManager
-                .createNativeQuery("SELECT COUNT(*) FROM hall_reservation WHERE hall_id = ?")
+                .createNativeQuery("SELECT COUNT(*) FROM hall_reservation " +
+                        "WHERE hall_id = ?  AND valid_until<=?")
                 .setParameter(1, hallId)
+                .setParameter(2, Timestamp.from(Instant.now()))
                 .getSingleResult();
         return reservations;
     }
@@ -202,12 +224,18 @@ public class HallReservationRepository {
         if(hallPrice==null) return new BigDecimal(0.00);
         BigDecimal advancePaymentValue = new BigDecimal(hallPrice.doubleValue()*0.2);
         BigInteger hallPaidTotalCounter = (BigInteger) entityManager
-                .createNativeQuery("SELECT COUNT(*) FROM hall_reservation INNER JOIN hall ON hall_reservation.hall_id = hall.hall_id WHERE hall_reservation.hall_id = ? AND is_paid_total = 1 AND is_deleted = 0")
+                .createNativeQuery("SELECT COUNT(*) FROM hall_reservation " +
+                        "INNER JOIN hall ON hall_reservation.hall_id = hall.hall_id " +
+                        "WHERE hall_reservation.hall_id = ? AND is_paid_total = 1 AND is_deleted = 0 AND valid_until<=?")
                 .setParameter(1, hallId)
+                .setParameter(2, Timestamp.from(Instant.now()))
                 .getSingleResult();
         BigInteger hallOnlyPaidAdvanceOrDeletedCounter = (BigInteger) entityManager
-                .createNativeQuery("SELECT COUNT(*) FROM hall_reservation INNER JOIN hall ON hall_reservation.hall_id = hall.hall_id WHERE hall_reservation.hall_id = ? AND ((is_paid_advance = 1 AND is_paid_total = 0) OR (is_paid_total = 1 AND is_deleted = 1))")
+                .createNativeQuery("SELECT COUNT(*) FROM hall_reservation " +
+                        "INNER JOIN hall ON hall_reservation.hall_id = hall.hall_id " +
+                        "WHERE hall_reservation.hall_id = ? AND ((is_paid_advance = 1 AND is_paid_total = 0) OR (is_paid_total = 1 AND is_deleted = 1)) AND valid_until<=?")
                 .setParameter(1, hallId)
+                .setParameter(2, Timestamp.from(Instant.now()))
                 .getSingleResult();
         BigDecimal hallPaidTotalIncome = hallPrice.multiply(new BigDecimal(hallPaidTotalCounter.intValue()));
         BigDecimal hallOnlyPaidAdvanceOrDeletedIncome = advancePaymentValue.multiply(new BigDecimal(hallOnlyPaidAdvanceOrDeletedCounter.intValue()));
@@ -215,10 +243,62 @@ public class HallReservationRepository {
     }
 
     @Transactional
-    public BigInteger getDeletedReservations(int hallId){
+    public BigInteger getDeletedHallReservationsCounter(int hallId){
         return  (BigInteger) entityManager
-                .createNativeQuery("SELECT COUNT(*) FROM hall_reservation WHERE hall_id = ? AND is_deleted = 1")
+                .createNativeQuery("SELECT COUNT(*) FROM hall_reservation " +
+                        "WHERE hall_id = ? AND is_deleted = 1 AND valid_until<=?")
                 .setParameter(1, hallId)
+                .setParameter(2, Timestamp.from(Instant.now()))
+                .getSingleResult();
+    }
+
+    @Transactional
+    public BigInteger getClientTotalReservations(int clientId){
+        return  (BigInteger) entityManager
+                .createNativeQuery("SELECT COUNT(*) FROM hall_reservation " +
+                        "WHERE client_id = ? AND valid_until<=?")
+                .setParameter(1, clientId)
+                .setParameter(2, Timestamp.from(Instant.now()))
+                .getSingleResult();
+    }
+
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public BigDecimal getIncomeGeneratedFromClient(int clientId){
+        BigDecimal sumHallPayments = BigDecimal.ZERO;
+        List<Integer> totallyPaidReservationsHallIds = (List<Integer>) entityManager
+                .createNativeQuery("SELECT hall_id FROM hall_reservation" +
+                        " WHERE client_id = ? AND is_paid_total = 1 AND is_deleted = 0 AND valid_until<=?")
+                .setParameter(1, clientId)
+                .setParameter(2, Timestamp.from(Instant.now()))
+                .getResultList();
+        List<Integer> advancePaidOrDeletedReservationsHallIds = (List<Integer>) entityManager
+                .createNativeQuery("SELECT hall_reservation.hall_id FROM hall_reservation " +
+                        "INNER JOIN hall ON hall_reservation.hall_id = hall.hall_id WHERE client_id = ? AND ((is_paid_advance = 1 AND is_paid_total = 0) OR (is_paid_total = 1 AND is_deleted = 1)) AND valid_until<=?")
+                .setParameter(1, clientId)
+                .setParameter(2, Timestamp.from(Instant.now()))
+                .getResultList();
+        List<BigDecimal> hallsPrices = getAllHallsPrices();
+        if(!totallyPaidReservationsHallIds.isEmpty() && !hallsPrices.isEmpty()) {
+            for(int i=0; i<totallyPaidReservationsHallIds.size(); i++){
+                sumHallPayments = sumHallPayments.add(hallsPrices.get(totallyPaidReservationsHallIds.get(i)-1));
+            }
+        }
+        if(!advancePaidOrDeletedReservationsHallIds.isEmpty() && !hallsPrices.isEmpty()) {
+            for(int i=0; i<advancePaidOrDeletedReservationsHallIds.size(); i++){
+                sumHallPayments = sumHallPayments.add(hallsPrices.get(advancePaidOrDeletedReservationsHallIds.get(i)-1).multiply(new BigDecimal(0.2)));
+            }
+        }
+        return sumHallPayments;
+    }
+
+    @Transactional
+    public BigInteger getDeletedClientHallReservationsCounter(int clientId){
+        return  (BigInteger) entityManager
+                .createNativeQuery("SELECT COUNT(*) FROM hall_reservation " +
+                        "WHERE client_id = ? AND is_deleted = 1 AND valid_until<=?")
+                .setParameter(1, clientId)
+                .setParameter(2, Timestamp.from(Instant.now()))
                 .getSingleResult();
     }
 
