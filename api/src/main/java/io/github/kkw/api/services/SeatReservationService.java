@@ -2,6 +2,7 @@ package io.github.kkw.api.services;
 
 import io.github.kkw.api.db.SeatReservationRepository;
 import io.github.kkw.api.db.dto.SeatEntity;
+import io.github.kkw.api.db.dto.SeatReservationEntity;
 import io.github.kkw.api.exceptions.MovieNotFoundException;
 import io.github.kkw.api.exceptions.NoFreeSeatsException;
 import io.github.kkw.api.exceptions.ReservationNotFoundException;
@@ -10,8 +11,10 @@ import io.github.kkw.api.exceptions.SeatReservedException;
 import io.github.kkw.api.model.ClientId;
 import io.github.kkw.api.model.ReservationId;
 import io.github.kkw.api.model.Seat;
+import io.github.kkw.api.model.SeatReservation;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -64,5 +67,10 @@ public class SeatReservationService {
         }
         List<SeatEntity> allSeats = seatReservationRepository.getAllSeats(movieId);
         return allSeats.stream().map(Seat::new).collect(Collectors.toList());
+    }
+
+    public List<SeatReservation> showReservations(ClientId clientId, Instant from, Instant to) {
+        List<SeatReservationEntity> allReservations = seatReservationRepository.getReservations(clientId.getClientId(), from, to);
+        return allReservations.stream().map(SeatReservation::new).collect(Collectors.toList());
     }
 }
