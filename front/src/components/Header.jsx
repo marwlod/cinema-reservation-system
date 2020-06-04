@@ -6,8 +6,7 @@ function Header(props) {
     return (
         <header>
             <h1>
-                <TheatersIcon />
-                Cinema Reservation System
+                <TheatersIcon /> AGH Cinema
                 <span className="logoutButton">{props.showLogoutButton &&
                     <CustomButton style={{ float: "right" }} onClick={props.onLogout} type="button" text="Logout"/>}
                 </span>

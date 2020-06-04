@@ -3,7 +3,7 @@ import CustomButton from "./CustomButton";
 
 function LoginForm(props) {
     const [loginDetails, setLoginDetails] = useState({
-        username: "",
+        email: "",
         password: ""
     })
 
@@ -24,12 +24,14 @@ function LoginForm(props) {
     }
 
     return (
-        <form className="form">
-            <input name="username" onChange={handleChange} value={loginDetails.username} type="text" placeholder="Username" />
-            <input name="password" onChange={handleChange} value={loginDetails.password} type="password" placeholder="Password" />
-            <CustomButton onClick={onSubmit} type="submit" text="Login"/>
-            <div className="error">{props.error}</div>
-        </form>
+        <div className="container">
+            <form className="form">
+                <input name="email" onChange={handleChange} value={loginDetails.email} type="text" placeholder="Email" />
+                <input name="password" onChange={handleChange} value={loginDetails.password} type="password" placeholder="Password" />
+                <CustomButton onClick={onSubmit} type="button" text="Login"/>
+                <div className="error">{props.error}</div>
+            </form>
+        </div>
     );
 }
 
