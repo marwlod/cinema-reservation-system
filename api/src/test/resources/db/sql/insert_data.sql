@@ -28,6 +28,14 @@ INSERT INTO movie (movie_id, name, start_date, end_date, base_price, hall_id)
     VALUES (2, 'Joker', STR_TO_DATE('01/01/2030 8:00:00 PM', '%e/%c/%Y %r'), STR_TO_DATE('01/01/2030 10:00:00 PM', '%e/%c/%Y %r'), 30, 2);
 INSERT INTO movie (movie_id, name, start_date, end_date, base_price, hall_id)
     VALUES (3, 'American Pie 5: Naked Mile', STR_TO_DATE('15/05/2020 8:00:00 PM', '%e/%c/%Y %r'), STR_TO_DATE('15/05/2020 10:00:00 PM', '%e/%c/%Y %r'), 35, 2);
+INSERT INTO movie (movie_id, name, start_date, end_date, base_price, hall_id)
+    VALUES (4, 'Back to the future III', STR_TO_DATE('20/06/2020 8:00:00 PM', '%e/%c/%Y %r'), STR_TO_DATE('20/06/2020 10:00:00 PM', '%e/%c/%Y %r'), 25, 1);
+INSERT INTO movie (movie_id, name, start_date, end_date, base_price, hall_id)
+    VALUES (5, 'Cinema Paradiso', STR_TO_DATE('21/06/2020 02:00:00 PM', '%e/%c/%Y %r'), STR_TO_DATE('21/06/2020 04:00:00 PM', '%e/%c/%Y %r'), 30, 2);
+INSERT INTO movie (movie_id, name, start_date, end_date, base_price, hall_id)
+    VALUES (6, 'The Usual Suspects', STR_TO_DATE('21/06/2020 8:00:00 PM', '%e/%c/%Y %r'), STR_TO_DATE('21/06/2020 10:00:00 PM', '%e/%c/%Y %r'), 30, 2);
+INSERT INTO movie (movie_id, name, start_date, end_date, base_price, hall_id)
+    VALUES (7, 'The Dark Knight Rises', STR_TO_DATE('22/06/2020 6:00:00 PM', '%e/%c/%Y %r'), STR_TO_DATE('22/06/2020 8:00:00 PM', '%e/%c/%Y %r'), 25, 1);
 
 INSERT INTO special_offers (special_offer_id, code,percentage) VALUES (1, 'A123',10);
 

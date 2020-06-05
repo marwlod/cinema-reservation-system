@@ -3,6 +3,7 @@ export const loginSubUrl = "/login"
 export const profileSubUrl = "/showProfile"
 export const moviesSubUrl = "/showMovies"
 export const freeSeatsSubUrl = "/showFreeSeats"
+export const reserveSeatSubUrl = "/reserveSeat"
 // will be easier for now, needs to be fixed in the future
 export const loggedInClient = "5000";
 
@@ -35,4 +36,14 @@ export function callCrsApi(url, params, onSuccess, onFail) {
             }
         })
         .catch(console.warn)
+}
+
+export function toApiDate(fullDate) {
+    console.log(fullDate)
+    const date = fullDate.getDate()
+    const month = fullDate.getMonth() + 1 // months numbered from 0 to 11
+    const year = fullDate.getFullYear()
+    return year + "-" +
+        (month < 10 ? "0" + month : month) + "-" +
+        (date < 10 ? "0" + date : date)
 }
