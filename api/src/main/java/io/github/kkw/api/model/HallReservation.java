@@ -14,6 +14,8 @@ public class HallReservation {
     private final double totalPrice;
     private final Instant reservationDate;
     private final int screenSize;
+    private final int hallId;
+    private final boolean isDeleted;
 
     public HallReservation(@JsonProperty("hallReservationId") int hallReservationId,
                            @JsonProperty("validUntil") Instant validUntil,
@@ -22,7 +24,9 @@ public class HallReservation {
                            @JsonProperty("advancePrice") double advancePrice,
                            @JsonProperty("totalPrice") double totalPrice,
                            @JsonProperty("reservationDate") Instant reservationDate,
-                           @JsonProperty("screenSize") int screenSize) {
+                           @JsonProperty("screenSize") int screenSize,
+                           @JsonProperty("hallId") int hallId,
+                           @JsonProperty("isDeleted") boolean isDeleted) {
         this.hallReservationId = hallReservationId;
         this.validUntil = validUntil;
         this.isPaidAdvance = isPaidAdvance;
@@ -31,6 +35,8 @@ public class HallReservation {
         this.totalPrice = totalPrice;
         this.reservationDate = reservationDate;
         this.screenSize = screenSize;
+        this.hallId = hallId;
+        this.isDeleted = isDeleted;
     }
 
     public HallReservation(HallReservationEntity hallReservationEntity) {
@@ -42,7 +48,9 @@ public class HallReservation {
                 hallReservationEntity.getAdvancePrice().doubleValue(),
                 hallReservationEntity.getTotalPrice().doubleValue(),
                 hallReservationEntity.getReservationDate().toInstant(),
-                hallReservationEntity.getScreenSize());
+                hallReservationEntity.getScreenSize(),
+                hallReservationEntity.getHallId(),
+                hallReservationEntity.isDeleted());
     }
 
     public int getHallReservationId() {
@@ -75,6 +83,14 @@ public class HallReservation {
 
     public int getScreenSize() {
         return screenSize;
+    }
+
+    public int getHallId() {
+        return hallId;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
     }
 }
 

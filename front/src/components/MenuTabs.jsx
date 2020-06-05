@@ -6,6 +6,8 @@ import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import Profile from "./Profile";
 import Movies from "./Movies";
+import SeatReservations from "./SeatReservations";
+import HallReservations from "./HallReservations";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -41,6 +43,7 @@ function a11yProps(index) {
 }
 
 export default function MenuTabs(props) {
+    const {clientId} = props
     // used for generating tabs
     const [value, setValue] = useState(0);
     const handleChange = (event, newValue) => {
@@ -60,24 +63,28 @@ export default function MenuTabs(props) {
                 >
                     <Tab label="Show movies" {...a11yProps(0)} />
                     <Tab label="Show halls" {...a11yProps(1)} />
-                    <Tab label="My reservations" {...a11yProps(2)} />
-                    <Tab label="My profile" {...a11yProps(3)} />
-                    <Tab label="Contact us" {...a11yProps(4)} />
+                    <Tab label="My movie reservations" {...a11yProps(2)} />
+                    <Tab label="My hall reservations" {...a11yProps(3)} />
+                    <Tab label="My profile" {...a11yProps(4)} />
+                    <Tab label="Contact us" {...a11yProps(5)} />
                 </Tabs>
             </AppBar>
             <TabPanel value={value} index={0}>
-                <Movies />
+                <Movies clientId={clientId} />
             </TabPanel>
             <TabPanel value={value} index={1}>
                 Halls
             </TabPanel>
             <TabPanel value={value} index={2}>
-                My reservations
+                <SeatReservations clientId={clientId}/>
             </TabPanel>
             <TabPanel value={value} index={3}>
-                <Profile clientId={props.clientId}/>
+                <HallReservations clientId={clientId}/>
             </TabPanel>
             <TabPanel value={value} index={4}>
+                <Profile clientId={clientId}/>
+            </TabPanel>
+            <TabPanel value={value} index={5}>
                 Contact us
             </TabPanel>
         </div>
