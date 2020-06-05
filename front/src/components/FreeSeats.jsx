@@ -14,7 +14,7 @@ import Fab from "@material-ui/core/Fab";
 import AddIcon from '@material-ui/icons/Add';
 
 export default function FreeSeats(props) {
-    const {open, movieId, clientId} = props
+    const {open, movieId, clientId, isAdmin} = props
     const [seats, setSeats] = useState([{
         seatId: "",
         hallId: "",
@@ -79,6 +79,10 @@ export default function FreeSeats(props) {
                             <TableCell>Seat number</TableCell>
                             <TableCell align="right">VIP seat</TableCell>
                             <TableCell align="right">Price [PLN]</TableCell>
+                            {
+                                isAdmin ||
+                                <TableCell align="right">Reserve</TableCell>
+                            }
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -92,11 +96,14 @@ export default function FreeSeats(props) {
                                 <TableCell align="right">
                                     {seat.vip ? 1.5 * seat.basePrice : seat.basePrice}
                                 </TableCell>
-                                <TableCell align="right">
-                                    <Fab color="primary" aria-label="add">
-                                        <AddIcon onClick={() => handleReserveClick(seat.seatId)}/>
-                                    </Fab>
-                                </TableCell>
+                                {
+                                    isAdmin ||
+                                    <TableCell align="right">
+                                        <Fab color="primary" aria-label="add">
+                                            <AddIcon onClick={() => handleReserveClick(seat.seatId)}/>
+                                        </Fab>
+                                    </TableCell>
+                                }
                             </TableRow>
                         ))}
                     </TableBody>

@@ -10,7 +10,7 @@ import Paper from "@material-ui/core/Paper";
 import MovieDetails from "./MovieDetails";
 
 export default function Movies(props) {
-    const {clientId} = props
+    const {clientId, isAdmin} = props
     const from = toApiDate(new Date())
     const to = toApiDate(new Date(Date.now() + 30*24*60*60*1000)) // add 30 days
     const [movies, setMovies] = useState([{
@@ -51,7 +51,7 @@ export default function Movies(props) {
                     </TableHead>
                     <TableBody>
                         {movies.map((movie) => (
-                            <MovieDetails key={movie.movieId} movie={movie} clientId={clientId}/>
+                            <MovieDetails key={movie.movieId} movie={movie} clientId={clientId} isAdmin={isAdmin}/>
                         ))}
                     </TableBody>
                 </Table>

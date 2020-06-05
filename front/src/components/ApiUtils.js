@@ -1,11 +1,13 @@
 export const baseUrl = "http://localhost:8888"
 export const loginSubUrl = "/login"
+export const registerSubUrl = "/register"
 export const profileSubUrl = "/showProfile"
 export const moviesSubUrl = "/showMovies"
 export const freeSeatsSubUrl = "/showFreeSeats"
 export const reserveSeatSubUrl = "/reserveSeat"
 export const showSeatReservationsSubUrl = "/showReservations/seat"
 export const payForSeatSubUrl = "/payForSeat"
+export const verifyAdminSubUrl = "/verifyAdmin"
 
 export function buildUrl(subUrl, pathVars, urlParams) {
     const url = [baseUrl, subUrl];

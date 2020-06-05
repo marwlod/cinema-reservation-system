@@ -62,7 +62,7 @@ public class LoginService {
 
     public void verifyAdmin(ClientId clientId) throws NotAdminException {
         if (!loginRepository.isAdmin(clientId.getClientId())) {
-            throw new NotAdminException("Only admin can do this");
+            throw new NotAdminException("Client is not an admin");
         }
     }
 

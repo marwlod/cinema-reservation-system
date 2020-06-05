@@ -41,6 +41,7 @@ export default function SeatReservations(props) {
         }
         function onFail(data) {
             console.warn(data.message)
+            setReservations([])
         }
         callCrsApi(url, {method: 'GET'}, onSuccess, onFail)
     }
@@ -55,7 +56,6 @@ export default function SeatReservations(props) {
 
     function deleteReservation(reservationId) {
         const url = buildUrl(reserveSeatSubUrl, [reservationId], {"clientId": clientId})
-        console.log(url)
         function onSuccess() {
             console.log("Deleting reservation with ID ", reservationId, " successful")
             getReservations()
@@ -95,7 +95,8 @@ export default function SeatReservations(props) {
 
     return (
         <div>
-            {reservations.length === 1 && reservations[0].seatReservationId === "" ?
+            {
+                reservations.length === 0 ?
                 <h2>No movie reservations found</h2> :
                 <div>
                     <TableContainer component={Paper}>

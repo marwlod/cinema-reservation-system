@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.time.Instant;
 import java.util.List;
 
@@ -64,7 +65,7 @@ public class AdminController implements CrossOriginMarker {
 
     @GetMapping("/showStatistics/movie/{movieName}")
     public MovieStatistics showStatisticsForMovie(@RequestParam("clientId") final ClientId clientId,
-                                                  @PathVariable("movieName") final String movieName) throws RestException {
+                                                  @PathVariable("movieName") @NotEmpty final String movieName) throws RestException {
         try {
             loginService.verifyAdmin(clientId);
             loginService.verifyClientLoggedIn(clientId);
@@ -80,7 +81,7 @@ public class AdminController implements CrossOriginMarker {
 
     @GetMapping("/showStatistics/hall/{hallId}")
     public HallStatistics showStatisticsForHall(@RequestParam("clientId") final ClientId clientId,
-                                                  @PathVariable("hallId") final int hallId) throws RestException {
+                                                @PathVariable("hallId") final int hallId) throws RestException {
         try {
             loginService.verifyAdmin(clientId);
             loginService.verifyClientLoggedIn(clientId);
@@ -123,4 +124,12 @@ public class AdminController implements CrossOriginMarker {
         }
     }
 
+    @GetMapping("/verifyAdmin")
+    public void verifyAdmin(@RequestParam("clientId") final ClientId clientId) throws RestException {
+        try{
+            loginService.verifyAdmin(clientId);
+        } catch (NotAdminException e) {
+            throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
+        }
+    }
 }
