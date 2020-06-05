@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import LoginForm from "./LoginForm";
 import Header from "./Header";
-import Footer from "./Footer";
 import {buildUrl, callCrsApi, loginSubUrl} from "./ApiUtils";
 import MenuTabs from "./MenuTabs";
 
@@ -38,7 +37,6 @@ function App() {
                 <MenuTabs clientId={clientId}/> :
                 <LoginForm onLogin={afterLogin} error={error}/>
             }
-            <Footer />
         </div>
     )
 }

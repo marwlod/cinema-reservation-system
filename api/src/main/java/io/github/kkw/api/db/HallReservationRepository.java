@@ -226,7 +226,7 @@ public class HallReservationRepository {
     public List<HallReservationEntity> getReservations(int clientId, Instant from, Instant to) {
         return (List<HallReservationEntity>) entityManager
                 .createNativeQuery("SELECT hall_reservation_id, valid_until, is_paid_advance, is_paid_total," +
-                        "reservation_date, hall.hall_id, advance_price, total_price, screen_size " +
+                        "reservation_date, hall.hall_id, advance_price, total_price, screen_size , is_deleted " +
                         "FROM hall_reservation " +
                         "INNER JOIN hall ON hall.hall_id = hall_reservation.hall_id " +
                         "WHERE client_id = ? AND valid_until >= ? AND valid_until <= ?", HallReservationEntity.class)

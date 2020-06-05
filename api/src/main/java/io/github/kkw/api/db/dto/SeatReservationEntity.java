@@ -19,6 +19,7 @@ public class SeatReservationEntity {
     private int rowNo;
     private int seatNo;
     private boolean isVip;
+    private boolean isDeleted;
 
     public int getSeatReservationId() {
         return seatReservationId;
@@ -64,6 +65,10 @@ public class SeatReservationEntity {
         return isVip;
     }
 
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
     public void setSeatReservationId(int seatReservationId) {
         this.seatReservationId = seatReservationId;
     }
@@ -106,5 +111,9 @@ public class SeatReservationEntity {
 
     public void setVip(boolean vip) {
         isVip = vip;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }

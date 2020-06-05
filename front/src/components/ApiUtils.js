@@ -4,9 +4,8 @@ export const profileSubUrl = "/showProfile"
 export const moviesSubUrl = "/showMovies"
 export const freeSeatsSubUrl = "/showFreeSeats"
 export const reserveSeatSubUrl = "/reserveSeat"
-// will be easier for now, needs to be fixed in the future
-export const loggedInClient = "5000";
-
+export const showSeatReservationsSubUrl = "/showReservations/seat"
+export const payForSeatSubUrl = "/payForSeat"
 
 export function buildUrl(subUrl, pathVars, urlParams) {
     const url = [baseUrl, subUrl];
@@ -26,9 +25,14 @@ export function buildUrl(subUrl, pathVars, urlParams) {
 
 export function callCrsApi(url, params, onSuccess, onFail) {
     fetch(url, params)
-        .then(res => res.json())
+        .then(res => res.json().catch(() => {
+            if (res.status === 200) {
+                return {success: ""}
+            } else {
+                return {status: "", message: ""}
+            }
+        }))
         .then((data) => {
-            console.log(data)
             if (data.hasOwnProperty("status") && data.hasOwnProperty("message")) {
                 onFail(data)
             } else {
@@ -39,7 +43,6 @@ export function callCrsApi(url, params, onSuccess, onFail) {
 }
 
 export function toApiDate(fullDate) {
-    console.log(fullDate)
     const date = fullDate.getDate()
     const month = fullDate.getMonth() + 1 // months numbered from 0 to 11
     const year = fullDate.getFullYear()

@@ -17,6 +17,8 @@ public class HallReservationEntity {
     private BigDecimal advancePrice;
     private BigDecimal totalPrice;
     private int screenSize;
+    private int hallId;
+    private boolean isDeleted;
 
     public int getHallReservationId() {
         return hallReservationId;
@@ -50,6 +52,14 @@ public class HallReservationEntity {
         return screenSize;
     }
 
+    public int getHallId() {
+        return hallId;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
     public void setHallReservationId(int hallReservationId) {
         this.hallReservationId = hallReservationId;
     }
@@ -80,5 +90,13 @@ public class HallReservationEntity {
 
     public void setScreenSize(int screenSize) {
         this.screenSize = screenSize;
+    }
+
+    public void setHallId(int hallId) {
+        this.hallId = hallId;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }

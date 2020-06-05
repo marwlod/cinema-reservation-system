@@ -17,6 +17,7 @@ public class SeatReservation {
     private final int rowNumber;
     private final int seatNumber;
     private final boolean isVip;
+    private final boolean isDeleted;
 
     public SeatReservation(@JsonProperty("seatReservationId") int seatReservationId,
                            @JsonProperty("validUntil") Instant validUntil,
@@ -28,7 +29,8 @@ public class SeatReservation {
                            @JsonProperty("hallId") int hallId,
                            @JsonProperty("rowNumber") int rowNumber,
                            @JsonProperty("seatNumber") int seatNumber,
-                           @JsonProperty("isVip") boolean isVip) {
+                           @JsonProperty("isVip") boolean isVip,
+                           @JsonProperty("isDeleted") boolean isDeleted) {
         this.seatReservationId = seatReservationId;
         this.validUntil = validUntil;
         this.isPaid = isPaid;
@@ -40,6 +42,7 @@ public class SeatReservation {
         this.rowNumber = rowNumber;
         this.seatNumber = seatNumber;
         this.isVip = isVip;
+        this.isDeleted = isDeleted;
     }
 
     public SeatReservation(SeatReservationEntity seatReservationEntity) {
@@ -54,7 +57,8 @@ public class SeatReservation {
                 seatReservationEntity.getHallId(),
                 seatReservationEntity.getRowNo(),
                 seatReservationEntity.getSeatNo(),
-                seatReservationEntity.isVip());
+                seatReservationEntity.isVip(),
+                seatReservationEntity.isDeleted());
     }
 
     public int getSeatReservationId() {
@@ -99,6 +103,10 @@ public class SeatReservation {
 
     public boolean isVip() {
         return isVip;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
     }
 }
 

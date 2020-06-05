@@ -7,14 +7,14 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import Collapse from "@material-ui/core/Collapse";
 import React, {useState} from "react";
-import {buildUrl, callCrsApi, freeSeatsSubUrl, loggedInClient, reserveSeatSubUrl} from "./ApiUtils";
+import {buildUrl, callCrsApi, freeSeatsSubUrl, reserveSeatSubUrl} from "./ApiUtils";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableFooter from "@material-ui/core/TableFooter";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from '@material-ui/icons/Add';
 
 export default function FreeSeats(props) {
-    const {open, movieId} = props
+    const {open, movieId, clientId} = props
     const [seats, setSeats] = useState([{
         seatId: "",
         hallId: "",
@@ -24,7 +24,7 @@ export default function FreeSeats(props) {
         basePrice: ""
     }])
     function getFreeSeats() {
-        const url = buildUrl(freeSeatsSubUrl, [movieId], {"clientId": loggedInClient})
+        const url = buildUrl(freeSeatsSubUrl, [movieId], {"clientId": clientId})
         function onSuccess(data) {
             console.log("Returned seats from API: ", data)
             setSeats(data)
@@ -44,7 +44,7 @@ export default function FreeSeats(props) {
     }
 
     function reserveSeat(seatId) {
-        const url = buildUrl(reserveSeatSubUrl, [movieId, seatId], {"clientId": loggedInClient})
+        const url = buildUrl(reserveSeatSubUrl, [movieId, seatId], {"clientId": clientId})
         function onSuccess(data) {
             console.log("Seat reserved, reservationId: ", data)
             getFreeSeats()
