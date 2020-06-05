@@ -141,7 +141,7 @@ export default function SeatReservations(props) {
                                         </TableCell>
                                         <TableCell align="right">
                                             {
-                                                reservation.paid || afterNow(reservation.validUntil) ||
+                                                reservation.paid || !afterNow(reservation.validUntil) ||
                                                 <Fab color="primary" aria-label="delete">
                                                     <MonetizationOnIcon onClick={() => handlePayment(reservation.seatReservationId)}/>
                                                 </Fab>
