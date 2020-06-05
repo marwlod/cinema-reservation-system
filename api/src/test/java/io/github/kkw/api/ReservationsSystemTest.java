@@ -834,7 +834,7 @@ public class ReservationsSystemTest {
                     VALID_CLIENT_ID.getClientId());
             assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
             assertNotNull(response.getBody());
-            assertEquals("Only admin can do this", response.getBody().getMessage());
+            assertEquals("Client is not an admin", response.getBody().getMessage());
 
         }
 
@@ -915,7 +915,7 @@ public class ReservationsSystemTest {
             // then
             assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
             assertNotNull(response.getBody());
-            assertEquals("Only admin can do this", response.getBody().getMessage());
+            assertEquals("Client is not an admin", response.getBody().getMessage());
         }
 
         @Test
@@ -1020,7 +1020,7 @@ public class ReservationsSystemTest {
             //then
             assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
             assertNotNull(response.getBody());
-            assertEquals("Only admin can do this", response.getBody().getMessage());
+            assertEquals("Client is not an admin", response.getBody().getMessage());
         }
 
         @Test
@@ -1058,7 +1058,7 @@ public class ReservationsSystemTest {
             //then
             assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
             assertNotNull(response.getBody());
-            assertEquals("Only admin can do this", response.getBody().getMessage());
+            assertEquals("Client is not an admin", response.getBody().getMessage());
         }
 
     }
