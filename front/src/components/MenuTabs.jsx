@@ -7,6 +7,7 @@ import Box from '@material-ui/core/Box';
 import Profile from "./Profile";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Movies from "./Movies";
+import Halls from "./Halls";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -70,7 +71,7 @@ export default function MenuTabs(props) {
                 <Movies />
             </TabPanel>
             <TabPanel value={value} index={1}>
-                Halls
+                <Halls />
             </TabPanel>
             <TabPanel value={value} index={2}>
                 My reservations
