@@ -9,16 +9,12 @@ import {
     callCrsApi,
     statisticsMovieName,
     statisticsMovieSubUrl,
-    toApiDate
 } from "./ApiUtils";
-import TableHead from "@material-ui/core/TableHead";
 import Paper from "@material-ui/core/Paper";
 
 
 export default function StatisticsMovies(props) {
     const {clientId} = props
-    const from = toApiDate(new Date(Date.now() - 30*24*60*60*1000)) // 30 days before now
-    const to = toApiDate(new Date(Date.now() - 2*24*60*60*1000)) // 2 days before now
     const [movieStatistics, setMovieStatistics] = useState([{
         showCount: "",
         totalReservationsReservations: "",
@@ -31,7 +27,7 @@ export default function StatisticsMovies(props) {
     useEffect(getMovieStatistics, [])
 
     function getMovieStatistics() {
-        const url = buildUrl(statisticsMovieSubUrl, [statisticsMovieName], {"clientId": clientId, "from": from, "to": to})
+        const url = buildUrl(statisticsMovieSubUrl, [statisticsMovieName], {"clientId": clientId})
         function onSuccess(data) {
             setMovieStatistics(data)
         }
@@ -42,26 +38,35 @@ export default function StatisticsMovies(props) {
     }
 
     return (
+
         <div className={props.className}>
             <TableContainer component={Paper}>
-                <Table>
-                    <TableHead>
+                <Table aria-label="simple table">
+                    <TableBody>
                         <TableRow>
                             <TableCell align="right">Shows count</TableCell>
-                            <TableCell align="right">Total Reservations</TableCell>
-                            <TableCell align="right">First seance</TableCell>
-                            <TableCell align="right">Last seance</TableCell>
-                            <TableCell align="right">Generated Income</TableCell>
-                            <TableCell align="right">Deleted Reservations</TableCell>
+                            <TableCell align="left">{movieStatistics.showCount}</TableCell>
                         </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        <TableCell>{movieStatistics.showCount}</TableCell>
-                        <TableCell>{movieStatistics.totalReservationsReservations}</TableCell>
-                        <TableCell>{movieStatistics.fromDate}</TableCell>
-                        <TableCell>{movieStatistics.toDate}</TableCell>
-                        <TableCell>{movieStatistics.incomeGenerated}</TableCell>
-                        <TableCell>{movieStatistics.deletedReservations}</TableCell>
+                        <TableRow>
+                            <TableCell align="right">Total Reservations</TableCell>
+                            <TableCell align="left">{movieStatistics.totalReservationsReservations}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell align="right">First seance</TableCell>
+                            <TableCell align="left">{movieStatistics.fromDate}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell align="right">Last seance</TableCell>
+                            <TableCell align="left">{movieStatistics.toDate}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell align="right">Generated Income</TableCell>
+                            <TableCell align="left">{movieStatistics.incomeGenerated}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell align="right">Deleted Reservations</TableCell>
+                            <TableCell align="left">{movieStatistics.deletedReservations}</TableCell>
+                        </TableRow>
                     </TableBody>
                 </Table>
             </TableContainer>
