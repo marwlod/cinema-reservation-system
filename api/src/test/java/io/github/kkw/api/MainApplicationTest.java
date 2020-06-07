@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class MainApplicationTest {
     private static final ClientId VALID_CLIENT_ID = new ClientId(5000);
+    private static final ClientId ADMIN_CLIENT_ID = new ClientId(5005);
     private static final ClientId INVALID_CLIENT_ID = new ClientId(99_999_999);
     private static final String PASSWORD = "somepassword";
     private static final String INVALID_PASSWORD = "invalidpassword";
@@ -211,5 +212,31 @@ class MainApplicationTest {
         // then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
+    }
+
+    @Test
+    void shouldReturnOk_whenIsAdmin() {
+        // when
+        final ResponseEntity<Void> registerResponse = restTemplate.exchange(
+                "/verifyAdmin?clientId={clientId}", HttpMethod.GET,
+                new HttpEntity<>(null, null), Void.class,
+                ADMIN_CLIENT_ID.getClientId());
+
+        // then
+        assertEquals(HttpStatus.OK, registerResponse.getStatusCode());
+    }
+
+    @Test
+    void shouldReturnForbidden_whenNotAnAdmin() {
+        // when
+        final ResponseEntity<RestError> registerResponse = restTemplate.exchange(
+                "/verifyAdmin?clientId={clientId}", HttpMethod.GET,
+                new HttpEntity<>(null, null), RestError.class,
+                VALID_CLIENT_ID.getClientId());
+
+        // then
+        assertEquals(HttpStatus.FORBIDDEN, registerResponse.getStatusCode());
+        assertNotNull(registerResponse.getBody());
+        assertEquals("Client is not an admin", registerResponse.getBody().getMessage());
     }
 }

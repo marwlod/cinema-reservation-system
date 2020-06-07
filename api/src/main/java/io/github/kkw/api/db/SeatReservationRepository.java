@@ -1,6 +1,7 @@
 package io.github.kkw.api.db;
 
 import io.github.kkw.api.db.dto.SeatEntity;
+import io.github.kkw.api.db.dto.SeatReservationEntity;
 import io.github.kkw.api.db.dto.SpecialOfferEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -245,4 +246,19 @@ public class SeatReservationRepository {
         return deletedReservations.intValue();
     }
 
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public List<SeatReservationEntity> getReservations(int clientId, Instant from, Instant to) {
+        return (List<SeatReservationEntity>) entityManager
+                .createNativeQuery("SELECT seat_reservation_id, valid_until, is_paid, total_price, " +
+                        "name as movie_name, start_date, end_date, seat.hall_id, row_no, seat_no, is_vip , is_deleted " +
+                        "FROM seat_reservation " +
+                        "INNER JOIN movie ON movie.movie_id = seat_reservation.movie_id " +
+                        "INNER JOIN seat ON seat.seat_id = seat_reservation.seat_id " +
+                        "WHERE client_id = ? AND valid_until >= ? AND valid_until <= ?", SeatReservationEntity.class)
+                .setParameter(1, clientId)
+                .setParameter(2, Timestamp.from(from))
+                .setParameter(3, Timestamp.from(to))
+                .getResultList();
+    }
 }

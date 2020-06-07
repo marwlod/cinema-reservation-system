@@ -7,7 +7,7 @@ import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
 import FreeSeats from "./FreeSeats";
 
 export default function MovieDetails(props) {
-    const {movie} = props;
+    const {movie, clientId, isAdmin} = props;
     const [open, setOpen] = useState(false);
 
     return (
@@ -28,7 +28,7 @@ export default function MovieDetails(props) {
             </TableRow>
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                    <FreeSeats open={open} movieId={movie.movieId} />
+                    <FreeSeats open={open} movieId={movie.movieId} clientId={clientId} isAdmin={isAdmin}/>
                 </TableCell>
             </TableRow>
         </React.Fragment>

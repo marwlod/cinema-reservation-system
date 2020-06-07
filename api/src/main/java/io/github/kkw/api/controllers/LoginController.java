@@ -9,6 +9,7 @@ import io.github.kkw.api.model.ClientId;
 import io.github.kkw.api.model.Profile;
 import io.github.kkw.api.services.LoginService;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import java.util.Optional;
 
 @RestController
@@ -29,8 +31,8 @@ public class LoginController implements CrossOriginMarker {
     }
 
     @PostMapping("/register")
-    public ClientId registerClient(@Email @RequestParam("email") String email,
-                                   @RequestParam("password") String password,
+    public ClientId registerClient(@Email @RequestParam("email") @NotEmpty String email,
+                                   @RequestParam("password") @NotEmpty String password,
                                    @RequestParam(value = "name", required = false) Optional<String> name,
                                    @RequestParam(value = "surname", required = false) Optional<String> surname) throws RestException {
         try {
@@ -41,8 +43,8 @@ public class LoginController implements CrossOriginMarker {
     }
 
     @PostMapping("/login")
-    public ClientId loginClient(@Email @RequestParam("email") String email,
-                                @RequestParam("password") String password) throws RestException {
+    public ClientId loginClient(@Email @RequestParam("email") @NotEmpty String email,
+                                @RequestParam("password") @NotEmpty String password) throws RestException {
         try {
             loginService.verifyEmailExists(email);
             return loginService.loginClient(email, password);

@@ -21,8 +21,8 @@ public class Profile {
 
     public Profile(ProfileEntity profileEntity) {
         this(
-                profileEntity.getName() == null ? "Unknown name" : profileEntity.getName(),
-                profileEntity.getSurname() == null ? "Unknown surname" : profileEntity.getSurname(),
+                (profileEntity.getName() == null || profileEntity.getName().isBlank()) ? "Unknown name" : profileEntity.getName(),
+                (profileEntity.getSurname() == null || profileEntity.getSurname().isBlank()) ? "Unknown surname" : profileEntity.getSurname(),
                 profileEntity.getEmail(),
                 profileEntity.isAdmin());
     }

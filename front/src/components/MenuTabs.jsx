@@ -1,13 +1,14 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import Profile from "./Profile";
-import makeStyles from "@material-ui/core/styles/makeStyles";
 import Movies from "./Movies";
-import Halls from "./Halls";
+import SeatReservations from "./SeatReservations";
+import HallReservations from "./HallReservations";
+import {buildUrl, callCrsApi, verifyAdminSubUrl} from "./ApiUtils";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -43,11 +44,28 @@ function a11yProps(index) {
 }
 
 export default function MenuTabs(props) {
+    const {clientId} = props
     // used for generating tabs
     const [value, setValue] = useState(0);
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    const [isAdmin, setAdmin] = useState(false)
+    useEffect(checkIfAdmin, [])
+    function checkIfAdmin() {
+        const url = buildUrl(verifyAdminSubUrl, [], {"clientId": clientId})
+        const params = {method: 'GET'}
+        function onSuccess() {
+            setAdmin(true)
+            console.log("Client is an admin")
+        }
+        function onFail(data) {
+            setAdmin(false)
+            console.log("Client is not an admin: ", data)
+        }
+        callCrsApi(url, params, onSuccess, onFail)
+    }
 
     return (
         <div className="menuTabs">
@@ -62,26 +80,64 @@ export default function MenuTabs(props) {
                 >
                     <Tab label="Show movies" {...a11yProps(0)} />
                     <Tab label="Show halls" {...a11yProps(1)} />
-                    <Tab label="My reservations" {...a11yProps(2)} />
-                    <Tab label="My profile" {...a11yProps(3)} />
-                    <Tab label="Contact us" {...a11yProps(4)} />
+                    {
+                        isAdmin &&
+                        <Tab label="Show statistics" {...a11yProps(2)} />
+                    }
+                    {
+                        isAdmin ||
+                        <Tab label="My movie reservations" {...a11yProps(2)} />
+                    }
+                    {
+                        isAdmin ||
+                        <Tab label="My hall reservations" {...a11yProps(3)} />
+                    }
+                    {
+                        isAdmin ||
+                        <Tab label="My profile" {...a11yProps(4)} />
+                    }
+                    {
+                        isAdmin ||
+                        <Tab label="Contact us" {...a11yProps(5)} />
+                    }
                 </Tabs>
             </AppBar>
             <TabPanel value={value} index={0}>
-                <Movies />
+                <Movies clientId={clientId} isAdmin={isAdmin} />
             </TabPanel>
             <TabPanel value={value} index={1}>
-                <Halls clientId={props.clientId}/>
+                Halls
             </TabPanel>
-            <TabPanel value={value} index={2}>
-                My reservations
-            </TabPanel>
-            <TabPanel value={value} index={3}>
-                <Profile clientId={props.clientId}/>
-            </TabPanel>
-            <TabPanel value={value} index={4}>
-                Contact us
-            </TabPanel>
+            {
+                isAdmin &&
+                <TabPanel value={value} index={2}>
+                    Statistics
+                </TabPanel>
+            }
+            {
+                isAdmin ||
+                <TabPanel value={value} index={2}>
+                    <SeatReservations clientId={clientId}/>
+                </TabPanel>
+            }
+            {
+                isAdmin ||
+                <TabPanel value={value} index={3}>
+                    <HallReservations clientId={clientId}/>
+                </TabPanel>
+            }
+            {
+                isAdmin ||
+                <TabPanel value={value} index={4}>
+                    <Profile clientId={clientId}/>
+                </TabPanel>
+            }
+            {
+                isAdmin ||
+                <TabPanel value={value} index={5}>
+                    Contact us
+                </TabPanel>
+            }
         </div>
     );
 }

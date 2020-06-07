@@ -1,14 +1,13 @@
 package io.github.kkw.api.db;
 
 import io.github.kkw.api.db.dto.HallEntity;
+import io.github.kkw.api.db.dto.HallReservationEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.sound.midi.Soundbank;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.MathContext;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -222,4 +221,18 @@ public class HallReservationRepository {
                 .getSingleResult();
     }
 
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public List<HallReservationEntity> getReservations(int clientId, Instant from, Instant to) {
+        return (List<HallReservationEntity>) entityManager
+                .createNativeQuery("SELECT hall_reservation_id, valid_until, is_paid_advance, is_paid_total," +
+                        "reservation_date, hall.hall_id, advance_price, total_price, screen_size , is_deleted " +
+                        "FROM hall_reservation " +
+                        "INNER JOIN hall ON hall.hall_id = hall_reservation.hall_id " +
+                        "WHERE client_id = ? AND valid_until >= ? AND valid_until <= ?", HallReservationEntity.class)
+                .setParameter(1, clientId)
+                .setParameter(2, Timestamp.from(from))
+                .setParameter(3, Timestamp.from(to))
+                .getResultList();
+    }
 }
