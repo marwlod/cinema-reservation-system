@@ -1,7 +1,15 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 
 export default function Contact(props) {
 
+    function Footer() {
+        const year = new Date().getFullYear();
+        return (
+            <footer>
+                <p>Copyright ⓒ {year}</p>
+            </footer>
+        );
+    }
     return (
         <div className={props.className}>
             <h2><b>Welcome to AGH Cinema</b></h2><br/><br/>
