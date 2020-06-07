@@ -8,6 +8,7 @@ export const reserveSeatSubUrl = "/reserveSeat"
 export const showSeatReservationsSubUrl = "/showReservations/seat"
 export const payForSeatSubUrl = "/payForSeat"
 export const verifyAdminSubUrl = "/verifyAdmin"
+export const statisticsGeneralSubUrl = "/showStatistics"
 
 export function buildUrl(subUrl, pathVars, urlParams) {
     const url = [baseUrl, subUrl];
