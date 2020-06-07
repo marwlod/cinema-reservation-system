@@ -8,6 +8,11 @@ export const reserveSeatSubUrl = "/reserveSeat"
 export const showSeatReservationsSubUrl = "/showReservations/seat"
 export const payForSeatSubUrl = "/payForSeat"
 export const verifyAdminSubUrl = "/verifyAdmin"
+export const statisticsGeneralSubUrl = "/showStatistics"
+export const statisticsMovieSubUrl = "/showStatistics/movie"
+export const statisticsMovieName = "American Pie 5: Naked Mile"
+export const statisticsHallSubUrl = "/showStatistics/hall"
+export const statisticsHallId = "1"
 
 export function buildUrl(subUrl, pathVars, urlParams) {
     const url = [baseUrl, subUrl];
