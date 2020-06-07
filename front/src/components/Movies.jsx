@@ -4,15 +4,16 @@ import Table from "@material-ui/core/Table";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
-import {buildUrl, callCrsApi, moviesSubUrl, toApiDate} from "./ApiUtils";
+import {apiDateNow, apiDateNowPlusDays, buildUrl, callCrsApi, moviesSubUrl} from "./ApiUtils";
 import TableHead from "@material-ui/core/TableHead";
 import Paper from "@material-ui/core/Paper";
 import MovieDetails from "./MovieDetails";
+import TablePagination from "@material-ui/core/TablePagination";
 
 export default function Movies(props) {
     const {clientId, isAdmin} = props
-    const from = toApiDate(new Date())
-    const to = toApiDate(new Date(Date.now() + 30*24*60*60*1000)) // add 30 days
+    const from = apiDateNow()
+    const to = apiDateNowPlusDays(30)
     const [movies, setMovies] = useState([{
         movieId: "",
         name: "",
@@ -35,6 +36,17 @@ export default function Movies(props) {
         callCrsApi(url, {method: 'GET'}, onSuccess, onFail)
     }
 
+    // pagination
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    };
+
     return (
         <div className={props.className}>
             <TableContainer component={Paper}>
@@ -50,12 +62,21 @@ export default function Movies(props) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {movies.map((movie) => (
+                        {movies.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((movie) => (
                             <MovieDetails key={movie.movieId} movie={movie} clientId={clientId} isAdmin={isAdmin}/>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[5, 10, 25, 100]}
+                component="div"
+                count={movies.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onChangePage={handleChangePage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+            />
         </div>
     );
 }
