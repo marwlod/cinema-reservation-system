@@ -4,12 +4,13 @@ import Table from "@material-ui/core/Table";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
-import {buildUrl, callCrsApi, hallsSubUrl} from "./ApiUtils";
+import {buildUrl, callCrsApi, hallsSubUrl, loggedInClient} from "./ApiUtils";
 import TableHead from "@material-ui/core/TableHead";
 import Paper from "@material-ui/core/Paper";
 import HallDetails from "./HallDetails";
 
 export default function Halls(props) {
+    const {clientId} = props
     const [halls, setHalls] = useState([{
         hallId: "",
         advancePrice: "",
@@ -21,9 +22,10 @@ export default function Halls(props) {
     useEffect(getHalls, [])
 
     function getHalls() {
-        const url = buildUrl(hallsSubUrl, [], [])
+        const url = buildUrl(hallsSubUrl, [], {"clientId": loggedInClient})
         function onSuccess(data) {
-            data.sort((m1,m2) => m1.hallId.localeCompare(m2.hallId))
+/*            data.sort((m1,m2) => m1.hallId.localeCompare(m2.hallId))*/
+            console.log(data)
             setHalls(data)
         }
         function onFail(data) {

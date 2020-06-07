@@ -48,7 +48,7 @@ export default function AllHalls(props) {
                             <TableCell>VIP Seats</TableCell>
                         </TableRow>
                     </TableHead>
-                    <TableBody>
+{/*                    <TableBody>
                         {halls.map((hall) => (
                             <TableRow key={hall.hallId}>
                                 <TableCell>{hall.hallId}</TableCell>
@@ -59,7 +59,7 @@ export default function AllHalls(props) {
                                 <TableCell>{hall.vipSeats}</TableCell>
                             </TableRow>
                         ))}
-                    </TableBody>
+                    </TableBody>*/}
                 </Table>
             </Box>
         </Collapse>

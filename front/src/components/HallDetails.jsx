@@ -14,7 +14,7 @@ export default function HallDetails(props) {
     return (
         <React.Fragment>
             <TableRow>
-                <TableCell>
+               <TableCell>
                     <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
                         {open ? <KeyboardArrowUp /> : <KeyboardArrowDown/>}
                     </IconButton>
@@ -22,7 +22,6 @@ export default function HallDetails(props) {
                 <TableCell component="th" scope="row">
                     {hall.hallId}
                 </TableCell>
-                <TableCell align="right">{hall.hallId}</TableCell>
                 <TableCell align="right">{hall.advancePrice}</TableCell>
                 <TableCell align="right">{hall.totalPrice}</TableCell>
                 <TableCell align="right">{hall.screenSize}</TableCell>
@@ -31,7 +30,8 @@ export default function HallDetails(props) {
             </TableRow>
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                    <AllHalls open={open} hallId={hall.hallId} />
+                 {/*   <AllHalls open={open} hallId={hall.hallId} />*/}
+                 <AvailableHalls open={open} hallId={hall.hallId} />
                 </TableCell>
             </TableRow>
         </React.Fragment>

@@ -51,12 +51,12 @@ export default function AvailableHalls(props) {
                     <TableBody>
                         {halls.map((hall) => (
                             <TableRow key={hall.hallId}>
-                                <TableCell>{hall.hallId}</TableCell>
-                                <TableCell>{hall.advancePrice}</TableCell>
-                                <TableCell>{hall.totalPrice}</TableCell>
-                                <TableCell>{hall.screenSize}</TableCell>
-                                <TableCell>{hall.regularSeats}</TableCell>
-                                <TableCell>{hall.vipSeats}</TableCell>
+                                <TableCell align="right">{hall.hallId}</TableCell>
+                                <TableCell align="right">{hall.advancePrice}</TableCell>
+                                <TableCell align="right">{hall.totalPrice}</TableCell>
+                                <TableCell align="right">{hall.screenSize}</TableCell>
+                                <TableCell align="right">{hall.regularSeats}</TableCell>
+                                <TableCell align="right">{hall.vipSeats}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

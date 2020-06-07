@@ -71,7 +71,7 @@ export default function MenuTabs(props) {
                 <Movies />
             </TabPanel>
             <TabPanel value={value} index={1}>
-                <Halls />
+                <Halls clientId={props.clientId}/>
             </TabPanel>
             <TabPanel value={value} index={2}>
                 My reservations
