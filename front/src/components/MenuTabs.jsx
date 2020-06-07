@@ -9,6 +9,7 @@ import Movies from "./Movies";
 import SeatReservations from "./SeatReservations";
 import HallReservations from "./HallReservations";
 import {buildUrl, callCrsApi, verifyAdminSubUrl} from "./ApiUtils";
+import ContactUs from "./ContactUs";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -135,7 +136,7 @@ export default function MenuTabs(props) {
             {
                 isAdmin ||
                 <TabPanel value={value} index={5}>
-                    Contact us
+                    <ContactUs />
                 </TabPanel>
             }
         </div>
