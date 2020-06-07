@@ -1,7 +1,6 @@
 package io.github.kkw.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.kkw.api.db.dto.MovieEntity;
 import io.github.kkw.api.db.dto.StatisticsEntity;
 
 public class Statistics {

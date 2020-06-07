@@ -192,14 +192,14 @@ public class SeatReservationRepository {
     }
 
     @Transactional
-    public boolean ifClientReservedAnySeat(int clientId){
+    public boolean isClientReservedAnySeat(int clientId){
         final BigInteger isReserved = (BigInteger) entityManager
                 .createNativeQuery("SELECT IF((" +
                         "SELECT COUNT(*) FROM seat_reservation WHERE client_id = ?" +
                         ") > 0, TRUE, FALSE)")
                 .setParameter(1, clientId)
                 .getSingleResult();
-        return isReserved.intValue() == 0;
+        return isReserved.intValue() == 1;
     }
 
     @Transactional
