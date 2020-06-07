@@ -1,176 +1,145 @@
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: Bahnschrift, monospace !important;
-  color: #edf2f4;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Bahnschrift, monospace !important;
+    color: #edf2f4;
 }
 
 header {
-  background-color: rgba(0, 0, 0, 0);
-  color: white;
-  padding: 16px 32px;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0);
-  font-size: 20px !important;
-  text-align: center;
+    background-color: rgba(0, 0, 0, 0);
+    color: white;
+    padding: 16px 32px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0);
+    font-size: 20px !important;
+    text-align: center;
 }
 
 header h1 {
-  font-weight: normal;
-
+    font-weight: normal
 }
+
 body {
-  background-image: url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80");
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-size: cover;
+    background-image: url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
 }
 
 .container {
-  margin: 10% auto;
-  padding: 80px 0;
-  text-align: center;
+    margin: 10% auto;
+    padding: 80px 0;
+    text-align: center;
 }
 
 .container h1 {
-  font-size: 40px;
-  font-weight: 200;
+    font-size: 40px;
+    font-weight: 200;
 }
 
 .error {
-  color: #ff2132;
-  font-size: 20px;
-  font-weight: 100;
+    color: #ff2132;
+    font-size: 20px;
+    font-weight: 100;
 }
 
 .successMessage {
-  color: #149c0a;
-  font-size: 20px;
-  font-weight: 100;
+    color: #149c0a;
+    font-size: 20px;
+    font-weight: 100;
 }
 
 .regularMessage {
-  width: 300px;
-  margin: auto;
-  color: white;
-  font-size: 20px;
-  font-weight: 100;
+    width: 300px;
+    margin: auto;
+    color: white;
+    font-size: 20px;
+    font-weight: 100;
 }
 
-/*.MuiTab-root {*/
-/*  color: #edf2f4 !important;*/
-/*  font-weight: normal !important;*/
-/*  font-size: 15px !important;*/
-/*}*/
 
-.MuiAppBar-root{
-  background-color: rgba(0, 0, 0, 0.2) !important;
-  color: #edf2f4 !important;
+.MuiAppBar-root {
+    background-color: rgba(0, 0, 0, 0.2) !important;
+    color: #edf2f4 !important;
 }
 
-/*.MuiTabPanel-root{*/
-/*  background-color: rgba(0, 0, 0, 0.2) !important;*/
-/*  color: #edf2f4 !important;*/
-/*}*/
-
-.MuiButton-root{
-  background-color: #3f51b5 !important;
-  border-radius: 3px !important;
-  color: #edf2f4 !important;
+.MuiButton-root {
+    background-color: #3f51b5 !important;
+    border-radius: 3px !important;
+    color: #edf2f4 !important;
 }
 
-/*.MuiTable-root{*/
-/*  background-color: rgba(0, 0, 0, 0) !important;*/
-/*  color: #edf2f4 !important;*/
-/*}*/
-/*.MuiTableBody-root {*/
-/*  background-color: rgba(0, 0, 0, 0) !important;*/
-/*  color: #edf2f4 !important;*/
-/*}*/
-
-.MuiTableContainer-root{
-  background-color: rgba(0, 0, 0, 0) !important;
-  color: #edf2f4 !important;
-}
-/*.MuiTableRow-root {*/
-/*  background-color: rgba(0, 0, 0, 0) !important;*/
-/*  color: #edf2f4 !important;*/
-/*}*/
-
-.MuiTableCell-root{
-  color: #edf2f4 !important;
-  text-align: center !important;
-  background-color: rgba(0, 0, 0, 0) !important;
+.MuiTableContainer-root {
+    background-color: rgba(0, 0, 0, 0) !important;
+    color: #edf2f4 !important;
 }
 
-/*.MuiSelect-root {*/
-/*  background-color: rgba(0, 0, 0, 0) !important;*/
-/*}*/
+.MuiTableCell-root {
+    color: #edf2f4 !important;
+    text-align: center !important;
+    background-color: rgba(0, 0, 0, 0) !important;
+}
+
 .MuiTablePagination-root {
-  background-color: rgba(0, 0, 0, 0) !important;
-  color: black !important;
+    background-color: rgba(0, 0, 0, 0) !important;
+    color: black !important;
 }
 
-.MuiBox-root{
-  background-color: rgba(0, 0, 0, 0.3) !important;
-  color: #edf2f4 !important;
+.MuiBox-root {
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    color: #edf2f4 !important;
 }
 
-/*.MuiIcon-root{*/
-/*  color: #ff2132 !important;*/
-/*  background-color: #ff2132 !important;*/
-/*  font-size: 100px !important;*/
-/*}*/
-
-.MuiList-root{
-  background-color: rgba(0, 0, 0, 0.3) !important;
+.MuiList-root {
+    background-color: rgba(0, 0, 0, 0.3) !important;
 }
 
-.MuiListItem-root{
-  background-color: rgba(0, 0, 0, 0.3) !important;
+.MuiListItem-root {
+    background-color: rgba(0, 0, 0, 0.3) !important;
 }
 
-.MuiMenuItem-root{
-  background-color: rgba(0, 0, 0, 0.3) !important;
+.MuiMenuItem-root {
+    background-color: rgba(0, 0, 0, 0.3) !important;
 }
-.MuiMenu-root{
-  background-color: rgba(0, 0, 0, 0.3) !important;
+
+.MuiMenu-root {
+    background-color: rgba(0, 0, 0, 0.3) !important;
 }
 
 .menuTabs {
 
-  color: #edf2f4;
-  text-align: center;
+    color: #edf2f4;
+    text-align: center;
 }
 
 form {
-  padding: 20px 0;
-  position: relative;
+    padding: 20px 0;
+    position: relative;
 }
 
 form input {
-  border: 2px solid #8d99ae;
-  background-color: rgba(0, 0, 0, 0);
-  width: 250px;
-  border-radius: 3px;
-  padding: 10px 15px;
-  margin: 0 auto 10px auto;
-  display: block;
-  text-align: center;
-  font-size: 18px;
-  color: #edf2f4;
-  font-weight: normal;
+    border: 2px solid #8d99ae;
+    background-color: rgba(0, 0, 0, 0);
+    width: 250px;
+    border-radius: 3px;
+    padding: 10px 15px;
+    margin: 0 auto 10px auto;
+    display: block;
+    text-align: center;
+    font-size: 18px;
+    color: #edf2f4;
+    font-weight: normal;
 }
 
 form button {
-  appearance: none;
-  outline: 0;
-  background-color: #edf2f4;
-  border: 0;
-  padding: 10px 15px;
-  color: #50a3a2;
-  border-radius: 3px;
-  width: 250px;
-  font-size: 18px;
+    appearance: none;
+    outline: 0;
+    background-color: #edf2f4;
+    border: 0;
+    padding: 10px 15px;
+    color: #50a3a2;
+    border-radius: 3px;
+    width: 250px;
+    font-size: 18px;
 }
