@@ -8,6 +8,7 @@ import {buildUrl, callCrsApi, statisticsGeneralSubUrl, toApiDate} from "./ApiUti
 import TableHead from "@material-ui/core/TableHead";
 import Paper from "@material-ui/core/Paper";
 
+
 export default function StatisticsGeneral(props) {
     const {clientId} = props
     const from = toApiDate(new Date(Date.now() - 30*24*60*60*1000)) // 30 days before now
@@ -21,12 +22,12 @@ export default function StatisticsGeneral(props) {
         totalClientsAtTheMoment: "",
         clientsThatReserved: ""
     }])
+
     useEffect(getStatistics, [])
 
     function getStatistics() {
         const url = buildUrl(statisticsGeneralSubUrl, [], {"clientId": clientId, "from": from, "to": to})
         function onSuccess(data) {
-/*            data.sort((m1,m2) => m1.startDate.localeCompare(m2.startDate))*/
             setStatistics(data)
         }
         function onFail(data) {
