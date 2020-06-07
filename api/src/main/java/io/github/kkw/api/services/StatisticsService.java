@@ -38,8 +38,8 @@ public class StatisticsService {
         int clientsThatReserved = 0;
         for (final ProfileEntity profile : allClients) {
 
-            if(seatReservationRepository.ifClientReservedAnySeat(profile.getClientId())
-                    || hallReservationRepository.ifClientReservedAnyHall(profile.getClientId())){
+            if(seatReservationRepository.isClientReservedAnySeat(profile.getClientId())
+                    || hallReservationRepository.isClientReservedAnyHall(profile.getClientId())){
                 clientsThatReserved++;
             }
         }

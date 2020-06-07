@@ -137,14 +137,14 @@ public class HallReservationRepository {
     }
 
     @Transactional
-    public boolean ifClientReservedAnyHall(int clientId){
+    public boolean isClientReservedAnyHall(int clientId){
         final BigInteger isReserved = (BigInteger) entityManager
                 .createNativeQuery("SELECT IF((" +
                         "SELECT COUNT(*) FROM hall_reservation WHERE client_id = ?" +
                         ") > 0, TRUE, FALSE)")
                 .setParameter(1, clientId)
                 .getSingleResult();
-        return isReserved.intValue() == 0;
+        return isReserved.intValue() == 1;
     }
 
     @Transactional
