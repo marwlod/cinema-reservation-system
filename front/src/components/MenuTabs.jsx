@@ -9,6 +9,7 @@ import Movies from "./Movies";
 import SeatReservations from "./SeatReservations";
 import HallReservations from "./HallReservations";
 import {buildUrl, callCrsApi, verifyAdminSubUrl} from "./ApiUtils";
+import AvailableHalls from "./AvailableHalls";
 import ContactUs from "./ContactUs";
 import Statistics from "./Statistics";
 
@@ -108,7 +109,7 @@ export default function MenuTabs(props) {
                 <Movies clientId={clientId} isAdmin={isAdmin} />
             </TabPanel>
             <TabPanel value={value} index={1}>
-                Halls
+                <AvailableHalls clientId={props.clientId} isAdmin={isAdmin}/>
             </TabPanel>
             {
                 isAdmin &&

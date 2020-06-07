@@ -22,6 +22,22 @@ INSERT INTO seat (seat_id, row_no, seat_no, is_vip, hall_id) VALUES (206, 3, 1, 
 INSERT INTO seat (seat_id, row_no, seat_no, is_vip, hall_id) VALUES (207, 3, 2, 1, 2);
 INSERT INTO seat (seat_id, row_no, seat_no, is_vip, hall_id) VALUES (208, 3, 3, 1, 2);
 
+INSERT INTO hall (hall_id, advance_price, total_price, screen_size) VALUES (3, 75, 750, 250);
+INSERT INTO seat (seat_id, row_no, seat_no, is_vip, hall_id) VALUES (300, 1, 1, 0, 3);
+INSERT INTO seat (seat_id, row_no, seat_no, is_vip, hall_id) VALUES (301, 1, 2, 0, 3);
+INSERT INTO seat (seat_id, row_no, seat_no, is_vip, hall_id) VALUES (302, 1, 3, 0, 3);
+INSERT INTO seat (seat_id, row_no, seat_no, is_vip, hall_id) VALUES (303, 2, 1, 1, 3);
+INSERT INTO seat (seat_id, row_no, seat_no, is_vip, hall_id) VALUES (304, 2, 2, 1, 3);
+INSERT INTO seat (seat_id, row_no, seat_no, is_vip, hall_id) VALUES (305, 2, 3, 1, 3);
+
+INSERT INTO hall (hall_id, advance_price, total_price, screen_size) VALUES (4, 150, 1500, 400);
+INSERT INTO seat (seat_id, row_no, seat_no, is_vip, hall_id) VALUES (400, 1, 1, 1, 4);
+INSERT INTO seat (seat_id, row_no, seat_no, is_vip, hall_id) VALUES (401, 1, 2, 1, 4);
+INSERT INTO seat (seat_id, row_no, seat_no, is_vip, hall_id) VALUES (402, 1, 3, 1, 4);
+INSERT INTO seat (seat_id, row_no, seat_no, is_vip, hall_id) VALUES (403, 2, 1, 1, 4);
+INSERT INTO seat (seat_id, row_no, seat_no, is_vip, hall_id) VALUES (404, 2, 2, 1, 4);
+INSERT INTO seat (seat_id, row_no, seat_no, is_vip, hall_id) VALUES (405, 2, 3, 1, 4);
+
 INSERT INTO movie (movie_id, name, start_date, end_date, base_price, hall_id)
     VALUES (1, 'Lion King', STR_TO_DATE('01/01/2030 1:30:00 PM', '%e/%c/%Y %r'), STR_TO_DATE('01/01/2030 3:30:00 PM', '%e/%c/%Y %r'), 20, 1);
 INSERT INTO movie (movie_id, name, start_date, end_date, base_price, hall_id)
@@ -36,6 +52,10 @@ INSERT INTO movie (movie_id, name, start_date, end_date, base_price, hall_id)
     VALUES (6, 'The Usual Suspects', STR_TO_DATE('21/06/2020 8:00:00 PM', '%e/%c/%Y %r'), STR_TO_DATE('21/06/2020 10:00:00 PM', '%e/%c/%Y %r'), 30, 2);
 INSERT INTO movie (movie_id, name, start_date, end_date, base_price, hall_id)
     VALUES (7, 'The Dark Knight Rises', STR_TO_DATE('22/06/2020 6:00:00 PM', '%e/%c/%Y %r'), STR_TO_DATE('22/06/2020 8:00:00 PM', '%e/%c/%Y %r'), 25, 1);
+INSERT INTO movie (movie_id, name, start_date, end_date, base_price, hall_id)
+    VALUES (8, 'Godfather III', STR_TO_DATE('23/06/2020 2:00:00 PM', '%e/%c/%Y %r'), STR_TO_DATE('23/06/2020 4:00:00 PM', '%e/%c/%Y %r'), 30, 3);
+INSERT INTO movie (movie_id, name, start_date, end_date, base_price, hall_id)
+    VALUES (9, 'Godfather III', STR_TO_DATE('23/06/2020 6:00:00 PM', '%e/%c/%Y %r'), STR_TO_DATE('23/06/2020 8:00:00 PM', '%e/%c/%Y %r'), 30, 3);
 
 INSERT INTO special_offers (special_offer_id, code,percentage) VALUES (1, 'A123',10);
 

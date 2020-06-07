@@ -4,7 +4,7 @@ import TableCell from "@material-ui/core/TableCell";
 import IconButton from "@material-ui/core/IconButton";
 import KeyboardArrowUp from "@material-ui/icons/KeyboardArrowUp";
 import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
-import FreeSeats from "./FreeSeats";
+import AvailableSeats from "./AvailableSeats";
 
 export default function MovieDetails(props) {
     const {movie, clientId, isAdmin} = props;
@@ -28,7 +28,7 @@ export default function MovieDetails(props) {
             </TableRow>
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                    <FreeSeats open={open} movieId={movie.movieId} clientId={clientId} isAdmin={isAdmin}/>
+                    <AvailableSeats open={open} movieId={movie.movieId} clientId={clientId} isAdmin={isAdmin}/>
                 </TableCell>
             </TableRow>
         </React.Fragment>

@@ -7,13 +7,12 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import Collapse from "@material-ui/core/Collapse";
 import React, {useState} from "react";
-import {buildUrl, callCrsApi, freeSeatsSubUrl, reserveSeatSubUrl} from "./ApiUtils";
+import {buildUrl, callCrsApi, availableSeatsSubUrl, reserveSeatSubUrl} from "./ApiUtils";
 import TablePagination from "@material-ui/core/TablePagination";
-import TableFooter from "@material-ui/core/TableFooter";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from '@material-ui/icons/Add';
 
-export default function FreeSeats(props) {
+export default function AvailableSeats(props) {
     const {open, movieId, clientId, isAdmin} = props
     const [seats, setSeats] = useState([{
         seatId: "",
@@ -23,8 +22,8 @@ export default function FreeSeats(props) {
         vip: "",
         basePrice: ""
     }])
-    function getFreeSeats() {
-        const url = buildUrl(freeSeatsSubUrl, [movieId], {"clientId": clientId})
+    function getAvailableSeats() {
+        const url = buildUrl(availableSeatsSubUrl, [movieId], {"clientId": clientId})
         function onSuccess(data) {
             console.log("Returned seats from API: ", data)
             setSeats(data)
@@ -39,7 +38,7 @@ export default function FreeSeats(props) {
         if (window.confirm('Are you sure you want to reserve this seat?')) {
             reserveSeat(seatId)
         } else {
-            console.log("User rejected reserving")
+            console.log("User rejected reserving seat")
         }
     }
 
@@ -47,7 +46,7 @@ export default function FreeSeats(props) {
         const url = buildUrl(reserveSeatSubUrl, [movieId, seatId], {"clientId": clientId})
         function onSuccess(data) {
             console.log("Seat reserved, reservationId: ", data)
-            getFreeSeats()
+            getAvailableSeats()
         }
         function onFail(data) {
             console.log("Error reserving seat: ", data.message)
@@ -67,7 +66,7 @@ export default function FreeSeats(props) {
     };
 
     return (
-        <Collapse in={open} onEnter={getFreeSeats} timeout="auto" unmountOnExit>
+        <Collapse in={open} onEnter={getAvailableSeats} timeout="auto" unmountOnExit>
             <Box margin={1}>
                 <Typography variant="h6" gutterBottom component="div">
                     Free seats
@@ -81,7 +80,7 @@ export default function FreeSeats(props) {
                             <TableCell align="right">Price [PLN]</TableCell>
                             {
                                 isAdmin ||
-                                <TableCell align="right">Reserve</TableCell>
+                                <TableCell align="right">RESERVE</TableCell>
                             }
                         </TableRow>
                     </TableHead>
@@ -107,20 +106,16 @@ export default function FreeSeats(props) {
                             </TableRow>
                         ))}
                     </TableBody>
-                    <TableFooter>
-                        <TableRow>
-                            <TablePagination
-                                rowsPerPageOptions={[5, 10, 25, 100]}
-                                component="div"
-                                count={seats.length}
-                                rowsPerPage={rowsPerPage}
-                                page={page}
-                                onChangePage={handleChangePage}
-                                onChangeRowsPerPage={handleChangeRowsPerPage}
-                            />
-                        </TableRow>
-                    </TableFooter>
                 </Table>
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25, 100]}
+                    component="div"
+                    count={seats.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onChangePage={handleChangePage}
+                    onChangeRowsPerPage={handleChangeRowsPerPage}
+                />
             </Box>
         </Collapse>
     );

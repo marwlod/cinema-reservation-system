@@ -11,6 +11,8 @@ import Fab from "@material-ui/core/Fab";
 import DeleteIcon from "@material-ui/icons/Delete";
 import TablePagination from "@material-ui/core/TablePagination";
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+import {afterNow} from "./CompUtils";
+import CachedIcon from "@material-ui/icons/Cached";
 
 export default function SeatReservations(props) {
     const {clientId} = props
@@ -89,8 +91,8 @@ export default function SeatReservations(props) {
         callCrsApi(url, {method: 'POST'}, onSuccess, onFail)
     }
 
-    function afterNow(date) {
-        return new Date(date).getTime() > Date.now()
+    function refresh() {
+        getReservations()
     }
 
     return (
@@ -100,6 +102,7 @@ export default function SeatReservations(props) {
                 <h2>No movie reservations found</h2> :
                 <div>
                     <TableContainer component={Paper}>
+                        <CachedIcon fontSize="large" onClick={refresh}/>
                         <Table aria-label="simple table">
                             <TableHead>
                                 <TableRow>
@@ -143,7 +146,7 @@ export default function SeatReservations(props) {
                                         <TableCell align="right">
                                             {
                                                 reservation.paid || !afterNow(reservation.validUntil) ||
-                                                <Fab color="primary" aria-label="delete">
+                                                <Fab color="primary" aria-label="pay">
                                                     <MonetizationOnIcon onClick={() => handlePayment(reservation.seatReservationId)}/>
                                                 </Fab>
                                             }
