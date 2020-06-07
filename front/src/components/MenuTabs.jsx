@@ -10,6 +10,8 @@ import SeatReservations from "./SeatReservations";
 import HallReservations from "./HallReservations";
 import {buildUrl, callCrsApi, verifyAdminSubUrl} from "./ApiUtils";
 import AvailableHalls from "./AvailableHalls";
+import ContactUs from "./ContactUs";
+import Statistics from "./Statistics";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -112,7 +114,7 @@ export default function MenuTabs(props) {
             {
                 isAdmin &&
                 <TabPanel value={value} index={2}>
-                    Statistics
+                    <Statistics clientId={clientId} />
                 </TabPanel>
             }
             {
@@ -136,7 +138,7 @@ export default function MenuTabs(props) {
             {
                 isAdmin ||
                 <TabPanel value={value} index={5}>
-                    Contact us
+                    <ContactUs />
                 </TabPanel>
             }
         </div>

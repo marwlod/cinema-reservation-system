@@ -4,14 +4,14 @@ import Table from "@material-ui/core/Table";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
-import {buildUrl, callCrsApi, statisticsGeneralSubUrl, toApiDate} from "./ApiUtils";
+import {apiDateNowMinusDays, buildUrl, callCrsApi, statisticsGeneralSubUrl, toApiDate} from "./ApiUtils";
 import Paper from "@material-ui/core/Paper";
 
 
 export default function StatisticsGeneral(props) {
     const {clientId} = props
-    const from = toApiDate(new Date(Date.now() - 30*24*60*60*1000)) // 30 days before now
-    const to = toApiDate(new Date(Date.now() - 2*24*60*60*1000)) // 2 days before now
+    const from = apiDateNowMinusDays(30)
+    const to = apiDateNowMinusDays(2)
     const [statistics, setStatistics] = useState([{
         seatReservations: "",
         hallReservations: "",

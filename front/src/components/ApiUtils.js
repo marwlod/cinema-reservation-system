@@ -12,6 +12,11 @@ export const payForHallSubUrl = "/payForHall"
 export const verifyAdminSubUrl = "/verifyAdmin"
 export const availableCinemaHallsUrl = "/showAvailableCinemaHalls"
 export const reserveHallSubUrl = "/reserveHall"
+export const statisticsGeneralSubUrl = "/showStatistics"
+export const statisticsMovieSubUrl = "/showStatistics/movie"
+export const statisticsMovieName = "American Pie 5: Naked Mile"
+export const statisticsHallSubUrl = "/showStatistics/hall"
+export const statisticsHallId = "1"
 
 export function buildUrl(subUrl, pathVars, urlParams) {
     const url = [baseUrl, subUrl];
@@ -50,6 +55,10 @@ export function callCrsApi(url, params, onSuccess, onFail) {
 
 export function apiDateNow() {
     return apiDateNowPlusDays(0)
+}
+
+export function apiDateNowMinusDays(toSubtract) {
+    return apiDateNowPlusDays(-toSubtract)
 }
 
 export function apiDateNowPlusDays(toAdd) {
