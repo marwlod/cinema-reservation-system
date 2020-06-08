@@ -70,3 +70,36 @@ export function apiDateNowPlusDays(toAdd) {
         (month < 10 ? "0" + month : month) + "-" +
         (days < 10 ? "0" + days : days)
 }
+
+function correctDateAndTimeTimeZone(dateAndTime) {
+    const dateTime = new Date(dateAndTime);
+    dateTime.setMonth(dateTime.getMonth() + 1);
+    const dateTimeZoneCorrected = new Date((dateTime) - 2*60*60*1000) //minus 2 hours (Time Zone)
+    return dateTimeZoneCorrected;
+}
+
+export function formatDateAndTime(dateAndTime) {
+    const dateTimeZoneCorrected = correctDateAndTimeTimeZone(dateAndTime);
+    const year = dateTimeZoneCorrected.getFullYear();
+    const month = dateTimeZoneCorrected.getMonth();
+    const day = dateTimeZoneCorrected.getDate();
+    const hours = dateTimeZoneCorrected.getHours();
+    const minutes = dateTimeZoneCorrected.getMinutes();
+    const seconds = dateTimeZoneCorrected.getSeconds();
+    return year + "-" +
+        (month < 10 ? "0" + month : month) + "-" +
+        (day < 10 ? "0" + day : day) + " " +
+        (hours < 10 ? "0" + hours : hours) + ":" +
+        (minutes < 10 ? "0" + minutes : minutes) + ":" +
+        (seconds < 10 ? "0" + seconds : seconds);
+}
+
+export function formatDate(dateAndTime) {
+    const dateTimeZoneCorrected = correctDateAndTimeTimeZone(dateAndTime);
+    const year = dateTimeZoneCorrected.getFullYear();
+    const month = dateTimeZoneCorrected.getMonth();
+    const day = dateTimeZoneCorrected.getDate();
+    return year + "-" +
+        (month < 10 ? "0" + month : month) + "-" +
+        (day < 10 ? "0" + day : day);
+}

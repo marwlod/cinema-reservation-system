@@ -11,7 +11,7 @@ import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
 import {afterNow} from "./CompUtils";
 import {
     buildUrl,
-    callCrsApi,
+    callCrsApi, formatDate, formatDateAndTime,
     payForHallSubUrl,
     reserveHallSubUrl,
     showHallReservationsSubUrl
@@ -125,12 +125,12 @@ export default function HallReservations(props) {
                             {reservations.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((reservation) => (
                                 <TableRow key={reservation.hallReservationId}>
                                     <TableCell align="right">{reservation.hallId}</TableCell>
-                                    <TableCell align="right">{reservation.validUntil}</TableCell>
+                                    <TableCell align="right">{formatDateAndTime(reservation.validUntil)}</TableCell>
                                     <TableCell align="right">{reservation.paidAdvance ? "YES" : "NO"}</TableCell>
                                     <TableCell align="right">{reservation.paidTotal ? "YES" : "NO"}</TableCell>
                                     <TableCell align="right">{reservation.advancePrice}</TableCell>
                                     <TableCell align="right">{reservation.totalPrice}</TableCell>
-                                    <TableCell align="right">{reservation.reservationDate}</TableCell>
+                                    <TableCell align="right">{formatDate(reservation.reservationDate)}</TableCell>
                                     <TableCell align="right">{reservation.screenSize}</TableCell>
                                     <TableCell align="right">{reservation.deleted ? "YES" : "NO"}</TableCell>
                                     <TableCell align="right">
