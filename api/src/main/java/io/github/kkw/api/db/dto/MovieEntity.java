@@ -14,6 +14,8 @@ public class MovieEntity {
     private Timestamp endDate;
     private BigDecimal basePrice;
     private int hallId;
+    private String description;
+    private String link;
 
     public MovieEntity() {
     }
@@ -42,6 +44,10 @@ public class MovieEntity {
         return hallId;
     }
 
+    public String getDescription() { return description; }
+
+    public String getLink() { return link; }
+
     public void setMovieId(int movieId) {
         this.movieId = movieId;
     }
@@ -65,4 +71,8 @@ public class MovieEntity {
     public void setHallId(int hallId) {
         this.hallId = hallId;
     }
+
+    public void setDescription(String description) {this.description = description; }
+
+    public void setLink(String link) { this.link = link; }
 }

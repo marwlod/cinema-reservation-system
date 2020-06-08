@@ -13,7 +13,7 @@ import Fab from "@material-ui/core/Fab";
 import AddIcon from '@material-ui/icons/Add';
 
 export default function AvailableSeats(props) {
-    const {open, movieId, clientId, isAdmin} = props
+    const {open, movieId, clientId, isAdmin, description, link} = props
     const [seats, setSeats] = useState([{
         seatId: "",
         hallId: "",
@@ -67,6 +67,24 @@ export default function AvailableSeats(props) {
 
     return (
         <Collapse in={open} onEnter={getAvailableSeats} timeout="auto" unmountOnExit>
+            <br/>
+            <Typography variant="h6" gutterBottom component="div">
+                Description
+            </Typography>
+            <Table size="medium">
+                <div className="description">
+                <TableRow>
+                    <TableCell>
+                        <div className="descriptionText">
+                            <description>{description}</description>
+                        </div>
+                    </TableCell>
+                    <TableCell>
+                        <img src={props.link} alt="Movie Image" width="340" height="400"></img>
+                    </TableCell>
+                </TableRow>
+            </div>
+            </Table>
             <Box margin={1}>
                 <Typography variant="h6" gutterBottom component="div">
                     Free seats
