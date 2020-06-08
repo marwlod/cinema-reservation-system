@@ -39,7 +39,9 @@ public class MovieService {
                          final Instant startDate,
                          final Instant endDate,
                          final double basePrice,
-                         final int hallId) throws MovieDateException, HallNotFoundException, MovieConflictException {
+                         final int hallId,
+                         final String description,
+                         final String link) throws MovieDateException, HallNotFoundException, MovieConflictException {
         if(!areDatesValid(startDate, endDate)){
             throw new MovieDateException("End date must be later than start date. Both must be in the future");
         }
@@ -50,6 +52,6 @@ public class MovieService {
             throw new MovieConflictException("There is a conflict with another movie " +
                     "(another movie is scheduled in that time in chosen hall)");
         }
-        movieRepository.addMovie(name,startDate,endDate,basePrice,hallId);
+        movieRepository.addMovie(name,startDate,endDate,basePrice,hallId, description, link);
     }
 }

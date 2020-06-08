@@ -113,6 +113,17 @@ body {
     text-align: center;
 }
 
+.description {
+    width: 50%;
+    padding: 20px 0;
+    margin: 0 auto 100px auto;
+}
+
+.descriptionText{
+    text-align: justify;
+}
+
+
 form {
     padding: 20px 0;
     position: relative;

@@ -20,7 +20,9 @@ export default function Movies(props) {
         startDate: "",
         endDate: "",
         basePrice: "",
-        hallId: ""
+        hallId: "",
+        description: "",
+        link: ""
     }])
     useEffect(getMovies, [])
 

@@ -38,7 +38,7 @@ public class AdminController implements CrossOriginMarker {
             loginService.verifyAdmin(clientId);
             loginService.verifyClientLoggedIn(clientId);
             movieService.addMovie(movieAddRequest.getName(), movieAddRequest.getStartDate(), movieAddRequest.getEndDate(),
-                    movieAddRequest.getBasePrice(), movieAddRequest.getHallId());
+                    movieAddRequest.getBasePrice(), movieAddRequest.getHallId(), movieAddRequest.getDescription(), movieAddRequest.getLink());
         } catch (MovieDateException | HallNotFoundException e){
             throw new RestException(e.getMessage(), HttpStatus.BAD_REQUEST, e);
         } catch (MovieConflictException e){

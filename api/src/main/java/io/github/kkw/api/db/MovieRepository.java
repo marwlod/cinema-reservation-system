@@ -59,14 +59,16 @@ public class MovieRepository {
     }
 
     @Transactional
-    public void addMovie(String name, Instant startDate, Instant endDate, double basePrice, int hallId){
-        entityManager.createNativeQuery("INSERT INTO movie(name, start_date, end_date, base_price, hall_id)"+
-                "VALUES (?,?,?,?,?)")
+    public void addMovie(String name, Instant startDate, Instant endDate, double basePrice, int hallId, String description, String link){
+        entityManager.createNativeQuery("INSERT INTO movie(name, start_date, end_date, base_price, hall_id, description, link)"+
+                "VALUES (?,?,?,?,?,?,?)")
                 .setParameter(1, name)
                 .setParameter(2, startDate)
                 .setParameter(3, endDate)
                 .setParameter(4, basePrice)
                 .setParameter(5, hallId)
+                .setParameter(6, description)
+                .setParameter(7, link)
                 .executeUpdate();
     }
 
