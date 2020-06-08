@@ -7,53 +7,79 @@ import TableBody from "@material-ui/core/TableBody";
 import {
     buildUrl,
     callCrsApi,
-    statisticsHallId,
     statisticsHallSubUrl
 } from "./ApiUtils";
 import Paper from "@material-ui/core/Paper";
+import TextField from "@material-ui/core/TextField";
 
 
 export default function StatisticsHalls(props) {
     const {clientId} = props
+    const defaultHall = "1"
+    const [selectedHall, setSelectedHall] = useState(defaultHall);
+    const [error, setError] = useState("");
     const [hallStatistics, setHallStatistics] = useState([{
         totalReservations: "",
         incomeGenerated: "",
         deletedReservations: ""
     }])
 
-    useEffect(getHallStatistics, [])
+    useEffect(getHallStatistics, [selectedHall])
 
     function getHallStatistics() {
-        const url = buildUrl(statisticsHallSubUrl, [statisticsHallId], {"clientId": clientId})
+        const url = buildUrl(statisticsHallSubUrl, [selectedHall], {"clientId": clientId})
         function onSuccess(data) {
+            setError("")
             setHallStatistics(data)
         }
         function onFail(data) {
+            setError(data.message)
             console.warn(data.message)
         }
         callCrsApi(url, {method: 'GET'}, onSuccess, onFail)
     }
 
+    function onChangeHall(event) {
+        const {value} = event.target
+        setSelectedHall(value)
+    }
+
     return (
-        <div className={props.className}>
-            <TableContainer component={Paper}>
-                <Table aria-label="simple table">
-                    <TableBody>
-                        <TableRow>
-                            <TableCell align="right">Total Reservations</TableCell>
-                            <TableCell align="left">{hallStatistics.totalReservations}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell align="right">Generated Income</TableCell>
-                            <TableCell align="left">{hallStatistics.incomeGenerated}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell align="right">Deleted Reservations</TableCell>
-                            <TableCell align="left">{hallStatistics.deletedReservations}</TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
-            </TableContainer>
+        <div>
+            <TextField
+                id="hall number"
+                label="Hall number"
+                type="text"
+                value={selectedHall}
+                onChange={onChangeHall}
+                InputLabelProps={{
+                    shrink: true,
+                }}
+            />
+            {
+                error !== "" ?
+                    <div className="error">{error}</div> :
+                    <div>
+                        <TableContainer component={Paper}>
+                            <Table aria-label="simple table">
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell>Total Reservations</TableCell>
+                                        <TableCell>{hallStatistics.totalReservations}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>Generated Income</TableCell>
+                                        <TableCell>{hallStatistics.incomeGenerated}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>Deleted Reservations</TableCell>
+                                        <TableCell>{hallStatistics.deletedReservations}</TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </div>
+            }
         </div>
     );
 }

@@ -89,7 +89,7 @@ export default function AvailableHalls(props) {
         <div className={props.className}>
             <TextField
                 id="date"
-                label="Reservations for date"
+                label="Available halls for date"
                 type="date"
                 value={selectedDate}
                 defaultValue={defaultDate}

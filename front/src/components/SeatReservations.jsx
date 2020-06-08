@@ -20,6 +20,9 @@ import TablePagination from "@material-ui/core/TablePagination";
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import {afterNow} from "./CompUtils";
 import CachedIcon from "@material-ui/icons/Cached";
+import IconButton from "@material-ui/core/IconButton";
+import CheckIcon from "@material-ui/icons/Check";
+import ClearIcon from "@material-ui/icons/Clear";
 
 export default function SeatReservations(props) {
     const {clientId} = props
@@ -109,20 +112,22 @@ export default function SeatReservations(props) {
                 <h2>No movie reservations found</h2> :
                 <div>
                     <TableContainer component={Paper}>
-                        <CachedIcon fontSize="large" onClick={refresh}/>
+                        <IconButton>
+                            <CachedIcon fontSize="large" onClick={refresh}/>
+                        </IconButton>
                         <Table aria-label="simple table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell align="right">Reservation validity</TableCell>
+                                    <TableCell align="right">Reservation valid until</TableCell>
                                     <TableCell align="right">Already paid</TableCell>
-                                    <TableCell align="right">Total price</TableCell>
+                                    <TableCell align="right">Total price [PLN]</TableCell>
                                     <TableCell align="right">Movie name</TableCell>
                                     <TableCell align="right">Start date</TableCell>
                                     <TableCell align="right">End date</TableCell>
                                     <TableCell align="right">Hall number</TableCell>
                                     <TableCell align="right">Row number</TableCell>
                                     <TableCell align="right">Seat number</TableCell>
-                                    <TableCell align="right">VIP seat</TableCell>
+                                    <TableCell align="right">Is VIP seat</TableCell>
                                     <TableCell align="right">Was deleted</TableCell>
                                     <TableCell align="right">DELETE</TableCell>
                                     <TableCell align="right">PAY</TableCell>
@@ -132,7 +137,13 @@ export default function SeatReservations(props) {
                                 {reservations.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((reservation) => (
                                     <TableRow key={reservation.seatReservationId}>
                                         <TableCell align="right">{formatDateAndTime(reservation.validUntil)}</TableCell>
-                                        <TableCell align="right">{reservation.paid ? "YES" : "NO"}</TableCell>
+                                        <TableCell align="right">
+                                            {
+                                                reservation.paid ?
+                                                    <CheckIcon fontSize="large"/>:
+                                                    <ClearIcon fontSize="large"/>
+                                            }
+                                        </TableCell>
                                         <TableCell align="right">{reservation.totalPrice}</TableCell>
                                         <TableCell align="right">{reservation.movieName}</TableCell>
                                         <TableCell align="right">{formatDateAndTime(reservation.startDate)}</TableCell>

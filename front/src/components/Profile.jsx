@@ -6,6 +6,8 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import {buildUrl, callCrsApi, profileSubUrl} from "./ApiUtils";
 import Paper from "@material-ui/core/Paper";
+import CheckIcon from "@material-ui/icons/Check";
+import ClearIcon from "@material-ui/icons/Clear";
 
 export default function Profile(props) {
     const [profile, setProfile] = useState({
@@ -29,25 +31,31 @@ export default function Profile(props) {
     }
 
     return (
-        <div className={props.className}>
+        <div>
             <TableContainer component={Paper}>
                 <Table aria-label="simple table">
                     <TableBody>
                         <TableRow key="Name">
-                            <TableCell component="th" scope="row">Name</TableCell>
-                            <TableCell align="right">{profile.name}</TableCell>
+                            <TableCell>Name</TableCell>
+                            <TableCell>{profile.name}</TableCell>
                         </TableRow>
                         <TableRow key="Surname">
-                            <TableCell component="th" scope="row">Surname</TableCell>
-                            <TableCell align="right">{profile.surname}</TableCell>
+                            <TableCell>Surname</TableCell>
+                            <TableCell>{profile.surname}</TableCell>
                         </TableRow>
                         <TableRow key="Email">
-                            <TableCell component="th" scope="row">Email</TableCell>
-                            <TableCell align="right">{profile.email}</TableCell>
+                            <TableCell>Email</TableCell>
+                            <TableCell>{profile.email}</TableCell>
                         </TableRow>
                         <TableRow key="IsAdmin">
-                            <TableCell component="th" scope="row">IsAdmin</TableCell>
-                            <TableCell align="right">{profile.isAdmin ? "YES" : "NO"}</TableCell>
+                            <TableCell>Is Admin</TableCell>
+                            <TableCell>
+                                {
+                                    profile.isAdmin ?
+                                        <CheckIcon fontSize="large"/>:
+                                        <ClearIcon fontSize="large"/>
+                                }
+                            </TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>
