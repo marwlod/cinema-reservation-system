@@ -13,7 +13,7 @@ import TablePagination from "@material-ui/core/TablePagination";
 export default function Movies(props) {
     const {clientId, isAdmin} = props
     const from = apiDateNow()
-    const to = apiDateNowPlusDays(30)
+    const to = apiDateNowPlusDays(7)
     const [movies, setMovies] = useState([{
         movieId: "",
         name: "",
@@ -31,6 +31,7 @@ export default function Movies(props) {
             setMovies(data)
         }
         function onFail(data) {
+            setMovies([])
             console.warn(data.message)
         }
         callCrsApi(url, {method: 'GET'}, onSuccess, onFail)
@@ -49,34 +50,40 @@ export default function Movies(props) {
 
     return (
         <div className={props.className}>
-            <TableContainer component={Paper}>
-                <Table aria-label="collapsible table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell />
-                            <TableCell>Name</TableCell>
-                            <TableCell align="right">Start date</TableCell>
-                            <TableCell align="right">End date</TableCell>
-                            <TableCell align="right">Base price [PLN]</TableCell>
-                            <TableCell align="right">Hall number</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {movies.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((movie) => (
-                            <MovieDetails key={movie.movieId} movie={movie} clientId={clientId} isAdmin={isAdmin}/>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination
-                rowsPerPageOptions={[5, 10, 25, 100]}
-                component="div"
-                count={movies.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onChangePage={handleChangePage}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
-            />
+            {
+                movies.length === 0 ?
+                <h2>No movie shows found in the next 7 days</h2> :
+                <div>
+                    <TableContainer component={Paper}>
+                        <Table aria-label="collapsible table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell />
+                                    <TableCell>Name</TableCell>
+                                    <TableCell align="right">Start date</TableCell>
+                                    <TableCell align="right">End date</TableCell>
+                                    <TableCell align="right">Base price [PLN]</TableCell>
+                                    <TableCell align="right">Hall number</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {movies.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((movie) => (
+                                    <MovieDetails key={movie.movieId} movie={movie} clientId={clientId} isAdmin={isAdmin}/>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={[5, 10, 25, 100]}
+                        component="div"
+                        count={movies.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onChangePage={handleChangePage}
+                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                    />
+                </div>
+            }
         </div>
     );
 }
