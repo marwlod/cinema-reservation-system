@@ -12,6 +12,7 @@ header {
     padding: 16px 32px;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0);
     font-size: 20px !important;
+    font-size: 20px !important;
     text-align: center;
 }
 
@@ -69,6 +70,40 @@ body {
     border-radius: 3px !important;
     color: #edf2f4 !important;
 }
+
+.MuiTextField-root{
+    //color: #edf2f4 !important;
+    background-color: #50a3a2 !important;
+    border-radius: 3px;
+}
+
+.MuiFormControl-root{
+    color: #edf2f4 !important;
+    background-color: #3f51b5 !important;// rgba(0, 0, 0, 0.2) !important;
+}
+.MuiFormLabel-root{
+    color: #edf2f4 !important;
+    background-color: #3f51b5  !important;
+    padding-top: 5px !important;
+    padding-left: 5px !important;
+}
+
+.MuiInputBase-input {
+    color: #edf2f4 !important;
+    background-color: #3f51b5 !important;
+    padding-left: 5px !important;
+}
+.MuiInput-input {
+    color: #edf2f4 !important;
+    background-color: #3f51b5 !important;
+}
+
+
+.MuiInputBase-root {
+    color: #edf2f4 !important;
+    background-color: #3f51b5 !important;
+}
+
 
 .MuiTableContainer-root {
     background-color: rgba(0, 0, 0, 0) !important;

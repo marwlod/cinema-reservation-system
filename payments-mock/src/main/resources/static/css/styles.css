@@ -1,0 +1,118 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none;
+    text-decoration: none;
+    font-family: Bahnschrift, monospace;
+    color: black;
+}
+
+body{
+    background: url("https://images.unsplash.com/photo-1478720568477-152d9b164e26?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80") no-repeat center center;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.wrapper{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(70%,-50%);
+    width: 500px;
+    height: 350px;
+}
+
+.checkout_wrapper{
+    width: 500px;
+    height: 350px;
+    display: flex;
+}
+
+.checkout_wrapper .checkout_form{
+    width: 55%;
+    background-color: rgba(0, 0, 0, 0);
+    padding: 50px 30px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.checkout_wrapper .product_info .content{
+    text-align: center;
+    margin-top: 25px;
+    color: #ffffff;
+    text-transform: uppercase;
+}
+
+.checkout_wrapper .product_info .content h3{
+    font-size: 18px;
+    line-height: 18px;
+    letter-spacing: 3px;
+}
+
+.checkout_wrapper .product_info .content p{
+    margin-top: 10px;
+    font-size:14px;
+}
+
+.checkout_form p{
+    margin-bottom: 25px;
+    font-size: 25px;
+    text-transform: uppercase;
+    text-align: center;
+    color: #ffffff;
+}
+
+.checkout_form .details .section{
+    margin-bottom: 15px;
+    color: black;
+}
+
+.checkout_form .details .section input{
+    width: 100%;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0);
+    color: black;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.checkout_form .details .section input:focus{
+    border: 3px solid #3f51b5;
+    color: black;
+}
+
+.checkout_form .details .section input::placeholder{
+    color: black;
+
+}
+
+
+
+.checkout_form .details .section.last_section{
+    display: flex;
+    justify-content: space-between;
+}
+
+.checkout_form .details .section.last_section .item{
+    width: 48%;
+}
+
+.checkout_form .details #btn{
+    background: #3f51b5;
+    padding: 10px;
+    padding-left: 90px;
+    padding-right: 90px;
+    color: white;
+    border-radius: 3px;
+    text-align: center;
+    margin-top: 25px;
+}
+
+.checkout_form .details .btn a{
+    color: #fff;
+    letter-spacing: 5px;
+    display: block;
+}
