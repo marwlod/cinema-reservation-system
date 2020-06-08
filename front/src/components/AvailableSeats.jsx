@@ -87,7 +87,7 @@ export default function AvailableSeats(props) {
             </Table>
             <Box margin={1}>
                 <Typography variant="h6" gutterBottom component="div">
-                    Free seats
+                    Available seats
                 </Typography>
                 <Table size="small">
                     <TableHead>

@@ -11,7 +11,7 @@ import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
 import {afterNow} from "./CompUtils";
 import {
     buildUrl,
-    callCrsApi, formatDate, formatDateAndTime,
+    callCrsApi, formatDate, formatDateAndTime, payAdvanceForHallSubUrl,
     payForHallSubUrl,
     reserveHallSubUrl,
     showHallReservationsSubUrl
@@ -19,6 +19,9 @@ import {
 import CachedIcon from '@material-ui/icons/Cached';
 import Table from "@material-ui/core/Table";
 import TablePagination from "@material-ui/core/TablePagination";
+import IconButton from "@material-ui/core/IconButton";
+import CheckIcon from '@material-ui/icons/Check';
+import ClearIcon from '@material-ui/icons/Clear';
 
 export default function HallReservations(props) {
     const {clientId} = props
@@ -83,11 +86,23 @@ export default function HallReservations(props) {
         setPage(0);
     };
 
-    function handlePayment(reservationId) {
+    function handleAdvancePayment(reservationId) {
+        const url = buildUrl(payAdvanceForHallSubUrl, [reservationId], {"clientId": clientId})
+        function onSuccess(data) {
+            window.open(data)
+            console.log("Opened URL for hall advance payment ", data)
+        }
+        function onFail(data) {
+            console.warn(data.message)
+        }
+        callCrsApi(url, {method: 'POST'}, onSuccess, onFail)
+    }
+
+    function handleFullPayment(reservationId) {
         const url = buildUrl(payForHallSubUrl, [reservationId], {"clientId": clientId})
         function onSuccess(data) {
             window.open(data)
-            console.log("Opened URL for payment ", data)
+            console.log("Opened URL for hall full payment ", data)
         }
         function onFail(data) {
             console.warn(data.message)
@@ -101,24 +116,28 @@ export default function HallReservations(props) {
 
     return (
         <div>
-            {reservations.length === 1 && reservations[0].hallReservationId === "" ?
+            {
+                reservations.length === 0 ?
                 <h2>No hall reservations found</h2> :
                 <TableContainer component={Paper}>
-                    <CachedIcon fontSize="large" onClick={refresh}/>
+                    <IconButton>
+                        <CachedIcon fontSize="large" onClick={refresh}/>
+                    </IconButton>
                     <Table aria-label="simple table">
                         <TableHead>
                             <TableRow>
                                 <TableCell align="right">Hall number</TableCell>
-                                <TableCell align="right">Valid until</TableCell>
+                                <TableCell align="right">Reservation valid until</TableCell>
                                 <TableCell align="right">Paid advance</TableCell>
                                 <TableCell align="right">Paid total</TableCell>
-                                <TableCell align="right">Advance price</TableCell>
-                                <TableCell align="right">Total price</TableCell>
+                                <TableCell align="right">Advance price [PLN]</TableCell>
+                                <TableCell align="right">Total price [PLN]</TableCell>
                                 <TableCell align="right">Reservation date</TableCell>
-                                <TableCell align="right">Screen size</TableCell>
-                                <TableCell align="right">Is deleted</TableCell>
+                                <TableCell align="right">Screen size [inch]</TableCell>
+                                <TableCell align="right">Was deleted</TableCell>
                                 <TableCell align="right">DELETE</TableCell>
-                                <TableCell align="right">PAY</TableCell>
+                                <TableCell align="right">PAY ADVANCE</TableCell>
+                                <TableCell align="right">PAY FULL</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -126,8 +145,20 @@ export default function HallReservations(props) {
                                 <TableRow key={reservation.hallReservationId}>
                                     <TableCell align="right">{reservation.hallId}</TableCell>
                                     <TableCell align="right">{formatDateAndTime(reservation.validUntil)}</TableCell>
-                                    <TableCell align="right">{reservation.paidAdvance ? "YES" : "NO"}</TableCell>
-                                    <TableCell align="right">{reservation.paidTotal ? "YES" : "NO"}</TableCell>
+                                    <TableCell align="right">
+                                        {
+                                            reservation.paidAdvance ?
+                                                <CheckIcon fontSize="large"/>:
+                                                <ClearIcon fontSize="large"/>
+                                        }
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        {
+                                            reservation.paidTotal ?
+                                                <CheckIcon fontSize="large"/>:
+                                                <ClearIcon fontSize="large"/>
+                                        }
+                                    </TableCell>
                                     <TableCell align="right">{reservation.advancePrice}</TableCell>
                                     <TableCell align="right">{reservation.totalPrice}</TableCell>
                                     <TableCell align="right">{formatDate(reservation.reservationDate)}</TableCell>
@@ -143,9 +174,19 @@ export default function HallReservations(props) {
                                     </TableCell>
                                     <TableCell align="right">
                                         {
+                                            reservation.paidAdvance || reservation.paidTotal || !afterNow(reservation.validUntil) ||
+                                            <Fab color="primary" aria-label="pay">
+                                                <MonetizationOnIcon fontSize="medium"
+                                                    onClick={() => handleAdvancePayment(reservation.hallReservationId)}/>
+                                            </Fab>
+                                        }
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        {
                                             reservation.paidTotal || !afterNow(reservation.validUntil) ||
                                             <Fab color="primary" aria-label="pay">
-                                                <MonetizationOnIcon onClick={() => handlePayment(reservation.hallReservationId)}/>
+                                                <MonetizationOnIcon fontSize="large"
+                                                    onClick={() => handleFullPayment(reservation.hallReservationId)}/>
                                             </Fab>
                                         }
                                     </TableCell>

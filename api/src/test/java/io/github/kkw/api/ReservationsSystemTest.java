@@ -59,7 +59,7 @@ public class ReservationsSystemTest {
     private static final String INVALID_CODE = "INVALID_CODE_098";
     private static final SpecialOfferAddRequest existingCodeSpecialOffer = new SpecialOfferAddRequest(VALID_CODE, 50);
     private static final String VALID_MOVIE_NAME_NO_RESERVATIONS = "Joker";
-    private static final String VALID_MOVIE_NAME = "American Pie 5: Naked Mile";
+    private static final String VALID_MOVIE_NAME = "Pulp Fiction";
     private static final String INVALID_MOVIE_NAME = "INVALID MOVIE NAME";
 
     @Autowired
