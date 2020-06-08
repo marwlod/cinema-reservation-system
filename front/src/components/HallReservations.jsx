@@ -90,7 +90,7 @@ export default function HallReservations(props) {
         const url = buildUrl(payAdvanceForHallSubUrl, [reservationId], {"clientId": clientId})
         function onSuccess(data) {
             window.open(data)
-            console.log("Opened URL for advance hall payment ", data)
+            console.log("Opened URL for hall advance payment ", data)
         }
         function onFail(data) {
             console.warn(data.message)
@@ -102,7 +102,7 @@ export default function HallReservations(props) {
         const url = buildUrl(payForHallSubUrl, [reservationId], {"clientId": clientId})
         function onSuccess(data) {
             window.open(data)
-            console.log("Opened URL for full hall payment ", data)
+            console.log("Opened URL for hall full payment ", data)
         }
         function onFail(data) {
             console.warn(data.message)

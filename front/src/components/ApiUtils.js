@@ -15,9 +15,7 @@ export const availableCinemaHallsUrl = "/showAvailableCinemaHalls"
 export const reserveHallSubUrl = "/reserveHall"
 export const statisticsGeneralSubUrl = "/showStatistics"
 export const statisticsMovieSubUrl = "/showStatistics/movie"
-export const statisticsMovieName = "Pulp Fiction"
 export const statisticsHallSubUrl = "/showStatistics/hall"
-export const statisticsHallId = "1"
 
 export function buildUrl(subUrl, pathVars, urlParams) {
     const url = [baseUrl, subUrl];

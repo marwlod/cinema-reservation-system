@@ -4,14 +4,14 @@ import Table from "@material-ui/core/Table";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
-import {apiDateNowMinusDays, buildUrl, callCrsApi, statisticsGeneralSubUrl, toApiDate} from "./ApiUtils";
+import {apiDateNow, apiDateNowMinusDays, buildUrl, callCrsApi, statisticsGeneralSubUrl, toApiDate} from "./ApiUtils";
 import Paper from "@material-ui/core/Paper";
 
 
 export default function StatisticsGeneral(props) {
     const {clientId} = props
     const from = apiDateNowMinusDays(30)
-    const to = apiDateNowMinusDays(2)
+    const to = apiDateNow()
     const [statistics, setStatistics] = useState([{
         seatReservations: "",
         hallReservations: "",
@@ -36,7 +36,7 @@ export default function StatisticsGeneral(props) {
     }
 
     return (
-        <div className={props.className}>
+        <div>
             <TableContainer component={Paper}>
                 <Table aria-label="simple table">
                     <TableBody>
