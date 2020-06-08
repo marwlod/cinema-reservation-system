@@ -44,7 +44,7 @@ export default function HallReservations(props) {
     function getReservations() {
         const url = buildUrl(showHallReservationsSubUrl, [], {"clientId": clientId, "from": from, "to": to})
         function onSuccess(data) {
-            data.sort((m1,m2) => m2.validUntil.localeCompare(m1.validUntil))
+            data.sort((m1,m2) => m2.reservationDate.localeCompare(m1.reservationDate))
             console.log("Hall reservations returned from API: ", data)
             setReservations(data)
         }
@@ -127,12 +127,12 @@ export default function HallReservations(props) {
                         <TableHead>
                             <TableRow>
                                 <TableCell align="right">Hall number</TableCell>
-                                <TableCell align="right">Reservation valid until</TableCell>
-                                <TableCell align="right">Paid advance</TableCell>
-                                <TableCell align="right">Paid total</TableCell>
-                                <TableCell align="right">Advance price [PLN]</TableCell>
-                                <TableCell align="right">Total price [PLN]</TableCell>
                                 <TableCell align="right">Reservation date</TableCell>
+                                <TableCell align="right">Reservation valid until</TableCell>
+                                <TableCell align="right">Advance price [PLN]</TableCell>
+                                <TableCell align="right">Paid advance</TableCell>
+                                <TableCell align="right">Total price [PLN]</TableCell>
+                                <TableCell align="right">Paid total</TableCell>
                                 <TableCell align="right">Screen size [inch]</TableCell>
                                 <TableCell align="right">Was deleted</TableCell>
                                 <TableCell align="right">DELETE</TableCell>
@@ -144,7 +144,9 @@ export default function HallReservations(props) {
                             {reservations.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((reservation) => (
                                 <TableRow key={reservation.hallReservationId}>
                                     <TableCell align="right">{reservation.hallId}</TableCell>
+                                    <TableCell align="right">{formatDate(reservation.reservationDate)}</TableCell>
                                     <TableCell align="right">{formatDateAndTime(reservation.validUntil)}</TableCell>
+                                    <TableCell align="right">{reservation.advancePrice}</TableCell>
                                     <TableCell align="right">
                                         {
                                             reservation.paidAdvance ?
@@ -152,6 +154,7 @@ export default function HallReservations(props) {
                                                 <ClearIcon fontSize="large"/>
                                         }
                                     </TableCell>
+                                    <TableCell align="right">{reservation.totalPrice}</TableCell>
                                     <TableCell align="right">
                                         {
                                             reservation.paidTotal ?
@@ -159,9 +162,6 @@ export default function HallReservations(props) {
                                                 <ClearIcon fontSize="large"/>
                                         }
                                     </TableCell>
-                                    <TableCell align="right">{reservation.advancePrice}</TableCell>
-                                    <TableCell align="right">{reservation.totalPrice}</TableCell>
-                                    <TableCell align="right">{formatDate(reservation.reservationDate)}</TableCell>
                                     <TableCell align="right">{reservation.screenSize}</TableCell>
                                     <TableCell align="right">{reservation.deleted ? "YES" : "NO"}</TableCell>
                                     <TableCell align="right">
