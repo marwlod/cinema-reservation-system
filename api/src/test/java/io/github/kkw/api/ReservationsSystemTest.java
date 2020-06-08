@@ -39,7 +39,7 @@ public class ReservationsSystemTest {
     private static final int ANOTHER_VALID_HALL_ID = 2;
     private static final int INVALID_HALL_ID = 99_999_999;
     private static final MovieAddRequest MOVIE_ADD_REQUEST = new MovieAddRequest("Fast and Furious",
-            Instant.parse("2100-01-01T10:00:30.00Z"), Instant.parse("2100-01-01T11:30:30.00Z"), 25.00, VALID_HALL_ID);
+            Instant.parse("2100-01-01T10:00:30.00Z"), Instant.parse("2100-01-01T11:30:30.00Z"), 25.00, VALID_HALL_ID, "--some description--", "--some link---");
     private static final Instant FUTURE_DATE_EARLIER = Instant.parse("2666-01-01T00:00:00Z");
     private static final Instant FUTURE_DATE_LATER = Instant.parse("2666-01-02T00:00:00Z");
     private static final Instant MOVIES_FROM = Instant.parse("2030-01-01T00:00:00Z");

@@ -36,6 +36,8 @@ CREATE TABLE movie
     end_date DATETIME(6) NOT NULL,
     base_price DECIMAL(13, 4) NOT NULL,
     hall_id INT NOT NULL,
+    description VARCHAR(2048) NOT NULL,
+    link VARCHAR(256) NOT NULL,
     FOREIGN KEY (hall_id) REFERENCES hall(hall_id)
 );
 

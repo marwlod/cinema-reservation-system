@@ -29,7 +29,7 @@ export default function MovieDetails(props) {
             </TableRow>
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                    <AvailableSeats open={open} movieId={movie.movieId} clientId={clientId} isAdmin={isAdmin}/>
+                    <AvailableSeats open={open} movieId={movie.movieId} clientId={clientId} isAdmin={isAdmin} description={movie.description} link={movie.link}/>
                 </TableCell>
             </TableRow>
         </React.Fragment>
