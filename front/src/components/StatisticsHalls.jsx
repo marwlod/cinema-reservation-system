@@ -11,6 +11,8 @@ import {
 } from "./ApiUtils";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
+import IconButton from "@material-ui/core/IconButton";
+import CachedIcon from "@material-ui/icons/Cached";
 
 
 export default function StatisticsHalls(props) {
@@ -44,6 +46,10 @@ export default function StatisticsHalls(props) {
         setSelectedHall(value)
     }
 
+    function refresh() {
+        getHallStatistics()
+    }
+
     return (
         <div>
             <TextField
@@ -61,6 +67,9 @@ export default function StatisticsHalls(props) {
                     <div className="error">{error}</div> :
                     <div>
                         <TableContainer component={Paper}>
+                            <IconButton>
+                                <CachedIcon fontSize="large" onClick={refresh}/>
+                            </IconButton>
                             <Table aria-label="simple table">
                                 <TableBody>
                                     <TableRow>
