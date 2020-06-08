@@ -47,7 +47,7 @@ export default function SeatReservations(props) {
     function getReservations() {
         const url = buildUrl(showSeatReservationsSubUrl, [], {"clientId": clientId, "from": from, "to": to})
         function onSuccess(data) {
-            data.sort((m1,m2) => m2.startDate - m1.startDate)
+            data.sort((m1,m2) => m2.startDate.localeCompare(m1.startDate))
             console.log("Seat reservations returned from API: ", data)
             setReservations(data)
         }
