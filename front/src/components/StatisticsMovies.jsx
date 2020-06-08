@@ -11,6 +11,8 @@ import {
 } from "./ApiUtils";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
+import IconButton from "@material-ui/core/IconButton";
+import CachedIcon from "@material-ui/icons/Cached";
 
 export default function StatisticsMovies(props) {
     const {clientId} = props
@@ -47,6 +49,10 @@ export default function StatisticsMovies(props) {
         setSelectedMovie(value)
     }
 
+    function refresh() {
+        getMovieStatistics()
+    }
+
     return (
         <div>
             <TextField
@@ -64,6 +70,9 @@ export default function StatisticsMovies(props) {
                     <div className="error">{error}</div> :
                     <div>
                         <TableContainer component={Paper}>
+                            <IconButton>
+                                <CachedIcon fontSize="large" onClick={refresh}/>
+                            </IconButton>
                             <Table aria-label="simple table">
                                 <TableBody>
                                     <TableRow>

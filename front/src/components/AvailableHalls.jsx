@@ -112,7 +112,10 @@ export default function AvailableHalls(props) {
                                     <TableCell align="right">Screen Size [INCH]</TableCell>
                                     <TableCell align="right">Regular Seats</TableCell>
                                     <TableCell align="right">VIP Seats</TableCell>
-                                    <TableCell align="right">RESERVE</TableCell>
+                                    {
+                                        isAdmin ||
+                                        <TableCell align="right">RESERVE</TableCell>
+                                    }
                                 </TableRow>
                             </TableHead>
                             <TableBody>
