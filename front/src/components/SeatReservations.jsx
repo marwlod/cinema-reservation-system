@@ -6,7 +6,14 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import React, {useEffect, useState} from "react";
-import {buildUrl, callCrsApi, payForSeatSubUrl, reserveSeatSubUrl, showSeatReservationsSubUrl} from "./ApiUtils";
+import {
+    buildUrl,
+    callCrsApi,
+    formatDateAndTime,
+    payForSeatSubUrl,
+    reserveSeatSubUrl,
+    showSeatReservationsSubUrl
+} from "./ApiUtils";
 import Fab from "@material-ui/core/Fab";
 import DeleteIcon from "@material-ui/icons/Delete";
 import TablePagination from "@material-ui/core/TablePagination";
@@ -124,12 +131,12 @@ export default function SeatReservations(props) {
                             <TableBody>
                                 {reservations.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((reservation) => (
                                     <TableRow key={reservation.seatReservationId}>
-                                        <TableCell align="right">{reservation.validUntil}</TableCell>
+                                        <TableCell align="right">{formatDateAndTime(reservation.validUntil)}</TableCell>
                                         <TableCell align="right">{reservation.paid ? "YES" : "NO"}</TableCell>
                                         <TableCell align="right">{reservation.totalPrice}</TableCell>
                                         <TableCell align="right">{reservation.movieName}</TableCell>
-                                        <TableCell align="right">{reservation.startDate}</TableCell>
-                                        <TableCell align="right">{reservation.endDate}</TableCell>
+                                        <TableCell align="right">{formatDateAndTime(reservation.startDate)}</TableCell>
+                                        <TableCell align="right">{formatDateAndTime(reservation.endDate)}</TableCell>
                                         <TableCell align="right">{reservation.hallId}</TableCell>
                                         <TableCell align="right">{reservation.rowNumber}</TableCell>
                                         <TableCell align="right">{reservation.seatNumber}</TableCell>
