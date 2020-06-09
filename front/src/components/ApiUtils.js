@@ -108,3 +108,9 @@ export function dayAndMonthNowMinusDays(toSubtract) {
     const month = date.getMonth() + 1 // months numbered from 0 to 11
     return (days < 10 ? "0" + days : days) + "-" + (month < 10 ? "0" + month : month)
 }
+
+export function formatMoney(money) {
+    const moneyJSON = JSON.stringify(money);
+    const moneyToNumber = Number(moneyJSON);
+    return moneyToNumber.toFixed(2);
+}

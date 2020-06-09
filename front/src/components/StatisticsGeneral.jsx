@@ -4,7 +4,14 @@ import Table from "@material-ui/core/Table";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
-import {apiDateNowMinusDays, buildUrl, callCrsApi, dayAndMonthNowMinusDays, statisticsGeneralSubUrl} from "./ApiUtils";
+import {
+    apiDateNowMinusDays,
+    buildUrl,
+    callCrsApi,
+    dayAndMonthNowMinusDays,
+    formatMoney,
+    statisticsGeneralSubUrl
+} from "./ApiUtils";
 import Paper from "@material-ui/core/Paper";
 import {LineChart, XAxis, Tooltip, CartesianGrid, Line, ResponsiveContainer, Legend} from "recharts"
 import IconButton from "@material-ui/core/IconButton";
@@ -109,7 +116,7 @@ export default function StatisticsGeneral(props) {
                     </ResponsiveContainer>
                 </div>
                 <br/>
-                <h2>Overall statistics</h2>
+                <h2>All time statistics</h2>
                 <br/>
                 <Table aria-label="simple table">
                     <TableBody>
@@ -127,7 +134,7 @@ export default function StatisticsGeneral(props) {
                         </TableRow>
                         <TableRow>
                             <TableCell align="right">Money earned</TableCell>
-                            <TableCell align="left">{statistics.moneyEarned}</TableCell>
+                            <TableCell align="left">{formatMoney(statistics.moneyEarned)}</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell align="right">New Clients registered</TableCell>
