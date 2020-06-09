@@ -1,7 +1,6 @@
 package io.github.kkw.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.kkw.api.db.dto.StatisticsEntity;
 
 public class Statistics {
 
@@ -29,16 +28,6 @@ public class Statistics {
         this.newClientsRegistered=newClientsRegistered;
         this.totalClientsAtTheMoment=totalClientsAtTheMoment;
         this.clientsThatReserved=clientsThatReserved;
-    }
-
-    public Statistics(final StatisticsEntity statistics){
-        this(statistics.getSeatReservations(),
-                statistics.getHallReservations(),
-                statistics.getMovies(),
-                statistics.getMoneyEarned().doubleValue(),
-                statistics.getNewClientsRegistered(),
-                statistics.getTotalClientsAtTheMoment(),
-                statistics.getClientsThatReserved());
     }
 
     public int getSeatReservations() {

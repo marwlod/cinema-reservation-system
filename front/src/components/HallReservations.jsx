@@ -120,8 +120,8 @@ export default function HallReservations(props) {
                 reservations.length === 0 ?
                 <h2>No hall reservations found</h2> :
                 <TableContainer component={Paper}>
-                    <IconButton>
-                        <CachedIcon fontSize="large" onClick={refresh}/>
+                    <IconButton onClick={refresh}>
+                        <CachedIcon fontSize="large"/>
                     </IconButton>
                     <Table aria-label="simple table">
                         <TableHead>
