@@ -14,9 +14,9 @@
             <p>Payment Section</p>
             <form autocomplete="off" action="#" th:action="@{/pay}"
                   th:object="${payment}" method="post" role="form">
-                <input type="hidden" id="clientId" name="clientId" value="5000"/>
-                <input type="hidden" id="reservationId" name="reservationId" value="2"/>
-                <input type="hidden" id="method" name="method" value="finishPaymentSeat"/>
+                <input type="hidden" th:field="*{clientId}"/>
+                <input type="hidden" th:field="*{reservationId}"/>
+                <input type="hidden" th:field="*{method}"/>
                 <div class="details">
                     <div class="section">
                         <input id="email" type="email" placeholder="Email" name="email" value=""/>
