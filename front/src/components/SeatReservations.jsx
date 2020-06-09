@@ -112,8 +112,8 @@ export default function SeatReservations(props) {
                 <h2>No movie reservations found</h2> :
                 <div>
                     <TableContainer component={Paper}>
-                        <IconButton>
-                            <CachedIcon fontSize="large" onClick={refresh}/>
+                        <IconButton onClick={refresh}>
+                            <CachedIcon fontSize="large"/>
                         </IconButton>
                         <Table aria-label="simple table">
                             <TableHead>

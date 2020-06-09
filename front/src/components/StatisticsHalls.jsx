@@ -67,8 +67,8 @@ export default function StatisticsHalls(props) {
                     <div className="error">{error}</div> :
                     <div>
                         <TableContainer component={Paper}>
-                            <IconButton>
-                                <CachedIcon fontSize="large" onClick={refresh}/>
+                            <IconButton onClick={refresh}>
+                                <CachedIcon fontSize="large"/>
                             </IconButton>
                             <Table aria-label="simple table">
                                 <TableBody>

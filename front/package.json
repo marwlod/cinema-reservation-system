@@ -9,7 +9,8 @@
     "@material-ui/icons": "^4.9.1",
     "react": "16.8.6",
     "react-dom": "16.8.6",
-    "react-scripts": "^3.4.1"
+    "react-scripts": "^3.4.1",
+    "recharts": "^1.8.5"
   },
   "devDependencies": {
     "prop-types": "^15.7.2",

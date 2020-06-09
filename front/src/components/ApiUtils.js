@@ -101,3 +101,10 @@ export function formatDate(dateAndTime) {
         (month < 10 ? "0" + month : month) + "-" +
         (day < 10 ? "0" + day : day);
 }
+
+export function dayAndMonthNowMinusDays(toSubtract) {
+    const date = new Date(Date.now() - toSubtract*24*60*60*1000)
+    const days = date.getDate()
+    const month = date.getMonth() + 1 // months numbered from 0 to 11
+    return (days < 10 ? "0" + days : days) + "-" + (month < 10 ? "0" + month : month)
+}
