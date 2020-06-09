@@ -8,7 +8,7 @@ import {
     apiDateNowPlusDays,
     availableCinemaHallsUrl,
     buildUrl,
-    callCrsApi,
+    callCrsApi, formatMoney,
     reserveHallSubUrl
 } from "./ApiUtils";
 import TableHead from "@material-ui/core/TableHead";
@@ -122,8 +122,8 @@ export default function AvailableHalls(props) {
                                 {halls.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((hall) => (
                                     <TableRow key={hall.hallId}>
                                         <TableCell align="right">{hall.hallId}</TableCell>
-                                        <TableCell align="right">{hall.advancePrice}</TableCell>
-                                        <TableCell align="right">{hall.totalPrice}</TableCell>
+                                        <TableCell align="right">{formatMoney(hall.advancePrice)}</TableCell>
+                                        <TableCell align="right">{formatMoney(hall.totalPrice)}</TableCell>
                                         <TableCell align="right">{hall.screenSize}</TableCell>
                                         <TableCell align="right">{hall.regularSeats}</TableCell>
                                         <TableCell align="right">{hall.vipSeats}</TableCell>
