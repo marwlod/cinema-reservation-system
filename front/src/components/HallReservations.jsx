@@ -11,7 +11,7 @@ import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
 import {afterNow} from "./CompUtils";
 import {
     buildUrl,
-    callCrsApi, formatDate, formatDateAndTime, payAdvanceForHallSubUrl,
+    callCrsApi, formatDate, formatDateAndTime, formatMoney, payAdvanceForHallSubUrl,
     payForHallSubUrl,
     reserveHallSubUrl,
     showHallReservationsSubUrl
@@ -146,7 +146,7 @@ export default function HallReservations(props) {
                                     <TableCell align="right">{reservation.hallId}</TableCell>
                                     <TableCell align="right">{formatDate(reservation.reservationDate)}</TableCell>
                                     <TableCell align="right">{formatDateAndTime(reservation.validUntil)}</TableCell>
-                                    <TableCell align="right">{reservation.advancePrice}</TableCell>
+                                    <TableCell align="right">{formatMoney(reservation.advancePrice)}</TableCell>
                                     <TableCell align="right">
                                         {
                                             reservation.paidAdvance ?
@@ -154,7 +154,7 @@ export default function HallReservations(props) {
                                                 <ClearIcon fontSize="large"/>
                                         }
                                     </TableCell>
-                                    <TableCell align="right">{reservation.totalPrice}</TableCell>
+                                    <TableCell align="right">{formatMoney(reservation.totalPrice)}</TableCell>
                                     <TableCell align="right">
                                         {
                                             reservation.paidTotal ?

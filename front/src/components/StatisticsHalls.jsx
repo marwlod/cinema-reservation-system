@@ -6,7 +6,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import {
     buildUrl,
-    callCrsApi,
+    callCrsApi, formatMoney,
     statisticsHallSubUrl
 } from "./ApiUtils";
 import Paper from "@material-ui/core/Paper";
@@ -78,7 +78,7 @@ export default function StatisticsHalls(props) {
                                     </TableRow>
                                     <TableRow>
                                         <TableCell>Generated Income</TableCell>
-                                        <TableCell>{hallStatistics.incomeGenerated}</TableCell>
+                                        <TableCell>{formatMoney(hallStatistics.incomeGenerated)}</TableCell>
                                     </TableRow>
                                     <TableRow>
                                         <TableCell>Deleted Reservations</TableCell>

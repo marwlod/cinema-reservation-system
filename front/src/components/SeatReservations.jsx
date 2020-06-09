@@ -9,7 +9,7 @@ import React, {useEffect, useState} from "react";
 import {
     buildUrl,
     callCrsApi,
-    formatDateAndTime,
+    formatDateAndTime, formatMoney,
     payForSeatSubUrl,
     reserveSeatSubUrl,
     showSeatReservationsSubUrl
@@ -143,7 +143,7 @@ export default function SeatReservations(props) {
                                         <TableCell align="right">{reservation.rowNumber}</TableCell>
                                         <TableCell align="right">{reservation.seatNumber}</TableCell>
                                         <TableCell align="right">{formatDateAndTime(reservation.validUntil)}</TableCell>
-                                        <TableCell align="right">{reservation.totalPrice}</TableCell>
+                                        <TableCell align="right">{formatMoney(reservation.totalPrice)}</TableCell>
                                         <TableCell align="right">
                                             {
                                                 reservation.paid ?

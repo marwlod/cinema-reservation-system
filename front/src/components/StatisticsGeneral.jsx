@@ -4,7 +4,7 @@ import Table from "@material-ui/core/Table";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
-import {apiDateNowMinusDays, buildUrl, callCrsApi, statisticsGeneralSubUrl, toApiDate} from "./ApiUtils";
+import {apiDateNowMinusDays, buildUrl, callCrsApi, formatMoney, statisticsGeneralSubUrl, toApiDate} from "./ApiUtils";
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 import CachedIcon from "@material-ui/icons/Cached";
@@ -63,7 +63,7 @@ export default function StatisticsGeneral(props) {
                         </TableRow>
                         <TableRow>
                             <TableCell align="right">Money earned</TableCell>
-                            <TableCell align="left">{statistics.moneyEarned}</TableCell>
+                            <TableCell align="left">{formatMoney(statistics.moneyEarned)}</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell align="right">New Clients registered</TableCell>
