@@ -101,3 +101,9 @@ export function formatDate(dateAndTime) {
         (month < 10 ? "0" + month : month) + "-" +
         (day < 10 ? "0" + day : day);
 }
+
+export function formatMoney(money) {
+    const moneyJSON = JSON.stringify(money);
+    const moneyToNumber = Number(moneyJSON);
+    return moneyToNumber.toFixed(2);
+}

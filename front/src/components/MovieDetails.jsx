@@ -5,7 +5,7 @@ import IconButton from "@material-ui/core/IconButton";
 import KeyboardArrowUp from "@material-ui/icons/KeyboardArrowUp";
 import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
 import AvailableSeats from "./AvailableSeats";
-import {formatDateAndTime} from "./ApiUtils";
+import {formatDateAndTime, formatMoney} from "./ApiUtils";
 
 export default function MovieDetails(props) {
     const {movie, clientId, isAdmin} = props;
@@ -24,7 +24,7 @@ export default function MovieDetails(props) {
                 </TableCell>
                 <TableCell align="right">{formatDateAndTime(movie.startDate)}</TableCell>
                 <TableCell align="right">{formatDateAndTime(movie.endDate)}</TableCell>
-                <TableCell align="right">{movie.basePrice}</TableCell>
+                <TableCell align="right">{formatMoney(movie.basePrice)}</TableCell>
                 <TableCell align="right">{movie.hallId}</TableCell>
             </TableRow>
             <TableRow>

@@ -6,7 +6,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import {
     buildUrl,
-    callCrsApi, formatDateAndTime,
+    callCrsApi, formatDateAndTime, formatMoney,
     statisticsMovieSubUrl,
 } from "./ApiUtils";
 import Paper from "@material-ui/core/Paper";
@@ -93,7 +93,7 @@ export default function StatisticsMovies(props) {
                                     </TableRow>
                                     <TableRow>
                                         <TableCell>Generated Income</TableCell>
-                                        <TableCell>{movieStatistics.incomeGenerated}</TableCell>
+                                        <TableCell>{formatMoney(movieStatistics.incomeGenerated)}</TableCell>
                                     </TableRow>
                                     <TableRow>
                                         <TableCell component="th" scope="row">Deleted Reservations</TableCell>

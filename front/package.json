@@ -12,6 +12,7 @@
     "react-scripts": "^3.4.1"
   },
   "devDependencies": {
+    "plotly": "^1.0.6",
     "prop-types": "^15.7.2",
     "typescript": "3.3.3"
   },
