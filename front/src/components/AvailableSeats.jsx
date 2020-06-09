@@ -80,7 +80,7 @@ export default function AvailableSeats(props) {
                         </div>
                     </TableCell>
                     <TableCell>
-                        <img src={props.link} alt="Movie Image" width="340" height="400"></img>
+                        <img src={link} alt="Movie Image" width="340" height="400"/>
                     </TableCell>
                 </TableRow>
             </div>

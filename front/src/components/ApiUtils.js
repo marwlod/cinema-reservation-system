@@ -73,8 +73,7 @@ export function apiDateNowPlusDays(toAdd) {
 function correctDateAndTimeTimeZone(dateAndTime) {
     const dateTime = new Date(dateAndTime);
     dateTime.setMonth(dateTime.getMonth() + 1);
-    const dateTimeZoneCorrected = new Date((dateTime) - 2*60*60*1000) //minus 2 hours (Time Zone)
-    return dateTimeZoneCorrected;
+    return dateTime;
 }
 
 export function formatDateAndTime(dateAndTime) {
