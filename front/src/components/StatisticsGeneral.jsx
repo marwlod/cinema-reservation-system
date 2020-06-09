@@ -96,9 +96,9 @@ export default function StatisticsGeneral(props) {
                             width={500}
                             height={500}
                             data={lastWeekStatistics}
-                            margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+                            margin={{ top: 5, right: 50, left: 50, bottom: 5 }}
                         >
-                            <XAxis dataKey="day" />
+                            <XAxis dataKey="day" interval={0}/>
                             <Tooltip contentStyle={{color: "#edf2f4", backgroundColor: "#3f51b5"}}/>
                             <CartesianGrid stroke="#f5f5f5" />
                             <Line name="Money earned [PLN]" type="monotone" dataKey="moneyEarned" stroke="#ff7300" yAxisId={0} />
