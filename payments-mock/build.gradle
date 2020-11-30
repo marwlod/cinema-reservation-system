@@ -1,9 +1,7 @@
 plugins {
     id 'java'
+    id 'org.springframework.boot' version '2.2.6.RELEASE'
 }
-
-group 'io.github.kkw'
-version '0.0.1-SNAPSHOT'
 
 repositories {
     mavenCentral()

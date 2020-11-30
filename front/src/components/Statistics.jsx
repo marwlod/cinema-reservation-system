@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 import StatisticsMovies from "./StatisticsMovies";
 import StatisticsHalls from "./StatisticsHalls";
 
+// TODO refactor: TabPanel and MenuTabs are very similar
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 

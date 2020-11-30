@@ -84,15 +84,6 @@ public class MovieRepository {
     }
 
     @Transactional
-    public boolean isMovieExists(String name){
-        final BigInteger isMovieExists = (BigInteger) entityManager
-                .createNativeQuery("SELECT IF((SELECT COUNT(*) FROM movie WHERE name = ?) > 0, TRUE, FALSE)")
-                .setParameter(1,name)
-                .getSingleResult();
-        return isMovieExists.intValue() == 1;
-    }
-
-    @Transactional
     public int getMovieShowsCount(String name){
         final BigInteger movieShowsCounter = (BigInteger) entityManager
                 .createNativeQuery("SELECT COUNT(*) FROM movie WHERE name = ?")

@@ -1,71 +1,63 @@
 package io.github.kkw.api.services;
 
-import io.github.kkw.api.db.HallReservationRepository;
-import io.github.kkw.api.db.PaymentsRepository;
-import io.github.kkw.api.db.SeatReservationRepository;
 import io.github.kkw.api.exceptions.ReservationAlreadyPaid;
 import io.github.kkw.api.exceptions.ReservationNotFoundException;
 import io.github.kkw.api.model.ClientId;
 import io.github.kkw.api.model.ReservationId;
-import org.springframework.stereotype.Service;
 
-@Service
-public class PaymentsService {
-    private final PaymentsRepository paymentsRepository;
-    private final SeatReservationRepository seatReservationRepository;
-    private final HallReservationRepository hallReservationRepository;
+public interface PaymentsService {
+    /**
+     *
+     * @param clientId ID of calling client
+     * @param reservationId ID of seat reservation to get payment amount for
+     * @return amount to pay for seat
+     * @throws ReservationNotFoundException reservation with this ID not found
+     * @throws ReservationAlreadyPaid reservation with this ID was already paid for
+     */
+    double getPaymentAmountForSeat(ClientId clientId, ReservationId reservationId)
+     throws ReservationNotFoundException, ReservationAlreadyPaid;
 
-    public PaymentsService(PaymentsRepository paymentsRepository,
-                           SeatReservationRepository seatReservationRepository,
-                           HallReservationRepository hallReservationRepository) {
-        this.paymentsRepository = paymentsRepository;
-        this.seatReservationRepository = seatReservationRepository;
-        this.hallReservationRepository = hallReservationRepository;
-    }
+    /**
+     *
+     * @param clientId ID of calling client
+     * @param reservationId ID of hall reservation to get advance payment amount for
+     * @return amount to pay in advance for hall
+     * @throws ReservationNotFoundException reservation with this ID not found
+     * @throws ReservationAlreadyPaid reservation with this ID was already paid for
+     */
+    double getAdvancePaymentAmountForHall(ClientId clientId, ReservationId reservationId)
+     throws ReservationNotFoundException, ReservationAlreadyPaid;
 
-    public double getPaymentAmountForSeat(ClientId clientId, ReservationId reservationId) throws ReservationNotFoundException, ReservationAlreadyPaid {
-        if (seatReservationRepository.reservationDoesntExist(clientId.getClientId(), reservationId.getReservationId())) {
-            throw new ReservationNotFoundException("Reservation with this ID not found");
-        }
-        if (paymentsRepository.isAlreadyPaidSeat(clientId.getClientId(), reservationId.getReservationId())) {
-            throw new ReservationAlreadyPaid("Reservation with this ID is already paid for");
-        }
-        return paymentsRepository.getPaymentAmountSeat(clientId.getClientId(), reservationId.getReservationId());
-    }
+    /**
+     *
+     * @param clientId ID of calling client
+     * @param reservationId ID of hall reservation to get total payment amount for
+     * @return amount to pay in total for hall
+     * @throws ReservationNotFoundException reservation with this ID not found
+     * @throws ReservationAlreadyPaid reservation with this ID was already paid for
+     */
+    double getPaymentAmountForHall(ClientId clientId, ReservationId reservationId)
+     throws ReservationNotFoundException, ReservationAlreadyPaid;
 
-    public double getAdvancePaymentAmountForHall(ClientId clientId, ReservationId reservationId) throws ReservationNotFoundException, ReservationAlreadyPaid {
-        if (hallReservationRepository.reservationDoesntExist(clientId.getClientId(), reservationId.getReservationId())) {
-            throw new ReservationNotFoundException("Reservation with this ID not found");
-        }
-        if (paymentsRepository.isAlreadyPaidAdvanceHall(clientId.getClientId(), reservationId.getReservationId())) {
-            throw new ReservationAlreadyPaid("Advance payment for this reservation is already paid for");
-        }
-        return paymentsRepository.getPaymentAmountAdvanceHall(clientId.getClientId(), reservationId.getReservationId());
-    }
+    // below methods are used by payments mock, should not be used directly
+    /**
+     *
+     * @param clientId ID of calling client
+     * @param reservationId ID of seat reservation to finish payment for
+     */
+    void finishPaymentSeat(ClientId clientId, ReservationId reservationId);
 
-    public double getPaymentAmountForHall(ClientId clientId, ReservationId reservationId) throws ReservationNotFoundException, ReservationAlreadyPaid {
-        if (hallReservationRepository.reservationDoesntExist(clientId.getClientId(), reservationId.getReservationId())) {
-            throw new ReservationNotFoundException("Reservation with this ID not found");
-        }
-        if (paymentsRepository.isAlreadyPaidHall(clientId.getClientId(), reservationId.getReservationId())) {
-            throw new ReservationAlreadyPaid("Reservation with this ID is already paid for");
-        }
-        double toPayTotal = paymentsRepository.getPaymentAmountHall(clientId.getClientId(), reservationId.getReservationId());
-        if (paymentsRepository.isAlreadyPaidAdvanceHall(clientId.getClientId(), reservationId.getReservationId())) {
-            toPayTotal -= paymentsRepository.getPaymentAmountAdvanceHall(clientId.getClientId(), reservationId.getReservationId());
-        }
-        return toPayTotal;
-    }
+    /**
+     *
+     * @param clientId ID of calling client
+     * @param reservationId ID of hall reservation to finish advance payment for
+     */
+    void finishAdvancePaymentHall(ClientId clientId, ReservationId reservationId);
 
-    public void finishPaymentSeat(ClientId clientId, ReservationId reservationId) {
-        paymentsRepository.finishPaymentSeat(clientId.getClientId(), reservationId.getReservationId());
-    }
-
-    public void finishAdvancePaymentHall(ClientId clientId, ReservationId reservationId) {
-        paymentsRepository.finishAdvancePaymentHall(clientId.getClientId(), reservationId.getReservationId());
-    }
-
-    public void finishPaymentHall(ClientId clientId, ReservationId reservationId) {
-        paymentsRepository.finishPaymentHall(clientId.getClientId(), reservationId.getReservationId());
-    }
+    /**
+     *
+     * @param clientId ID of calling client
+     * @param reservationId ID of hall reservation to finish payment for
+     */
+    void finishPaymentHall(ClientId clientId, ReservationId reservationId);
 }

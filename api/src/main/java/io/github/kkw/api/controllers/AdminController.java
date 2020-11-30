@@ -1,34 +1,48 @@
 package io.github.kkw.api.controllers;
 
-import io.github.kkw.api.exceptions.*;
-import io.github.kkw.api.model.*;
+import io.github.kkw.api.exceptions.ClientNotLoggedInException;
+import io.github.kkw.api.exceptions.FromAfterToDateException;
+import io.github.kkw.api.exceptions.FutureDatesException;
+import io.github.kkw.api.exceptions.HallNoReservationsException;
+import io.github.kkw.api.exceptions.HallNotFoundException;
+import io.github.kkw.api.exceptions.MovieConflictException;
+import io.github.kkw.api.exceptions.MovieDateException;
+import io.github.kkw.api.exceptions.MovieNotFoundException;
+import io.github.kkw.api.exceptions.MovieShowsNotFoundException;
+import io.github.kkw.api.exceptions.NotAdminException;
+import io.github.kkw.api.exceptions.RestException;
+import io.github.kkw.api.model.ClientId;
+import io.github.kkw.api.model.HallStatistics;
+import io.github.kkw.api.model.MovieAddRequest;
+import io.github.kkw.api.model.MovieStatistics;
+import io.github.kkw.api.model.Statistics;
 import io.github.kkw.api.services.LoginService;
 import io.github.kkw.api.services.MovieService;
-import io.github.kkw.api.services.SpecialOffersService;
 import io.github.kkw.api.services.StatisticsService;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.time.Instant;
-import java.util.List;
 
 @RestController
 public class AdminController implements CrossOriginMarker {
     private final LoginService loginService;
     private final MovieService movieService;
     private final StatisticsService statisticsService;
-    private final SpecialOffersService specialOffersService;
 
     public AdminController(LoginService loginService,
                            MovieService movieService,
-                           StatisticsService statisticsService,
-                           SpecialOffersService specialOffersService) {
+                           StatisticsService statisticsService) {
         this.loginService = loginService;
         this.movieService = movieService;
         this.statisticsService=statisticsService;
-        this.specialOffersService=specialOffersService;
     }
 
     @PostMapping("/addMovie")
@@ -55,7 +69,7 @@ public class AdminController implements CrossOriginMarker {
         try{
             loginService.verifyAdmin(clientId);
             loginService.verifyClientLoggedIn(clientId);
-            return statisticsService.showStatistics(clientId,from,to);
+            return statisticsService.showStatistics(from,to);
         } catch (FutureDatesException | FromAfterToDateException e){
             throw new RestException(e.getMessage(), HttpStatus.BAD_REQUEST, e);
         } catch (ClientNotLoggedInException | NotAdminException e) {
@@ -89,35 +103,6 @@ public class AdminController implements CrossOriginMarker {
         } catch (HallNotFoundException e) {
             throw new RestException(e.getMessage(), HttpStatus.BAD_REQUEST, e);
         } catch (HallNoReservationsException e) {
-            throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e);
-        } catch (ClientNotLoggedInException | NotAdminException e) {
-            throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
-        }
-    }
-
-    @PostMapping("/addSpecialOffer")
-    public void addSpecialOffer(@RequestParam("clientId") final ClientId clientId,
-                                @Valid @RequestBody SpecialOfferAddRequest specialOffer) throws RestException {
-        try {
-            loginService.verifyAdmin(clientId);
-            loginService.verifyClientLoggedIn(clientId);
-            specialOffersService.addSpecialOffer(specialOffer);
-        } catch (SpecialCodeAlreadyExistsException e){
-            throw new RestException(e.getMessage(),HttpStatus.CONFLICT, e);
-        } catch (ClientNotLoggedInException | NotAdminException e) {
-            throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
-        }
-    }
-
-    @GetMapping("/showSpecialOffers")
-    public @ResponseBody
-    List<SpecialOffer> showSpecialOffers(@RequestParam("clientId") final ClientId clientId) throws RestException {
-        try{
-            loginService.verifyAdmin(clientId);
-            loginService.verifyClientLoggedIn(clientId);
-            return specialOffersService.showSpecialOffers();
-
-        }  catch (SpecialOffersNotFoundException e){
             throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e);
         } catch (ClientNotLoggedInException | NotAdminException e) {
             throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);

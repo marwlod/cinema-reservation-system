@@ -99,6 +99,7 @@ public class PaymentsController implements CrossOriginMarker {
         paymentsService.finishPaymentHall(clientId, reservationId);
     }
 
+    // TODO add proper Spring Security authentication
     private void verifyPassword(String password) throws RestException {
         if (!password.equals("supersecretTO2")) {
             throw new RestException("Wrong password, bye bye.", HttpStatus.FORBIDDEN, null);
