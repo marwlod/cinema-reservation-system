@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class SeatReservationController implements CrossOriginMarker {
@@ -45,12 +44,11 @@ public class SeatReservationController implements CrossOriginMarker {
 
     @PostMapping("/reserveSeat/{movieId}/{seatId}")
     public ReservationId createSeatReservation(@RequestParam("clientId") final ClientId clientId,
-                                               @RequestParam(value = "code", required = false) Optional<String> code,
                                                @PathVariable("movieId") int movieId,
                                                @PathVariable("seatId") int seatId) throws RestException {
         try {
             loginService.verifyClientLoggedIn(clientId);
-            return seatReservationService.createSeatReservation(clientId, movieId, seatId, code);
+            return seatReservationService.createSeatReservation(clientId, movieId, seatId);
         } catch (MovieNotFoundException | SeatNotFoundException e) {
             throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e);
         } catch (ClientNotLoggedInException e) {
@@ -91,19 +89,6 @@ public class SeatReservationController implements CrossOriginMarker {
             loginService.verifyClientLoggedIn(clientId);
             return seatReservationService.showFreeSeats(movieId);
         } catch (NoFreeSeatsException | MovieNotFoundException e) {
-            throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e);
-        } catch (ClientNotLoggedInException e) {
-            throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);
-        }
-    }
-
-    @GetMapping("/showAllSeats/{movieId}")
-    public List<Seat> showAllSeats(@RequestParam("clientId") final ClientId clientId,
-                                   @PathVariable("movieId") final int movieId) throws RestException {
-        try {
-            loginService.verifyClientLoggedIn(clientId);
-            return seatReservationService.showAllSeats(movieId);
-        } catch (MovieNotFoundException e) {
             throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e);
         } catch (ClientNotLoggedInException e) {
             throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);

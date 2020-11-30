@@ -160,36 +160,27 @@ public class HallReservationRepository {
                 .getResultList();
         if(halls.isEmpty() || hallsPrices.isEmpty()) return 0.00;
         BigDecimal sumHallPayments = BigDecimal.ZERO;
-        for(int i=0; i<halls.size(); i++){
-            sumHallPayments = sumHallPayments.add(hallsPrices.get(halls.get(i)-1));
+        for (Integer hall : halls) {
+            sumHallPayments = sumHallPayments.add(hallsPrices.get(hall - 1));
         }
         return sumHallPayments.doubleValue();
     }
 
     @Transactional
-    public int getHallsCount(){
-        BigInteger halls = (BigInteger) entityManager
-                .createNativeQuery("SELECT COUNT(*) FROM hall")
-                .getSingleResult();
-        return halls.intValue();
-    }
-
-    @Transactional
-    public boolean isHallExists(int hallId){
+    public boolean hallDoesNotExist(int hallId){
         BigInteger hall = (BigInteger) entityManager
                 .createNativeQuery("SELECT IF((SELECT COUNT(*) FROM hall WHERE hall_id = ?) > 0, TRUE, FALSE)")
                 .setParameter(1, hallId)
                 .getSingleResult();
-        return hall.intValue() == 1;
+        return hall.intValue() != 1;
     }
 
     @Transactional
     public BigInteger getHallReservationsCounter(int hallId){
-        BigInteger reservations = (BigInteger) entityManager
+        return (BigInteger) entityManager
                 .createNativeQuery("SELECT COUNT(*) FROM hall_reservation WHERE hall_id = ?")
                 .setParameter(1, hallId)
                 .getSingleResult();
-        return reservations;
     }
 
     @Transactional
@@ -198,8 +189,8 @@ public class HallReservationRepository {
                 .createNativeQuery("SELECT total_price FROM hall WHERE hall_id = ?")
                 .setParameter(1, hallId)
                 .getSingleResult();
-        if(hallPrice==null) return new BigDecimal(0.00);
-        BigDecimal advancePaymentValue = new BigDecimal(hallPrice.doubleValue()*0.2);
+        if(hallPrice==null) return new BigDecimal("0.00");
+        BigDecimal advancePaymentValue = BigDecimal.valueOf(hallPrice.doubleValue() * 0.2);
         BigInteger hallPaidTotalCounter = (BigInteger) entityManager
                 .createNativeQuery("SELECT COUNT(*) FROM hall_reservation INNER JOIN hall ON hall_reservation.hall_id = hall.hall_id WHERE hall_reservation.hall_id = ? AND is_paid_total = 1 AND is_deleted = 0")
                 .setParameter(1, hallId)

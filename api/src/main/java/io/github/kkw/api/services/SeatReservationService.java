@@ -1,8 +1,5 @@
 package io.github.kkw.api.services;
 
-import io.github.kkw.api.db.SeatReservationRepository;
-import io.github.kkw.api.db.dto.SeatEntity;
-import io.github.kkw.api.db.dto.SeatReservationEntity;
 import io.github.kkw.api.exceptions.MovieNotFoundException;
 import io.github.kkw.api.exceptions.NoFreeSeatsException;
 import io.github.kkw.api.exceptions.ReservationNotFoundException;
@@ -12,65 +9,49 @@ import io.github.kkw.api.model.ClientId;
 import io.github.kkw.api.model.ReservationId;
 import io.github.kkw.api.model.Seat;
 import io.github.kkw.api.model.SeatReservation;
-import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
-@Service
-public class SeatReservationService {
-    private final SeatReservationRepository seatReservationRepository;
+public interface SeatReservationService {
 
-    public SeatReservationService(SeatReservationRepository seatReservationRepository) {
-        this.seatReservationRepository = seatReservationRepository;
-    }
+    /**
+     *
+     * @param clientId ID of calling client
+     * @param movieId ID of movie to create reservation for
+     * @param seatId ID of chosen seat to reserve
+     * @return ID of newly created reservation
+     * @throws MovieNotFoundException when movie with given ID was not found
+     * @throws SeatNotFoundException when seat with given ID was not found
+     * @throws SeatReservedException when seat with given ID was already reserved
+     */
+    ReservationId createSeatReservation(ClientId clientId, int movieId, int seatId)
+            throws MovieNotFoundException, SeatNotFoundException, SeatReservedException;
 
-    public ReservationId createSeatReservation(ClientId clientId, int movieId, int seatId, Optional<String> code)
-            throws MovieNotFoundException, SeatNotFoundException, SeatReservedException {
-        if (seatReservationRepository.movieDoesntExist(movieId)) {
-            throw new MovieNotFoundException("Movie with this ID not found");
-        }
-        if (seatReservationRepository.seatForMovieDoesntExist(movieId, seatId)) {
-            throw new SeatNotFoundException("Seat with this ID for this movie not found");
-        }
-        if (seatReservationRepository.isReserved(movieId, seatId)) {
-            throw new SeatReservedException("Chosen seat for this movie is already reserved");
-        }
-        seatReservationRepository.createSeatReservation(clientId.getClientId(), movieId, seatId, code.isEmpty() ? null : code.get());
-        return new ReservationId(seatReservationRepository.getSeatReservationId(clientId.getClientId(), movieId, seatId));
-    }
+    /**
+     *
+     * @param clientId ID of calling client
+     * @param reservationId ID of seat reservation to delete
+     * @throws ReservationNotFoundException when reservation with this ID was not found
+     */
+    void deleteSeatReservation(ClientId clientId, ReservationId reservationId)
+     throws ReservationNotFoundException;
 
-    public void deleteSeatReservation(ClientId clientId, ReservationId reservationId)
-            throws ReservationNotFoundException {
-        if (seatReservationRepository.reservationDoesntExist(clientId.getClientId(), reservationId.getReservationId())) {
-            throw new ReservationNotFoundException("Reservation with this ID not found");
-        }
-        seatReservationRepository.deleteSeatReservation(clientId.getClientId(), reservationId.getReservationId());
-    }
+    /**
+     *
+     * @param movieId ID of movie to show free seats for
+     * @return list of all available seats for chosen movie screening
+     * @throws MovieNotFoundException when movie with given ID was not found
+     * @throws NoFreeSeatsException when there are no free seats available for chosen movie
+     */
+    List<Seat> showFreeSeats(int movieId) throws MovieNotFoundException, NoFreeSeatsException;
 
-    public List<Seat> showFreeSeats(int movieId) throws MovieNotFoundException, NoFreeSeatsException {
-        if (seatReservationRepository.movieDoesntExist(movieId)) {
-            throw new MovieNotFoundException("Movie with this ID not found");
-        }
-        List<SeatEntity> freeSeats = seatReservationRepository.getFreeSeats(movieId);
-        if (freeSeats.isEmpty()) {
-            throw new NoFreeSeatsException("No seats available to reserve for this movie");
-        }
-        return freeSeats.stream().map(Seat::new).collect(Collectors.toList());
-    }
-
-    public List<Seat> showAllSeats(int movieId) throws MovieNotFoundException {
-        if (seatReservationRepository.movieDoesntExist(movieId)) {
-            throw new MovieNotFoundException("Movie with this ID not found");
-        }
-        List<SeatEntity> allSeats = seatReservationRepository.getAllSeats(movieId);
-        return allSeats.stream().map(Seat::new).collect(Collectors.toList());
-    }
-
-    public List<SeatReservation> showReservations(ClientId clientId, Instant from, Instant to) {
-        List<SeatReservationEntity> allReservations = seatReservationRepository.getReservations(clientId.getClientId(), from, to);
-        return allReservations.stream().map(SeatReservation::new).collect(Collectors.toList());
-    }
+    /**
+     *
+     * @param clientId ID of calling client
+     * @param from date to show seat reservations from
+     * @param to date to show seat reservations to
+     * @return list of all seat reservation for given client in given time frame
+     */
+    List<SeatReservation> showReservations(ClientId clientId, Instant from, Instant to);
 }

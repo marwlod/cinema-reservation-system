@@ -1,6 +1,5 @@
 package io.github.kkw.api.controllers;
 
-import io.github.kkw.api.exceptions.AvailableCinemaHallsNotFoundException;
 import io.github.kkw.api.exceptions.CinemaHallsNotFoundException;
 import io.github.kkw.api.exceptions.ClientNotLoggedInException;
 import io.github.kkw.api.exceptions.DateTooSoonException;
@@ -67,25 +66,13 @@ public class HallReservationController implements CrossOriginMarker {
         }
     }
 
-    @GetMapping("/showAllCinemaHalls")
-    List<Hall> showCinemaHalls(@RequestParam("clientId") final ClientId clientId) throws RestException {
-        try{
-            loginService.verifyClientLoggedIn(clientId);
-            return hallReservationService.showCinemaHalls();
-        } catch (CinemaHallsNotFoundException e) {
-            throw new RestException(e.getMessage(),HttpStatus.NOT_FOUND,e);
-        } catch (ClientNotLoggedInException e){
-            throw new RestException(e.getMessage(),HttpStatus.FORBIDDEN,e);
-        }
-    }
-
     @GetMapping("/showAvailableCinemaHalls")
     List<Hall> showAvailableCinemaHalls(@RequestParam("clientId") final ClientId clientId,
                                         @RequestParam("date") Instant date) throws RestException {
         try {
             loginService.verifyClientLoggedIn(clientId);
             return hallReservationService.showAvailableCinemaHalls(date);
-        } catch (AvailableCinemaHallsNotFoundException e){
+        } catch (CinemaHallsNotFoundException e){
             throw new RestException(e.getMessage(), HttpStatus.NOT_FOUND, e);
         } catch (ClientNotLoggedInException e) {
             throw new RestException(e.getMessage(), HttpStatus.FORBIDDEN, e);

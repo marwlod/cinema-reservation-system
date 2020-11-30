@@ -1,5 +1,5 @@
 allprojects {
     // kkw -> Kordek, Krakowski, Włodarczyk :)
     group 'io.github.kkw'
-    version '0.0.1-SNAPSHOT'
+    version '0.0.2'
 }

@@ -2,7 +2,6 @@ package io.github.kkw.api.db;
 
 import io.github.kkw.api.db.dto.SeatEntity;
 import io.github.kkw.api.db.dto.SeatReservationEntity;
-import io.github.kkw.api.db.dto.SpecialOfferEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
@@ -60,35 +59,22 @@ public class SeatReservationRepository {
         return isReserved.intValue() == 1;
     }
 
-    private BigDecimal calculateTotalPrice(BigDecimal basePrice, int discountPercentage, boolean isVipRecord){
-        int isVip = 0;
-        if(isVipRecord) isVip=1;
-        BigDecimal discountPartOfBase = new BigDecimal(1-discountPercentage*0.01);
-        BigDecimal priceWithDiscount = basePrice.multiply(new BigDecimal(1-discountPercentage*0.01));
-        BigDecimal vipPrice = basePrice.multiply(new BigDecimal(0.5*isVip));
-        BigDecimal totalPrice = priceWithDiscount.add(vipPrice);
-        return totalPrice;
+    // VIP price is 1.5 times the regular price
+    private BigDecimal calculateTotalPrice(BigDecimal basePrice, boolean isVip){
+        return basePrice.multiply(BigDecimal.valueOf(isVip ? 1.5 : 1));
     }
 
     @Transactional
-    @SuppressWarnings("unchecked")
-    public void createSeatReservation(int clientId, int movieId, int seatId, String code) {
+    public void createSeatReservation(int clientId, int movieId, int seatId) {
          BigDecimal basePrice = (BigDecimal) entityManager
                 .createNativeQuery("SELECT base_price FROM movie WHERE movie_id=?")
                 .setParameter(1,movieId)
                 .getSingleResult();
-        final List<SpecialOfferEntity> specialOfferRecord = (List<SpecialOfferEntity>) entityManager
-                .createNativeQuery("SELECT special_offer_id, code, percentage " +
-                        "FROM special_offers WHERE code=?", SpecialOfferEntity.class)
-                .setParameter(1,code)
-                .getResultList();
-        int discountPercentage = 0;
-        if(!specialOfferRecord.isEmpty()) discountPercentage = specialOfferRecord.get(0).getPercentage();
         final Boolean isVipRecord = (Boolean) entityManager
                 .createNativeQuery("SELECT is_vip FROM seat WHERE seat_id=?")
                 .setParameter(1,seatId)
                 .getSingleResult();
-        double totalPrice = calculateTotalPrice(basePrice,discountPercentage,isVipRecord).doubleValue();
+        double totalPrice = calculateTotalPrice(basePrice, isVipRecord).doubleValue();
         final Timestamp timeMovieEnds = (Timestamp) entityManager
                 .createNativeQuery("SELECT end_date FROM movie " +
                         "WHERE movie_id=?")
@@ -103,7 +89,7 @@ public class SeatReservationRepository {
                 .setParameter(3, movieId)
                 .setParameter(4, seatId)
                 .setParameter(5, clientId)
-                .setParameter(6,totalPrice)
+                .setParameter(6, totalPrice)
                 .setParameter(7,0) //not deleted
                 .executeUpdate();
     }

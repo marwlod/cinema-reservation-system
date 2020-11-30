@@ -1,6 +1,5 @@
 package io.github.kkw.api.services;
 
-import io.github.kkw.api.db.LoginRepository;
 import io.github.kkw.api.exceptions.ClientExistsException;
 import io.github.kkw.api.exceptions.ClientNotFoundException;
 import io.github.kkw.api.exceptions.ClientNotLoggedInException;
@@ -8,65 +7,64 @@ import io.github.kkw.api.exceptions.NotAdminException;
 import io.github.kkw.api.exceptions.WrongPasswordException;
 import io.github.kkw.api.model.ClientId;
 import io.github.kkw.api.model.Profile;
-import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service
-public class LoginService {
-    private final LoginRepository loginRepository;
+public interface LoginService {
+    /**
+     *
+     * @param email email of client to register
+     * @param password password of client to register
+     * @param name name of client to register
+     * @param surname surname of client to register
+     * @return ID of newly registered client
+     * @throws ClientExistsException client with this email already exists
+     */
+    ClientId registerClient(String email,
+                            String password,
+                            Optional<String> name,
+                            Optional<String> surname) throws ClientExistsException;
 
-    public LoginService(final LoginRepository loginRepository) {
-        this.loginRepository = loginRepository;
-    }
+    /**
+     *
+     * @param email email of existing client
+     * @param password password of existing client
+     * @return ID of client that was just logged in
+     * @throws WrongPasswordException when password doesn't match the email
+     */
+    ClientId loginClient(String email, String password) throws WrongPasswordException;
 
-    public ClientId registerClient(String email,
-                                   String password,
-                                   Optional<String> name,
-                                   Optional<String> surname) throws ClientExistsException {
-        if (loginRepository.clientExists(email)) {
-            throw new ClientExistsException("Client with this email already exists");
-        }
-        loginRepository.registerClient(
-                email,
-                password,
-                name.isEmpty() ? null : name.get(),
-                surname.isEmpty() ? null : surname.get());
-        return new ClientId(loginRepository.getClientId(email));
-    }
+    /**
+     *
+     * @param clientId ID of client to logout
+     */
+    void logoutClient(ClientId clientId);
 
-    public ClientId loginClient(String email, String password) throws WrongPasswordException {
-        if (!loginRepository.emailMatchesPassword(email, password)) {
-            throw new WrongPasswordException("Wrong password");
-        }
-        loginRepository.loginClient(email, password);
-        return new ClientId(loginRepository.getClientId(email));
-    }
+    /**
+     *
+     * @param email email to verify
+     * @throws ClientNotFoundException when client with this email was not registered
+     */
+    void verifyEmailExists(String email) throws ClientNotFoundException;
 
-    public void logoutClient(ClientId clientId) {
-        loginRepository.logoutClient(clientId.getClientId());
-    }
+    /**
+     *
+     * @param clientId ID of client to verify if is logged in
+     * @throws ClientNotLoggedInException when client with this ID is not logged in
+     */
+    void verifyClientLoggedIn(ClientId clientId) throws ClientNotLoggedInException;
 
-    public void verifyEmailExists(String email) throws ClientNotFoundException {
-        if (!loginRepository.clientExists(email)) {
-            throw new ClientNotFoundException("Client with this email not found");
-        }
-    }
+    /**
+     *
+     * @param clientId ID of client to verify if is an admin
+     * @throws NotAdminException when client with this ID is not an admin
+     */
+    void verifyAdmin(ClientId clientId) throws NotAdminException;
 
-    public void verifyClientLoggedIn(ClientId clientId) throws ClientNotLoggedInException {
-        if (!loginRepository.isClientLoggedIn(clientId.getClientId())) {
-            throw new ClientNotLoggedInException("Client doesn't exist or not logged in");
-        }
-        loginRepository.extendLogin(clientId.getClientId());
-    }
-
-    public void verifyAdmin(ClientId clientId) throws NotAdminException {
-        if (!loginRepository.isAdmin(clientId.getClientId())) {
-            throw new NotAdminException("Client is not an admin");
-        }
-    }
-
-    public Profile showProfile(ClientId clientId) {
-        return new Profile(loginRepository.getProfile(clientId.getClientId()));
-    }
+    /**
+     *
+     * @param clientId ID of client to show profile for
+     * @return profile of client with this ID
+     */
+    Profile showProfile(ClientId clientId);
 }

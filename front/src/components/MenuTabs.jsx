@@ -13,6 +13,7 @@ import AvailableHalls from "./AvailableHalls";
 import ContactUs from "./ContactUs";
 import Statistics from "./Statistics";
 
+// TODO refactor: TabPanel and MenuTabs are very similar
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 

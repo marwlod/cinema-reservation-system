@@ -2,7 +2,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: Bahnschrift, monospace !important;
+    font-family: Bahnschrift, monospace !important; /*TODO resolve it properly*/
     color: #edf2f4;
 }
 
@@ -11,8 +11,7 @@ header {
     color: white;
     padding: 16px 32px;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0);
-    font-size: 20px !important;
-    font-size: 20px !important;
+    font-size: 20px !important; /*TODO resolve it properly*/
     text-align: center;
 }
 
@@ -61,85 +60,85 @@ body {
 
 
 .MuiAppBar-root {
-    background-color: rgba(0, 0, 0, 0.2) !important;
-    color: #edf2f4 !important;
+    background-color: rgba(0, 0, 0, 0.2) !important; /*TODO resolve it properly*/
+    color: #edf2f4 !important; /*TODO resolve it properly*/
 }
 
 .MuiButton-root {
-    background-color: #3f51b5 !important;
-    border-radius: 3px !important;
-    color: #edf2f4 !important;
+    background-color: #3f51b5 !important; /*TODO resolve it properly*/
+    border-radius: 3px !important; /*TODO resolve it properly*/
+    color: #edf2f4 !important; /*TODO resolve it properly*/
 }
 
 .MuiTextField-root{
-    //color: #edf2f4 !important;
-    background-color: #50a3a2 !important;
+    //color: #edf2f4 !important; /*TODO resolve it properly*/
+    background-color: #50a3a2 !important; /*TODO resolve it properly*/
     border-radius: 3px;
 }
 
 .MuiFormControl-root{
-    color: #edf2f4 !important;
-    background-color: #3f51b5 !important;// rgba(0, 0, 0, 0.2) !important;
+    color: #edf2f4 !important; /*TODO resolve it properly*/
+    background-color: #3f51b5 !important; /*TODO resolve it properly*/
 }
 .MuiFormLabel-root{
-    color: #edf2f4 !important;
-    background-color: #3f51b5  !important;
-    padding-top: 5px !important;
-    padding-left: 5px !important;
+    color: #edf2f4 !important; /*TODO resolve it properly*/
+    background-color: #3f51b5  !important; /*TODO resolve it properly*/
+    padding-top: 5px !important; /*TODO resolve it properly*/
+    padding-left: 5px !important; /*TODO resolve it properly*/
 }
 
 .MuiInputBase-input {
-    color: #edf2f4 !important;
-    background-color: #3f51b5 !important;
-    padding-left: 5px !important;
+    color: #edf2f4 !important; /*TODO resolve it properly*/
+    background-color: #3f51b5 !important; /*TODO resolve it properly*/
+    padding-left: 5px !important; /*TODO resolve it properly*/
 }
 .MuiInput-input {
-    color: #edf2f4 !important;
-    background-color: #3f51b5 !important;
+    color: #edf2f4 !important; /*TODO resolve it properly*/
+    background-color: #3f51b5 !important; /*TODO resolve it properly*/
 }
 
 
 .MuiInputBase-root {
-    color: #edf2f4 !important;
-    background-color: #3f51b5 !important;
+    color: #edf2f4 !important; /*TODO resolve it properly*/
+    background-color: #3f51b5 !important; /*TODO resolve it properly*/
 }
 
 
 .MuiTableContainer-root {
-    background-color: rgba(0, 0, 0, 0) !important;
-    color: #edf2f4 !important;
+    background-color: rgba(0, 0, 0, 0) !important; /*TODO resolve it properly*/
+    color: #edf2f4 !important; /*TODO resolve it properly*/
 }
 
 .MuiTableCell-root {
-    color: #edf2f4 !important;
-    text-align: center !important;
-    background-color: rgba(0, 0, 0, 0) !important;
+    color: #edf2f4 !important; /*TODO resolve it properly*/
+    text-align: center !important; /*TODO resolve it properly*/
+    background-color: rgba(0, 0, 0, 0) !important; /*TODO resolve it properly*/
 }
 
 .MuiTablePagination-root {
-    background-color: rgba(0, 0, 0, 0) !important;
-    color: black !important;
+    background-color: rgba(0, 0, 0, 0) !important; /*TODO resolve it properly*/
+    color: black !important; /*TODO resolve it properly*/
 }
 
 .MuiBox-root {
-    background-color: rgba(0, 0, 0, 0.3) !important;
-    color: #edf2f4 !important;
+    background-color: rgba(0, 0, 0, 0.3) !important; /*TODO resolve it properly*/
+    color: #edf2f4 !important; /*TODO resolve it properly*/
 }
 
 .MuiList-root {
-    background-color: rgba(0, 0, 0, 0.3) !important;
+    background-color: rgba(0, 0, 0, 0.3) !important; /*TODO resolve it properly*/
 }
 
 .MuiListItem-root {
-    background-color: rgba(0, 0, 0, 0.3) !important;
+    background-color: rgba(0, 0, 0, 0.3) !important; /*TODO resolve it properly*/
 }
 
 .MuiMenuItem-root {
-    background-color: rgba(0, 0, 0, 0.3) !important;
+    background-color: rgba(0, 0, 0, 0.3) !important; /*TODO resolve it properly*/
 }
 
 .MuiMenu-root {
-    background-color: rgba(0, 0, 0, 0.3) !important;
+    background-color: rgba(0, 0, 0, 0.3) !important; /*TODO resolve it properly*/
 }
 
 .menuTabs {

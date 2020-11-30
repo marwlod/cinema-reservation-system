@@ -1,3 +1,5 @@
+-- TODO remove ugly hardcoded dates
+
 INSERT INTO client (client_id, email, password, name, surname, is_admin, logged_until, register_date)
     VALUES (5000, 'bob@crs.com', 'test', 'Bob', 'The Regular', 0,STR_TO_DATE('31/12/2099 11:00:00 PM', '%e/%c/%Y %r'), STR_TO_DATE('01/01/2020 11:00:00 PM', '%e/%c/%Y %r'));
 INSERT INTO client (client_id, email, password, name, surname, is_admin, logged_until, register_date)
@@ -105,8 +107,6 @@ INSERT INTO movie (movie_id, name, start_date, end_date, base_price, hall_id, de
 INSERT INTO movie (movie_id, name, start_date, end_date, base_price, hall_id, description, link)
     VALUES (17, 'Back to the future III', STR_TO_DATE('07/06/2020 6:00:00 PM', '%e/%c/%Y %r'), STR_TO_DATE('07/06/2020 8:00:00 PM', '%e/%c/%Y %r'), 30, 3,
             'Back to the Future Part III is a 1990 American science-fiction film[4] and the final installment of the Back to the Future trilogy. The film was directed by Robert Zemeckis, and stars Michael J. Fox, Christopher Lloyd, Mary Steenburgen, Thomas F. Wilson and Lea Thompson. The film continues immediately following Back to the Future Part II (1989); while stranded in 1955 during his time travel adventures, Marty McFly (Fox) discovers that his friend Dr. Emmett "Doc" Brown (Lloyd), trapped in 1885, was killed by Buford "Mad Dog" Tannen (Wilson), Biff''s great-grandfather. Marty travels to 1885 to rescue Doc and return once again to 1985, but matters are complicated when Doc falls in love with Clara Clayton (Steenburgen).', 'https://i.ibb.co/D1p87hy/Back-To-The-Future-III.jpg');
-
-INSERT INTO special_offers (special_offer_id, code,percentage) VALUES (1, 'A123',10);
 
 INSERT INTO hall_reservation (valid_until, is_paid_advance, is_paid_total, reservation_date, hall_id, client_id, is_deleted)
     VALUES (STR_TO_DATE('15/05/2020 11:59:59 PM', '%e/%c/%Y %r'), 1, 1, STR_TO_DATE('15/05/2020', '%e/%c/%Y %r'), 1, 5000, 0);

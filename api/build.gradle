@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'com.avast.gradle.docker-compose' version '0.10.10'
+    id 'org.springframework.boot' version '2.2.6.RELEASE'
 }
 
 sourceCompatibility = 1.11

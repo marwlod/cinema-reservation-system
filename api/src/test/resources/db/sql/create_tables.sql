@@ -69,10 +69,3 @@ CREATE TABLE seat_reservation
     FOREIGN KEY (seat_id) REFERENCES seat(seat_id),
     FOREIGN KEY (client_id) REFERENCES client(client_id)
 );
-
-CREATE TABLE special_offers
-(
-    special_offer_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    code VARCHAR(32) UNIQUE,
-    percentage INT
-);
